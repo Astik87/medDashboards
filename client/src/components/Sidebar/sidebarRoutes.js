@@ -1,3 +1,5 @@
+import React from "react"
+
 import LongReadTab from "./LongReadTab";
 import NotFoundTab from "./NotFoundTab";
 

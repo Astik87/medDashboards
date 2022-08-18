@@ -1,5 +1,4 @@
-import {useState} from 'react'
-
+import React, {useState} from "react"
 import './style.css'
 import searchIcon from './img/search.svg'
 import searchLine from './img/line.svg'

@@ -5,6 +5,10 @@
     padding: 25px;
 }
 
+.dashboard-block-content {
+    height: 100%;
+}
+
 .dashboard-block-title {
     display: flex;
     align-items: center;

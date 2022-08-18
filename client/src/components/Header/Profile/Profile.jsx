@@ -1,3 +1,5 @@
+import React from "react"
+
 import './style.css'
 import notAva from './img/not-ava.svg'
 import Notifications from "./Notifications"

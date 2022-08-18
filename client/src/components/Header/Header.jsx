@@ -1,11 +1,13 @@
-import Menu from "./Menu";
+import React from "react"
+
+import Menu from "./Menu"
 
 import './style.css'
 import logo from './img/logo.svg'
-import {menuItems} from "./menuItems";
-import SearchInput from "./SearchInput";
-import Profile from "./Profile";
-import MobileHeader from "./MobileHeader";
+import {menuItems} from "./menuItems"
+import SearchInput from "./SearchInput"
+import Profile from "./Profile"
+import MobileHeader from "./MobileHeader"
 
 const Header = () => {
     return (

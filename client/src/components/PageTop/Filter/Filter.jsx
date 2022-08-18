@@ -1,10 +1,20 @@
+import React from "react"
 import Select from 'react-select'
 
 import './style.css'
 import DateFilter from "./DateFilter";
+import {useContext} from "react";
+import {Context} from "../../../index";
+import {observer} from "mobx-react";
 
-const Filter = (props) => {
-    const {filtersList, filter, change, eventsList, directionsList} = props
+const Filter = observer((props) => {
+    const {filtersList, filter} = props
+    let {change} = props
+
+    if(typeof change !== 'function')
+        change = () => {}
+
+    const {directionsList, eventsList} = useContext(Context).filter
 
     if(!filtersList || !filtersList.length)
         return 'Not elements'
@@ -30,7 +40,7 @@ const Filter = (props) => {
                         return eventsList &&
                             <Select
                                 key="event"
-                                placeholder="Меропричтие"
+                                placeholder="Мероприятие"
                                 onChange={setEvent}
                                 options={getEventOptions()}
                                 classNamePrefix="filter"
@@ -47,7 +57,6 @@ const Filter = (props) => {
                                 classNamePrefix="filter"
                                 className="filter-select"
                                 isClearable={true}
-                                autoFocus={true}
                             />
                     default:
                         return `Filter ${filterName} is not-defined`
@@ -55,6 +64,6 @@ const Filter = (props) => {
             })}
         </div>
     )
-}
+})
 
 export default Filter

@@ -1,3 +1,5 @@
+import React from "react"
+
 import './style.css'
 
 import DashboardBlock from "../DashboardBlock";
@@ -8,7 +10,7 @@ const TopFive = (props) => {
     return (
         <DashboardBlock title={title} icon={icon} className="top-five-block">
             {
-                typeof values !== 'object' ? '' :
+                !values || !values.length ? <div className="top-five__empty"><span>Пусто</span></div> :
                     <ul className='top-five'>
                         {values.map(({id, title, value}, index) => (
                                 <li key={id} className="top-five__item">

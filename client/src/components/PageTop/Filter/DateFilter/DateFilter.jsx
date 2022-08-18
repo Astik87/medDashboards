@@ -1,3 +1,4 @@
+import React from "react"
 import Select from "react-select";
 
 const getYearOptions = (now) => {
@@ -61,6 +62,7 @@ const DateFilter = (props) => {
                 options={yearOptions}
                 classNamePrefix="filter"
                 className="filter-select"
+                isSearchable={false}
             />
             <Select
                 onChange={setMonth}
@@ -69,6 +71,7 @@ const DateFilter = (props) => {
                 classNamePrefix="filter"
                 className="filter-select"
                 isClearable={true}
+                isSearchable={false}
             />
             {month && <Select
                 onChange={setDay}
@@ -77,6 +80,7 @@ const DateFilter = (props) => {
                 classNamePrefix="filter"
                 className="filter-select"
                 isClearable={true}
+                isSearchable={false}
             />}
         </div>
     )

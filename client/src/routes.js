@@ -1,3 +1,5 @@
+import React from "react"
+
 import Home from "./pages/Home";
 import NotFound from "./pages/NotFound";
 import LongRead from "./pages/LongRead";

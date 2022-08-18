@@ -1,4 +1,4 @@
-import {useContext, useEffect, useReducer, useState} from "react";
+import React, {useEffect, useReducer, useState} from "react";
 import {
     Chart as ChartJS,
     CategoryScale,
@@ -21,13 +21,16 @@ import city from './img/city.svg'
 import tape from './img/tape.svg'
 import note from './img/note.svg'
 
-import Filter from "../../components/Filter";
 import LongReadApi from "../../api/LongReadApi";
 import DashboardBlock from "../../components/DashboardBlock";
-import {observer} from "mobx-react";
-import {Context} from "../../index";
 import TopFive from "../../components/TopFive";
+import PageTop from "../../components/PageTop";
 
+/**
+ * Получить статистику LongRead
+ * @param filter
+ * @returns {Promise<{data: any, success: boolean}|{success: boolean, message: *}>}
+ */
 const getStatistic = async (filter) => {
     const apiFilter = {}
 
@@ -54,6 +57,11 @@ const getStatistic = async (filter) => {
     return  await LongReadApi.getStatistic(apiFilter)
 }
 
+/**
+ * Инициализация графика
+ * @param data
+ * @returns {{chartOptions: {}, chartData: {}}} Объект с опциями и данными для компонентка <Bar />
+ */
 const initBarChart = (data) => {
     ChartJS.register(
         CategoryScale,
@@ -61,8 +69,7 @@ const initBarChart = (data) => {
         BarElement,
         Title,
         Tooltip,
-        Legend
-    )
+        Legend)
 
     const props = {
         chartOptions: {},
@@ -138,7 +145,7 @@ const initBarChart = (data) => {
     return props
 }
 
-const LongRead = observer(() => {
+const LongRead = () => {
     const now = new Date()
     const [data, setData] = useState(false)
     const filterReducer = (state, newFilter) => {
@@ -146,24 +153,47 @@ const LongRead = observer(() => {
         if(JSON.stringify(state) === JSON.stringify(newFilter))
             return state
 
-        getStatistic(newFilter).then(setData)
+        getStatistic(newFilter).then((res) => {
+            if(res.success === false)
+                return setError(res.message)
+
+            setData(res.data)
+        })
 
         return newFilter
     }
     const [filter, filterDispatch] = useReducer(filterReducer, {year: now.getFullYear(), month: false, day: false, eventId: false, directionId: false})
-
-    const {directionsList, eventsList} = useContext(Context).filter
+    const [error, setError] = useState(false)
 
     useEffect(() => {
         if(data === false)
-            getStatistic(filter).then(setData)
+            getStatistic(filter).then((res) => {
+                if(res.success === false)
+                    return setError(res.message)
+
+                setData(res.data)
+            })
     }, [data, filter])
 
-    const {chartOptions, chartData} = initBarChart(data, directionsList)
+    const {chartOptions, chartData} = initBarChart(data)
+
+    if(error)
+        return (
+            <div>
+                {error}
+            </div>
+        )
+
+    if(data === false)
+        return (
+            <div>
+                Загрузка...
+            </div>
+        )
 
     return (
         <div className="page-long-read page">
-            <Filter filter={filter} filtersList={['date', 'directions', 'events']} directionsList={directionsList} eventsList={eventsList} change={filterDispatch}/>
+            <PageTop filter={filter} filtersList={['date', 'directions', 'events']} filterChange={filterDispatch}/>
             <div className="page-long-read-content">
                 <div className="page-long-read-content__left">
                     <DashboardBlock title="Статистика лонгрида" icon={readIcon} className="long-read">
@@ -208,10 +238,9 @@ const LongRead = observer(() => {
                         !data || !data.cities ? '' :
                             <TopFive valueType="percent" total={data.readings} title="Города" icon={city} values={data.cities.map(({name, count},index) => ({id: name+count+index, title: name, value: count}))} />
                     }
-
                     <DashboardBlock title="Статистика лонгрида" icon={tape} className="long-read__videos-and-tests">
                         {
-                            !data || !data.tests ? '' :
+                            !data.tests ? '' :
                                 data.tests.map((value, index) => (
                                     <div key={index} className="long-read-block">
                                         <img src={note} alt=""/>
@@ -245,6 +274,6 @@ const LongRead = observer(() => {
             </div>
         </div>
     )
-})
+}
 
 export default LongRead

@@ -1,3 +1,5 @@
+import React from "react"
+
 import './style.css'
 import notification from './img/notification.svg'
 

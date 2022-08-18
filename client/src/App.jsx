@@ -1,3 +1,4 @@
+import React from "react"
 import {BrowserRouter} from "react-router-dom";
 
 import AppRouter from "./components/AppRouter/AppRouter";
@@ -19,7 +20,9 @@ function App() {
                   <div className="content-wrapper">
                       <Sidebar />
                       <div className="content">
-                          <AppRouter />
+                          <div className="export-page-container">
+                              <AppRouter />
+                          </div>
                       </div>
                   </div>
               </div>

@@ -1,6 +1,9 @@
 const {Op} = require('sequelize')
 const {LongRead, User, UserFields, MedDirections} = require('../models')
 
+/**
+ * Статистика LongRead
+ */
 class LongReadService {
 
     request = {}
@@ -38,6 +41,12 @@ class LongReadService {
         }
     }
 
+    /**
+     * Получить статистику по id меропричтия
+     * @param {number} eventId id меропричтия
+     * @param {number} directionId id мед. напрвления
+     * @returns {Promise<Model[]>}
+     */
     async getLongReadItemsByEventId(eventId, directionId) {
         this.request.where = {
             UF_USER: {[Op.ne]: 0},
@@ -52,6 +61,13 @@ class LongReadService {
         return await LongRead.findAll(this.request)
     }
 
+    /**
+     * Получить статистику за период от dateFrom до dateTo
+     * @param {string|Date} dateFrom "2020-12-31 00:00:00+00:00"
+     * @param {string|Date} dateTo "2020-12-31 23:59:00+00:00"
+     * @param {number} directionId id мед. направления
+     * @returns {Promise<Model[]>}
+     */
     async getLongReadItemsByDate(dateFrom, dateTo, directionId) {
         this.request.where = {
             UF_USER: {[Op.ne]: 0},
@@ -69,6 +85,11 @@ class LongReadService {
         return await LongRead.findAll(this.request)
     }
 
+    /**
+     * Собирает статистику из массива longReadItems
+     * @param longReadItems данные из getLongReadItemsByDate или getLongReadItemsByEventId
+     * @returns {{readings: number, tests: number[], reReadings: number, videos: number[], transitions: number}}
+     */
     collectStatistic(longReadItems) {
         const result = {
             readings: longReadItems.length,
@@ -116,6 +137,11 @@ class LongReadService {
         return result
     }
 
+    /**
+     * Перечитывал ли пользователь LongRead
+     * @param {number} userId
+     * @returns {boolean}
+     */
     isReReading(userId) {
         return this.userIds.indexOf(userId) !== -1
     }

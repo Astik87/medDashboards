@@ -25,7 +25,7 @@ class FaceCastApi {
             const response = await this.host.get('/get_visit_histogram_absolute_time_all', {params: {event_id: eventId}})
             return {success: true, data: response.data}
         } catch (error) {
-            return {success: false, status: error.status, message: error.response.data.error}
+            return {success: false, status: error.status, message: error.message}
         }
     }
 }

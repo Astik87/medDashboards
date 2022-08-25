@@ -34,8 +34,7 @@ const Filter = observer((props) => {
             {filtersList.map((filterName) => {
                 switch (filterName) {
                     case 'date':
-                        return filter.eventId === false &&
-                            <DateFilter key="date" filter={filter} change={(date) => change({...filter, ...date})} />
+                        return <DateFilter key="date" filter={filter} change={(date) => change({...filter, ...date})} />
                     case 'events':
                         return eventsList &&
                             <Select

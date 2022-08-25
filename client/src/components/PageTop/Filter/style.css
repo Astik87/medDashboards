@@ -34,6 +34,7 @@
     margin-right: 10px;
     margin-bottom: 10px;
     min-width: 195px;
+    max-width: 250px;
     text-align: center;
 }
 
@@ -49,6 +50,7 @@
     .filter-select {
         width: 31%;
         min-width: unset;
+        max-width: unset;
         margin-right: 1%;
     }
 

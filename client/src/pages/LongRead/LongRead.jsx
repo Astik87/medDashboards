@@ -13,11 +13,11 @@ import {Bar} from 'react-chartjs-2'
 import './style.css'
 
 import readIcon from './img/read-icon.svg'
-import eye from './img/eye.svg'
+import eye from '../img/eye.svg'
 import book from './img/book.svg'
 import link from './img/link.svg'
-import nurse from  './img/nurse.svg'
-import city from './img/city.svg'
+import nurse from '../img/nurse.svg'
+import city from '../img/city.svg'
 import tape from './img/tape.svg'
 import note from './img/note.svg'
 
@@ -40,14 +40,14 @@ const getStatistic = async (filter) => {
     else {
         if(filter.month && !filter.day) {
             const maxDay = new Date(filter.year, filter.month, 0).getDate()
-            apiFilter.dateFrom = `${filter.year}-${filter.month}-01 00:00:00+00:00`
-            apiFilter.dateTo = `${filter.year}-${filter.month}-${maxDay} 23:59:00+00:00`
+            apiFilter.dateFrom = `${filter.year}-${filter.month}-01T00:00:00Z`
+            apiFilter.dateTo = `${filter.year}-${filter.month}-${maxDay}T23:59:00Z`
         } else if (filter.day) {
-            apiFilter.dateFrom = `${filter.year}-${filter.month}-${filter.day} 00:00:00+00:00`
-            apiFilter.dateTo = `${filter.year}-${filter.month}-${filter.day} 23:59:00+00:00`
+            apiFilter.dateFrom = `${filter.year}-${filter.month}-${filter.day}T00:00:00Z`
+            apiFilter.dateTo = `${filter.year}-${filter.month}-${filter.day}T23:59:00Z`
         } else {
-            apiFilter.dateFrom = `${filter.year}-01-01 00:00:00+00:00`
-            apiFilter.dateTo = `${filter.year}-12-31 23:59:00+00:00`
+            apiFilter.dateFrom = `${filter.year}-01-01T00:00:00Z`
+            apiFilter.dateTo = `${filter.year}-12-31T23:59:00Z`
         }
     }
 

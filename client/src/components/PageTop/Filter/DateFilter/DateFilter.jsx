@@ -68,6 +68,7 @@ const DateFilter = (props) => {
                 onChange={setMonth}
                 placeholder="Месяц"
                 options={monthOptions}
+                value={month ? {value: month, label: month} : false}
                 classNamePrefix="filter"
                 className="filter-select"
                 isClearable={true}
@@ -77,6 +78,7 @@ const DateFilter = (props) => {
                 onChange={setDay}
                 placeholder="День"
                 options={dayOptions}
+                value={day ? {value: day, label: day} : false}
                 classNamePrefix="filter"
                 className="filter-select"
                 isClearable={true}

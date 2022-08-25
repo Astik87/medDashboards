@@ -1,8 +1,9 @@
 import React from "react"
 
-import Home from "./pages/Home";
 import NotFound from "./pages/NotFound";
+import Home from "./pages/Home";
 import LongRead from "./pages/LongRead";
+import Events from "./pages/Events";
 
 export const authRoutes = [
     {
@@ -12,6 +13,10 @@ export const authRoutes = [
     {
         path: '/long-read',
         Component: <LongRead />
+    },
+    {
+        path: '/events',
+        Component: <Events />
     }
 ]
 

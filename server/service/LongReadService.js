@@ -86,9 +86,45 @@ class LongReadService {
     }
 
     /**
+     * Получить фейковую статистику, заполненную из админки для партнеров (по фильтрам даты)
+     * @param {string} dateFrom
+     * @param {string} dateTo
+     * @param {number} directionId
+     * @param {number} userId id портнера
+     * @return {Promise<{readings: number, tests: number[], reReadings: number, videos: number[], transitions: number, cities: [{}], directions: [{}]}>}
+     */
+    async getFakeStatisticByDate(dateFrom, dateTo, directionId, userId) {
+        /* TODO Получить фейковую статистику, заполненную из админки для партнеров (по фильтрам даты) */
+    }
+
+    /**
+     * Получить фейковую статистику, заполненную из админки для партнеров (по id мероприятия)
+     * @param {number} eventId
+     * @param {number} directionId
+     * @param {number} userId id партнера
+     * @return {Promise<{readings: number, tests: number[], reReadings: number, videos: number[], transitions: number, cities: [{}], directions: [{}]}>}
+     */
+    async getFakeStatisticEventId(eventId, directionId, userId) {
+        /* TODO Получить фейковую статистику, заполненную из админки для партнеров (по id мероприятия) */
+    }
+
+    /**
+     * Создать фейковую стстистику для портнеров
+     * @param {string} date Дата статистики (2022-12-31 23:59:00+00:00)
+     * @param {number} eventId id мероприятия стстистики
+     * @param {number} userId id партнера
+     * @param {number} directionId id направления
+     * @param {{readings: number, tests: number[], reReadings: number, videos: number[], transitions: number, cities: [{}]}} statistic данные статистики
+     * @return {Promise<boolean>}
+     */
+    async addFakeStatistic(date, eventId, directionId, userId, statistic) {
+        /* TODO Создать фейковую стстистику для портнеров */
+    }
+
+    /**
      * Собирает статистику из массива longReadItems
      * @param longReadItems данные из getLongReadItemsByDate или getLongReadItemsByEventId
-     * @returns {{readings: number, tests: number[], reReadings: number, videos: number[], transitions: number}}
+     * @returns {{readings: number, tests: number[], reReadings: number, videos: number[], transitions: number, cities: [{}], directions: [{}]}}
      */
     collectStatistic(longReadItems) {
         const result = {
@@ -149,7 +185,7 @@ class LongReadService {
     indexCityUserCounts(cityName, userId) {
         const cityIndex = this.cityIndexList[cityName]
 
-        if(cityIndex)
+        if(typeof cityIndex !== 'undefined')
             this.cityUserCounts[cityIndex].count++
         else
             this.cityIndexList[cityName] = this.cityUserCounts.push({name: cityName, count: 1}) - 1

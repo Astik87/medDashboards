@@ -1,4 +1,5 @@
 const {User} = require('../models')
+const UserService = require('../service/UserService')
 const jwt = require('jsonwebtoken')
 
 class UserController {
@@ -15,6 +16,17 @@ class UserController {
 
         const hash = await UserController.hashPassword('123456', '$6$gLyzakS7Aj2ZKr4q$vBa4/uLkyfC3boKKJawX3SSMT3WDbFdZRa6wobhIcGDvd/ftOTRAxlj/Bd./2A5AUeFZYpPQohTAvFEHdBMG.0')
         return res.json({hash})
+    }
+
+    static async getStatistic(req, res) {
+        let {dateFrom, dateTo, directionId} = req.body
+
+        dateFrom = new Date(dateFrom)
+        dateTo = new Date(dateTo)
+
+        const userService = new UserService()
+
+        return res.json(await userService.getUserStatistic(dateFrom, dateTo, directionId))
     }
 }
 

@@ -15,7 +15,7 @@ class LongReadApi {
 
             return {success: true, data: statistic.data}
         } catch (error) {
-            return {success: false, message: error.message}
+            return {success: false, message: error.message, status: error.status}
         }
     }
 }

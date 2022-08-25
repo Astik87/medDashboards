@@ -25,6 +25,7 @@ import LongReadApi from "../../api/LongReadApi";
 import DashboardBlock from "../../components/DashboardBlock";
 import TopFive from "../../components/TopFive";
 import PageTop from "../../components/PageTop";
+import Loading from "../../components/Loading";
 
 /**
  * Получить статистику LongRead
@@ -185,11 +186,7 @@ const LongRead = () => {
         )
 
     if(data === false)
-        return (
-            <div>
-                Загрузка...
-            </div>
-        )
+        return <Loading/>
 
     return (
         <div className="page-long-read page">

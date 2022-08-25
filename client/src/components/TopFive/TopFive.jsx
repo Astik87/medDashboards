@@ -21,7 +21,7 @@ const TopFive = (props) => {
                     <li key={id} className="top-five__item">
                         <span className="top-five__item-index">{index+1}.</span>
                         <span className="top-five__item-title">{title}</span>
-                        <span className="top-five__item-value">{valueType === 'percent' ? (value / total * 100).toFixed() + '%' : value}</span>
+                        <span className="top-five__item-value">{valueType === 'percent' ? (value / total * 100).toFixed(2) + '%' : value}</span>
                     </li>
                 ))}
             </ul>

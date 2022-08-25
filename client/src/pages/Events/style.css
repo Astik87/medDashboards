@@ -1,6 +1,7 @@
 .events-page__content {
     display: flex;
     justify-content: space-between;
+    margin-top: 35px;
 }
 
 .events-page__left {

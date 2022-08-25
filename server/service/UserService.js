@@ -78,19 +78,40 @@ class UserService {
             }
         })
 
+        const beforeCountQuery = {
+            where: {
+                DATE_REGISTER: {
+                    [Op.lte]: dateFrom
+                }
+            }
+        }
+
+        if(directionId)
+            beforeCountQuery.include = {
+                model: UserFields,
+                where: {
+                    UF_DIRECTION: directionId ? directionId : {[Op.ne]: -1}
+                },
+                required: true
+            }
+
+        let beforeCount = await User.count(beforeCountQuery)
+
         const res = {
             total: users.length,
             cities: [],
             directions: [{name: 'Не указан', count: 0}],
-            registeredByDates: DateService.getDatesForStatisticByPeriod(dateFrom, dateTo)
+            registeredByDates: []
         }
+
+        const registeredByDates = DateService.getDatesForStatisticByPeriod(dateFrom, dateTo)
 
         const cityIndexesList = {}
         const directionIndexesList = {}
         users.forEach((user) => {
             user = user.toJSON()
 
-            res.registeredByDates.indexValue(new Date(user.registrationDate))
+            registeredByDates.indexValue(new Date(user.registrationDate))
 
             const userDirection = user.b_uts_user.med_direction
             const directionIndex = userDirection ? directionIndexesList[userDirection.directionName] : 0
@@ -98,6 +119,9 @@ class UserService {
                 directionIndexesList[userDirection.directionName] = res.directions.push({name: userDirection.directionName, count: 1}) - 1
             else
                 res.directions[directionIndex].count++
+
+            if(!user.userCity)
+                return false
 
             const cityIndex = cityIndexesList[user.userCity]
             if(typeof cityIndex === 'undefined')
@@ -111,6 +135,13 @@ class UserService {
 
         res.cities = res.cities.sort((a, b) => b.count - a.count).slice(0, 5)
         res.directions = res.directions.sort((a, b) => b.count - a.count).slice(0, 5)
+
+        res.registeredByDates = registeredByDates.getResStatistic().map(({label, value}) => {
+            value += beforeCount
+            beforeCount = value
+
+            return {label, value}
+        })
 
         return res
     }

@@ -19,6 +19,8 @@
 
 .dashboard-block-title span {
     margin-right: 5px;
+    font-size: 18px;
+    font-weight: 500;
 }
 
 @media screen and (max-width: 568px){

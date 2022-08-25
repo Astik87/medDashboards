@@ -168,7 +168,7 @@ class EventsService {
                 if(translationId && !faceCastStatisticsList[translationId]) {
                     const faceCastStatistic = await faceCastApi.getVisitHistogramAbsoluteTimeAll(translationId)
                     if(!faceCastStatistic.success)
-                        return false
+                        continue
 
                     faceCastStatisticsList[translationId] = faceCastStatistic.data
                 }

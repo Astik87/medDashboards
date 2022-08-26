@@ -2,6 +2,8 @@ const {Op} = require('sequelize')
 
 const {User, UserFields, MedDirections} = require('../models')
 const DateService = require('./DateService')
+const DirectionsService = require('./DirectionsService')
+const CitiesService = require('./CitiesService')
 
 class UserService {
     /**
@@ -86,7 +88,7 @@ class UserService {
             }
         }
 
-        if(directionId)
+        if (directionId)
             beforeCountQuery.include = {
                 model: UserFields,
                 where: {
@@ -100,41 +102,27 @@ class UserService {
         const res = {
             total: users.length,
             cities: [],
-            directions: [{name: 'Не указан', count: 0}],
+            directions: [],
             registeredByDates: []
         }
 
         const registeredByDates = DateService.getDatesForStatisticByPeriod(dateFrom, dateTo)
 
-        const cityIndexesList = {}
-        const directionIndexesList = {}
+        const citiesServiceForStatistic = CitiesService.getCitiesForStatistic()
+        const directionsServiceForStatistic = DirectionsService.getDirectionsForStatistic()
+
         users.forEach((user) => {
             user = user.toJSON()
 
             registeredByDates.indexValue(new Date(user.registrationDate))
 
-            const userDirection = user.b_uts_user.med_direction
-            const directionIndex = userDirection ? directionIndexesList[userDirection.directionName] : 0
-            if(typeof directionIndex === 'undefined')
-                directionIndexesList[userDirection.directionName] = res.directions.push({name: userDirection.directionName, count: 1}) - 1
-            else
-                res.directions[directionIndex].count++
-
-            if(!user.userCity)
-                return false
-
-            const cityIndex = cityIndexesList[user.userCity]
-            if(typeof cityIndex === 'undefined')
-                cityIndexesList[user.userCity] = res.cities.push({name: user.userCity, count: 1}) - 1
-            else
-                res.cities[cityIndex].count++
+            const directionName = user.b_uts_user.med_direction ? user.b_uts_user.med_direction.directionName : false
+            directionsServiceForStatistic.indexValue(directionName)
+            citiesServiceForStatistic.indexValue(user.userCity)
         })
 
-        if(!res.directions[0].count)
-            res.directions = res.directions.slice(1)
-
-        res.cities = res.cities.sort((a, b) => b.count - a.count).slice(0, 5)
-        res.directions = res.directions.sort((a, b) => b.count - a.count).slice(0, 5)
+        res.cities = citiesServiceForStatistic.getStatisticResult()
+        res.directions = directionsServiceForStatistic.getStatisticResult()
 
         res.registeredByDates = registeredByDates.getResStatistic().map(({label, value}) => {
             value += beforeCount

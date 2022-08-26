@@ -1,9 +1,11 @@
-const DateService = require("./DateService");
-const FaceCastApi = require('../api/FaceCastApi')
-
 const {Op} = require('sequelize')
 
 const {IBlockSections, EventRegistrations, UserFields, MedDirections, User, IBlockSectionFields} = require('../models')
+
+const DateService = require("./DateService");
+const FaceCastApi = require('../api/FaceCastApi')
+const DirectionsService = require('./DirectionsService')
+const CitiesService = require('./CitiesService')
 
 class EventsService {
     static EventsIBlockId = process.env.EVENTS_IBLOCK_ID
@@ -140,7 +142,7 @@ class EventsService {
      *          directions: [{name: string, count: number}]
      *         }>}
      */
-    async calcStatisticByVisitsList(visitsList, dateFrom= false, dateTo= false) {
+    async calcStatisticByVisitsList(visitsList, dateFrom = false, dateTo = false) {
         const res = {
             total: visitsList.length,
             viewingDepth: 0,
@@ -153,27 +155,27 @@ class EventsService {
         const statisticByDate = DateService.getDatesForStatisticByPeriod(dateFrom, dateTo)
 
         const faceCastStatisticsList = {}
-        const cityIndexesList = {}
-        const directionIndexesList = {}
+        const storedInFaceCast = (new Date().getTime() - dateFrom.getTime()) / 1000 / 60 / 60 / 24 < 178
 
-        const storedInFaceCast = (new Date().getTime() - dateFrom.getTime())/1000/60/60/24 < 178
+        const directionsServiceForStatistic = DirectionsService.getDirectionsForStatistic()
+        const citiesServiceForStatistic = CitiesService.getCitiesForStatistic()
 
-        for(let visitsIndex in visitsList) {
+        for (let visitsIndex in visitsList) {
             const visit = visitsList[visitsIndex].toJSON()
             res.viewingDepth += visit.viewing
 
-            if(statisticByDate.period === 'hours' && storedInFaceCast) {
+            if (statisticByDate.period === 'hours' && storedInFaceCast) {
                 const translationId = visit.b_iblock_section.b_uts_iblock_9_section.translationId
 
-                if(translationId && !faceCastStatisticsList[translationId]) {
+                if (translationId && !faceCastStatisticsList[translationId]) {
                     const faceCastStatistic = await faceCastApi.getVisitHistogramAbsoluteTimeAll(translationId)
-                    if(!faceCastStatistic.success)
+                    if (!faceCastStatistic.success)
                         continue
 
                     faceCastStatisticsList[translationId] = faceCastStatistic.data
                 }
 
-                if(visit.translationKey
+                if (visit.translationKey
                     && translationId
                     && faceCastStatisticsList[translationId]
                     && faceCastStatisticsList[translationId][visit.translationKey]) {
@@ -183,7 +185,7 @@ class EventsService {
                         //     return false
 
                         time = new Date(time)
-                        if(currTime && currTime.getHours() === time.getHours())
+                        if (currTime && currTime.getHours() === time.getHours())
                             return false
 
                         currTime = time
@@ -195,25 +197,17 @@ class EventsService {
                 statisticByDate.indexValue(connectionDate)
             }
 
-            const userDirection = visit.b_user.b_uts_user.med_direction
-            const directionIndex = userDirection ? directionIndexesList[userDirection.directionName] : 0
-            if(typeof directionIndex === 'undefined')
-                directionIndexesList[userDirection.directionName] = res.directions.push({name: userDirection.directionName, count: 1}) - 1
-            else
-                res.directions[directionIndex].count++
+            const directionName = visit.b_user.b_uts_user.med_direction ? visit.b_user.b_uts_user.med_direction.directionName : false
+            directionsServiceForStatistic.indexValue(directionName)
+            citiesServiceForStatistic.indexValue(visit.b_user.userCity)
 
-            const cityIndex = cityIndexesList[visit.b_user.userCity]
-            if(typeof cityIndex === 'undefined')
-                cityIndexesList[visit.b_user.userCity] = res.cities.push({name: visit.b_user.userCity, count: 1}) - 1
-            else
-                res.cities[cityIndex].count++
         }
 
-        if(!res.directions[0].count)
+        if (!res.directions[0].count)
             res.directions = res.directions.slice(1)
 
-        res.cities = res.cities.sort((a, b) => b.count - a.count).slice(0, 5)
-        res.directions = res.directions.sort((a, b) => b.count - a.count).slice(0, 5)
+        res.cities = citiesServiceForStatistic.getStatisticResult()
+        res.directions = directionsServiceForStatistic.getStatisticResult()
 
         res.viewingDepth = !res.total ? 0 : (res.viewingDepth / res.total).toFixed()
 
@@ -255,10 +249,10 @@ class EventsService {
             userFields: {},
         }
 
-        if(eventId)
+        if (eventId)
             where.eventRegistrations.UF_EVENT = eventId
 
-        if(directionId)
+        if (directionId)
             where.userFields.UF_DIRECTION = directionId
 
         const visitsList = await this.getEventRegistrations(where, attributes)

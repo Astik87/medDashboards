@@ -1,40 +1,32 @@
 const Sequelize = require('sequelize');
 module.exports = function(sequelize, DataTypes) {
-  return sequelize.define('iqsms_sender_template_site', {
+  return sequelize.define('long_read_uf_test', {
     ID: {
-      autoIncrement: true,
       type: DataTypes.INTEGER,
       allowNull: false,
       primaryKey: true
     },
-    TID: {
-      type: DataTypes.INTEGER,
-      allowNull: false
-    },
-    SID: {
-      type: DataTypes.STRING(2),
+    VALUE: {
+      type: DataTypes.STRING(255),
       allowNull: false
     }
   }, {
     sequelize,
-    tableName: 'iqsms_sender_template_site',
+    tableName: 'long_read_uf_test',
     timestamps: false,
     indexes: [
       {
-        name: "PRIMARY",
-        unique: true,
+        name: "IX_UTM_HL34_386_ID",
         using: "BTREE",
         fields: [
           { name: "ID" },
         ]
       },
       {
-        name: "ix_tid_sid",
-        unique: true,
+        name: "IX_UTM_HL34_386_VALUE",
         using: "BTREE",
         fields: [
-          { name: "TID" },
-          { name: "SID" },
+          { name: "VALUE" },
         ]
       },
     ]

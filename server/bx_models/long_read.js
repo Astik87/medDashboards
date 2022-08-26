@@ -2,14 +2,10 @@ const Sequelize = require('sequelize');
 module.exports = function(sequelize, DataTypes) {
   return sequelize.define('long_read', {
     ID: {
+      autoIncrement: true,
       type: DataTypes.INTEGER.UNSIGNED,
       allowNull: false,
-      primaryKey: true,
-      autoIncrement: true
-    },
-    UF_VIEWED_VIDEO: {
-      type: DataTypes.INTEGER,
-      allowNull: true
+      primaryKey: true
     },
     UF_USER: {
       type: DataTypes.INTEGER,
@@ -27,19 +23,23 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.INTEGER,
       allowNull: true
     },
-    UF_ESTIMATION: {
-      type: DataTypes.TEXT,
-      allowNull: true
-    },
-    UF_TEST: {
-      type: DataTypes.TEXT,
-      allowNull: true
-    },
     UF_VIEWING_PERC: {
       type: DataTypes.DOUBLE,
       allowNull: true
     },
+    UF_ESTIMATION: {
+      type: DataTypes.TEXT,
+      allowNull: true
+    },
     UF_PAGE: {
+      type: DataTypes.TEXT,
+      allowNull: true
+    },
+    UF_VIEWED_VIDEO: {
+      type: DataTypes.DOUBLE,
+      allowNull: true
+    },
+    UF_TEST: {
       type: DataTypes.TEXT,
       allowNull: true
     },

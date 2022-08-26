@@ -318,6 +318,7 @@ var _b_xml_tree = require("./b_xml_tree");
 var _bx_db_migrations = require("./bx_db_migrations");
 var _course_registry = require("./course_registry");
 var _course_registry_stat = require("./course_registry_stat");
+var _dashboard_plans = require("./dashboard_plans");
 var _event_program = require("./event_program");
 var _event_registry = require("./event_registry");
 var _event_registry_stat = require("./event_registry_stat");
@@ -327,7 +328,9 @@ var _iqsms_sender_template = require("./iqsms_sender_template");
 var _iqsms_sender_template_site = require("./iqsms_sender_template_site");
 var _long_read = require("./long_read");
 var _long_read_uf_estimation = require("./long_read_uf_estimation");
+var _long_read_uf_test = require("./long_read_uf_test");
 var _med_directions = require("./med_directions");
+var _medpred_statis = require("./medpred_statis");
 var _module_options = require("./module_options");
 var _nmo_entity = require("./nmo_entity");
 var _oauth_access_tokens = require("./oauth_access_tokens");
@@ -349,6 +352,7 @@ var _test_results_uf_answer = require("./test_results_uf_answer");
 var _test_tests = require("./test_tests");
 var _user_group_settings = require("./user_group_settings");
 var _user_log = require("./user_log");
+var _visits_log = require("./visits_log");
 var _vslider = require("./vslider");
 
 function initModels(sequelize) {
@@ -671,6 +675,7 @@ function initModels(sequelize) {
   var bx_db_migrations = _bx_db_migrations(sequelize, DataTypes);
   var course_registry = _course_registry(sequelize, DataTypes);
   var course_registry_stat = _course_registry_stat(sequelize, DataTypes);
+  var dashboard_plans = _dashboard_plans(sequelize, DataTypes);
   var event_program = _event_program(sequelize, DataTypes);
   var event_registry = _event_registry(sequelize, DataTypes);
   var event_registry_stat = _event_registry_stat(sequelize, DataTypes);
@@ -680,7 +685,9 @@ function initModels(sequelize) {
   var iqsms_sender_template_site = _iqsms_sender_template_site(sequelize, DataTypes);
   var long_read = _long_read(sequelize, DataTypes);
   var long_read_uf_estimation = _long_read_uf_estimation(sequelize, DataTypes);
+  var long_read_uf_test = _long_read_uf_test(sequelize, DataTypes);
   var med_directions = _med_directions(sequelize, DataTypes);
+  var medpred_statis = _medpred_statis(sequelize, DataTypes);
   var module_options = _module_options(sequelize, DataTypes);
   var nmo_entity = _nmo_entity(sequelize, DataTypes);
   var oauth_access_tokens = _oauth_access_tokens(sequelize, DataTypes);
@@ -702,6 +709,7 @@ function initModels(sequelize) {
   var test_tests = _test_tests(sequelize, DataTypes);
   var user_group_settings = _user_group_settings(sequelize, DataTypes);
   var user_log = _user_log(sequelize, DataTypes);
+  var visits_log = _visits_log(sequelize, DataTypes);
   var vslider = _vslider(sequelize, DataTypes);
 
   b_iblock_group.belongsTo(b_group, { as: "GROUP", foreignKey: "GROUP_ID"});
@@ -1075,6 +1083,7 @@ function initModels(sequelize) {
     bx_db_migrations,
     course_registry,
     course_registry_stat,
+    dashboard_plans,
     event_program,
     event_registry,
     event_registry_stat,
@@ -1084,7 +1093,9 @@ function initModels(sequelize) {
     iqsms_sender_template_site,
     long_read,
     long_read_uf_estimation,
+    long_read_uf_test,
     med_directions,
+    medpred_statis,
     module_options,
     nmo_entity,
     oauth_access_tokens,
@@ -1106,6 +1117,7 @@ function initModels(sequelize) {
     test_tests,
     user_group_settings,
     user_log,
+    visits_log,
     vslider,
   };
 }

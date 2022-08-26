@@ -4,5 +4,5 @@ export const menuItems = [
     {link: '/events', text: 'Мероприятия'},
     {link: '/campus', text: 'Кампус'},
     {link: '/long-read', text: 'Лонгрид'},
-    {link: '/crm', text: 'CRM'},
+    {link: '/visits', text: 'Визиты'},
 ]

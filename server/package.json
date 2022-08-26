@@ -6,7 +6,8 @@
   "scripts": {
     "start:dev": "cp .env.dev .env && nodemon index.js",
     "start:prod": "cp .env.prod .env && node index.js",
-    "start": "node index.js"
+    "start": "node index.js",
+    "update-models": "sequelize-auto -h 127.0.0.1 -d medtouch --dialect mysql -u root -o ./bx_models"
   },
   "author": "",
   "license": "ISC",

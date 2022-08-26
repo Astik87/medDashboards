@@ -4,6 +4,7 @@ import NotFound from "./pages/NotFound";
 import Medtouch from "./pages/Medtouch";
 import LongRead from "./pages/LongRead";
 import Events from "./pages/Events";
+import Visits from "./pages/Visits";
 
 export const authRoutes = [
     {
@@ -17,6 +18,10 @@ export const authRoutes = [
     {
         path: '/events',
         Component: <Events />
+    },
+    {
+        path: '/visits',
+        Component: <Visits />
     }
 ]
 

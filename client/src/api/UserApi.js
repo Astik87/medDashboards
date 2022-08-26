@@ -1,13 +1,13 @@
-import {host} from './Main'
+import {hostWithFilter} from './Main'
 
 class UserApi {
     async getStatistic(filter) {
         try {
-            const statistic = await host.post('/api/user/statistic', filter)
+            const statistic = await hostWithFilter.post('/api/user/statistic', filter)
 
             return {success: true, data: statistic.data}
         } catch (error) {
-            return {success: false, message: error.message, status: error.status}
+            return {success: false, hostWithFilter: error.message, status: error.status}
         }
     }
 }

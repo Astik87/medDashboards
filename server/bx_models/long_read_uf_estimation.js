@@ -16,14 +16,14 @@ module.exports = function(sequelize, DataTypes) {
     timestamps: false,
     indexes: [
       {
-        name: "IX_UTM_HL34_381_ID",
+        name: "IX_UTM_HL34_382_ID",
         using: "BTREE",
         fields: [
           { name: "ID" },
         ]
       },
       {
-        name: "IX_UTM_HL34_381_VALUE",
+        name: "IX_UTM_HL34_382_VALUE",
         using: "BTREE",
         fields: [
           { name: "VALUE" },

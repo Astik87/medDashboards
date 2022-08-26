@@ -1,4 +1,4 @@
-import {host} from "./Main";
+import {hostWithFilter} from "./Main";
 
 /**
  * API для мероприятий
@@ -9,7 +9,7 @@ class EventsApi {
      * @returns {Promise<[{id: number, name: string}]>}
      */
     async getAll() {
-        const events = await host.get('/api/events/get-all')
+        const events = await hostWithFilter.get('/api/events/get-all')
 
         return events.data
     }
@@ -24,7 +24,7 @@ class EventsApi {
             return false
 
         try{
-            const statistic = await host.post('/api/events/statistic', {...filter})
+            const statistic = await hostWithFilter.post('/api/events/statistic', {...filter})
 
             return {success: true, data: statistic.data}
         } catch (error) {

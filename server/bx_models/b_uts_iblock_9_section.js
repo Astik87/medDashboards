@@ -265,6 +265,18 @@ module.exports = function(sequelize, DataTypes) {
     UF_ADDSITE: {
       type: DataTypes.TEXT,
       allowNull: true
+    },
+    UF_RELOCATE: {
+      type: DataTypes.INTEGER,
+      allowNull: true
+    },
+    UF_LINKS_BTN: {
+      type: DataTypes.TEXT,
+      allowNull: true
+    },
+    UF_BACK_PROMO: {
+      type: DataTypes.INTEGER,
+      allowNull: true
     }
   }, {
     sequelize,

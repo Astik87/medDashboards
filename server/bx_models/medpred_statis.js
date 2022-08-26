@@ -1,31 +1,31 @@
 const Sequelize = require('sequelize');
 module.exports = function(sequelize, DataTypes) {
-  return sequelize.define('event_program', {
+  return sequelize.define('medpred_statis', {
     ID: {
       autoIncrement: true,
       type: DataTypes.INTEGER.UNSIGNED,
       allowNull: false,
       primaryKey: true
     },
-    UF_VIDEO: {
-      type: DataTypes.INTEGER,
-      allowNull: true
-    },
-    UF_NAME: {
+    UF_FAIL: {
       type: DataTypes.TEXT,
       allowNull: true
     },
-    UF_START: {
-      type: DataTypes.DATE,
+    UF_FULL: {
+      type: DataTypes.TEXT,
       allowNull: true
     },
-    UF_END: {
-      type: DataTypes.DATE,
+    UF_SUCC: {
+      type: DataTypes.TEXT,
+      allowNull: true
+    },
+    UF_SPEC_NAME: {
+      type: DataTypes.INTEGER,
       allowNull: true
     }
   }, {
     sequelize,
-    tableName: 'event_program',
+    tableName: 'medpred_statis',
     timestamps: false,
     indexes: [
       {

@@ -1,4 +1,4 @@
-import {host} from "./Main";
+import {hostWithFilter} from "./Main";
 
 /**
  * API для статистики LongRead
@@ -11,7 +11,7 @@ class LongReadApi {
      */
     async getStatistic(filter) {
         try {
-            const statistic = await host.post('/api/long-read/statistic', filter)
+            const statistic = await hostWithFilter.post('/api/long-read/statistic', filter)
 
             return {success: true, data: statistic.data}
         } catch (error) {

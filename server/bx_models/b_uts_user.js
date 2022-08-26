@@ -101,6 +101,14 @@ module.exports = function(sequelize, DataTypes) {
     UF_FEEDBACK: {
       type: DataTypes.TEXT,
       allowNull: true
+    },
+    UF_TEST_DATE: {
+      type: DataTypes.DATE,
+      allowNull: true
+    },
+    UF_TEST_ATTEMPTS: {
+      type: DataTypes.INTEGER,
+      allowNull: true
     }
   }, {
     sequelize,

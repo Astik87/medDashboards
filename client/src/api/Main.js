@@ -36,7 +36,11 @@ const filterInterceptor = config => {
     if(filter.eventId)
         apiFilter.eventId = filter.eventId
 
-    config.data = apiFilter
+    delete config.data.year
+    delete config.data.month
+    delete config.data.day
+
+    config.data = {...apiFilter, ...config.data}
 
     return config
 }

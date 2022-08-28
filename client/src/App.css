@@ -36,6 +36,7 @@ a {
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  background-color: #f8f8f8;
 }
 
 .container {
@@ -69,6 +70,11 @@ a {
 .page {
   padding-top: 40px;
   padding-right: 40px;
+  background-color: #f8f8f8;
+}
+
+.page__content {
+  padding-top: 35px;
 }
 
 .export-page-container {

@@ -47,6 +47,10 @@
 }
 
 @media screen and (max-width: 576px){
+    .filter {
+        width: 100%;
+    }
+
     .filter-select {
         width: 31%;
         min-width: unset;

@@ -22,6 +22,10 @@ export const authRoutes = [
     {
         path: '/visits',
         Component: <Visits />
+    },
+    {
+        path: '/visits/:page',
+        Component: <Visits />
     }
 ]
 

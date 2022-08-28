@@ -8,34 +8,33 @@ class VisitsService {
      * Получить список планов
      * @param {Date} dateFrom
      * @param {Date} dateTo
-     * @param {number} limit
-     * @param {number} offset
+     * @param {number} limit максимальное кол-ва элементов
+     * @param {number} page номер страницы
      */
-    static async getPlansByDate(dateFrom, dateTo, limit = 10, offset = 0) {
+    static async getPlansByDate(dateFrom, dateTo, limit = 10, page = 1) {
 
         /**
          * Планы из базы
          * @type {VisitPlans[]}
          */
-        let visitPlans = await VisitPlans.findAll({
-            attributes: [['UF_START_DATE', 'start'], ['UF_END_DATE', 'end'], ['UF_NAME', 'name'], ['UF_PLAN', 'plan']],
+        let visitPlans = await VisitPlans.findAndCountAll({
+            attributes: [['ID', 'id'], ['UF_START_DATE', 'start'], ['UF_END_DATE', 'end'], ['UF_NAME', 'name'], ['UF_PLAN', 'plan']],
             where: {
                 UF_START_DATE: {
-                    [Op.gte]: dateFrom
-                },
-                UF_END_DATE: {
+                    [Op.gte]: dateFrom,
                     [Op.lte]: dateTo
                 }
             },
+            order: [['UF_START_DATE', 'ASC']],
             limit: limit,
-            offset: offset
+            offset: (page-1)*limit
         })
 
         let visitsDateFrom = new Date()
         let visitsDateTo = visitsDateFrom
 
         // Приводим все записи в json и устанавливаем минимальную и максимальную дату начала и окончания
-        visitPlans = visitPlans.map((plan) => {
+        visitPlans.rows = visitPlans.rows.map((plan) => {
             plan = plan.toJSON()
 
             plan.start = new Date(plan.start)
@@ -156,7 +155,7 @@ class VisitsService {
         /**
          * Подсчет статистики и группировка их по планам
          */
-        visitPlans.forEach((plan) => {
+        visitPlans.rows.forEach((plan) => {
             plan.fact = 0
             plan.telemarketers = [{name: 'Не указан', doctors: []}]
             const telemarketerIndexes = {}

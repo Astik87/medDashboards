@@ -1,0 +1,26 @@
+.pagination-wrapper {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.pagination {
+    display: flex;
+    align-items: center;
+}
+
+.pagination-item {
+    padding: 10px 15px;
+    background-color: #fff;
+    box-shadow: 0px 4px 10px rgba(80, 80, 80, 0.05);
+    margin: 0 5px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: .3s all;
+}
+
+.pagination-item:hover,
+.pagination-item.current {
+    color: #ffffff;
+    background-color: #3361FF;
+}

@@ -26,11 +26,10 @@ class BaseWithFilter extends Component {
     }
 
     render() {
-
         const {filter} = this.state
 
         return (
-            <div className="page-long-read page">
+            <div className="page">
                 <PageTop filter={filter} filtersList={this.getFiltersList()} filterChange={this.setFilter}/>
                 {this.content()}
             </div>

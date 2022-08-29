@@ -21,11 +21,11 @@ export const authRoutes = [
     },
     {
         path: '/visits',
-        Component: <Visits />
+        Component: <Visits baseUri="/visits" />
     },
     {
         path: '/visits/:page',
-        Component: <Visits />
+        Component: <Visits baseUri="/visits" />
     }
 ]
 

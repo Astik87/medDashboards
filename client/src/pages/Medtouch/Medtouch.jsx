@@ -60,6 +60,9 @@ class Medtouch extends BaseWithFilter {
         if(usersData === false && isLoading)
             return <Loading/>
 
+        const registeredByDates = [{options: {}, data: usersData.registeredByDates}]
+        const uniqueViewers = [{options: {}, data: eventsData.uniqueViewers}]
+
         return (
             <div className="medtouch-page__content">
                 <div className="medtouch-page__left">
@@ -97,13 +100,13 @@ class Medtouch extends BaseWithFilter {
                 <div className="medtouch-page__right">
                     <DashboardBlock title="Кол-во зарегистрированных пользователей" icon={smiley} className="medtouch-page__registrations-chart">
                         {
-                            isLoading ? <Loading/> : <LineChart data={usersData.registeredByDates}/>
+                            isLoading ? <Loading/> : <LineChart datasets={registeredByDates}/>
                         }
                     </DashboardBlock>
 
                     <DashboardBlock title="Кол-во уникальных участников мероприятия в динамике" icon={human} className="medtouch-page__events-chart">
                         {
-                            eventsDataLoading ? <Loading/> : <LineChart data={eventsData.uniqueViewers}/>
+                            eventsDataLoading ? <Loading/> : <LineChart datasets={uniqueViewers}/>
                         }
                     </DashboardBlock>
                 </div>

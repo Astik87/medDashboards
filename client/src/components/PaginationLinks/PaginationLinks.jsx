@@ -23,12 +23,15 @@ const PaginationLinks = (props) => {
         return paginationItems
     }
 
+    const nextPageUri = currentPage < pagesCount ? baseUri+'/'+(+currentPage+1) : pagesCount
+    const prevPageUri = currentPage > 2 ? baseUri+'/'+(+currentPage-1) : baseUri
+
     return (
         <div className="pagination-wrapper">
             <ul className="pagination">
-                <Link to={baseUri} className="pagination-item">{'<'}</Link>
+                <Link to={prevPageUri} className="pagination-item">{'<'}</Link>
                 {getPaginationItems()}
-                <Link to={baseUri+'/'+pagesCount} className="pagination-item">{'>'}</Link>
+                <Link to={nextPageUri} className="pagination-item">{'>'}</Link>
             </ul>
         </div>
     )

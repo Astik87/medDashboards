@@ -5,120 +5,19 @@
     width: 100%;
 }
 
-.plans-list__item {
-    width: 32%;
+.plan-telemarketer {
     display: flex;
     justify-content: space-between;
-    align-items: stretch;
-    padding: 15px 20px;
-    background-color: #fff;
-    box-shadow: 0px 4px 10px rgba(80, 80, 80, 0.05);
-    border-radius: 20px;
-    margin: 0 0.65% 20px;
-    min-height: 200px;
-}
-
-.plans-list__item-left,
-.plans-list__item-right {
-    width: 50%;
-}
-
-.plans-list__item-left,
-.plans-list__item-right{
-    display: flex;
-    flex-direction: column;
-}
-
-.plans-list__item-name {
-    font-size: 22px;
+    width: 40%;
     font-weight: 500;
-    margin-bottom: 8px;
 }
 
-.plans-list__item-status {
-    font-size: 18px;
-    font-weight: 500;
-    display: flex;
-    align-items: center;
-}
-
-.plans-list__item-status img {
-    margin-left: 5px;
-    min-width: 16px;
-    min-height: 16px;
-}
-
-.plans-list__item-result-percent {
-    font-size: 28px;
-    font-weight: 500;
-    margin-top: auto;
-}
-
-.plans-list__item-block {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 4px 15px;
-    padding-right: 4px;
-    background-color: #edeff2;
-    border-radius: 10px;
-    margin-bottom: 7px;
-}
-
-.plans-list__item-block__value {
-    padding: 7px 14px;
-    border-radius: 10px;
-    color: #ffffff;
-}
-
-.plans-list__item.green .plans-list__item-block__value  {
-    background-color: #34C759;
-}
-
-.plans-list__item.green .plans-list__item-result-percent,
-.plans-list__item.green .plans-list__item-status {
-    color: #34c759;
-}
-
-.plans-list__item.blue .plans-list__item-block__value  {
-    background-color: #3361FF;
-}
-
-.plans-list__item.blue .plans-list__item-result-percent,
-.plans-list__item.blue .plans-list__item-status {
-    color: #3361FF;
-}
-
-.plans-list__item.yellow .plans-list__item-block__value  {
-    background-color: #FF9500;
-}
-
-.plans-list__item.yellow .plans-list__item-result-percent,
-.plans-list__item.yellow .plans-list__item-status {
-    color: #FF9500;
-}
-.plans-list__item-start,
-.plans-list__item-end {
-    margin-top: auto;
-}
-
-.plans-list__item-end {
-    text-align: right;
-}
-
-@media screen and (max-width: 1300px){
-    .plans-list__item {
-        width: 48%;
-        margin: 0 1% 20px;
-    }
+.plans-chart {
+    height: 340px;
 }
 
 @media screen and (max-width: 992px){
     .plans-list {
         justify-content: center;
-    }
-
-    .plans-list__item {
-        width: 100%;
     }
 }

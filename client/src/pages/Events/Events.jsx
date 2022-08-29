@@ -51,6 +51,8 @@ class Events extends BaseWithFilter {
         if(data === false)
             return <Loading/>
 
+        const datasets = [{options: {}, data: data.uniqueViewers}]
+
         return (
             <div className="events-page__content">
                 <div className="events-page__left">
@@ -59,7 +61,7 @@ class Events extends BaseWithFilter {
                         {
                             isLoading
                                 ? <Loading/>
-                                : <LineChart data={data.uniqueViewers}/>
+                                : <LineChart datasets={datasets}/>
                         }
                     </DashboardBlock>
 

@@ -27,7 +27,7 @@ class VisitsService {
             },
             order: [['UF_START_DATE', 'ASC']],
             limit: limit,
-            offset: (page-1)*limit
+            offset: (page - 1) * limit
         })
 
         let visitsDateFrom = new Date()
@@ -157,26 +157,41 @@ class VisitsService {
          */
         visitPlans.rows.forEach((plan) => {
             plan.fact = 0
-            plan.telemarketers = [{name: 'Не указан', doctors: []}]
+            plan.telemarketers = [{name: 'Не указан', doctors: [], conducted: 0, total: 0}]
             const telemarketerIndexes = {}
             visitsList.forEach((visit) => {
                 if (visit.time > plan.end || visit.time < plan.start)
                     return false
 
-                if(visit.medicalRepresentative) {
+                if (visit.medicalRepresentative) {
                     const telemarketerIndex = visit.telemarketer ? telemarketerIndexes[visit.telemarketer.id] : 0
 
-                    if(typeof telemarketerIndex === 'undefined')
-                        telemarketerIndexes[telemarketerIndex] = plan.telemarketers.push({name: visit.telemarketer.name, doctors: [{name: visit.medicalRepresentative.name, status: visit.status}]}) - 1
-                    else
-                        plan.telemarketers[telemarketerIndex].doctors.push({name: visit.medicalRepresentative.name, status: visit.status})
+                    if (typeof telemarketerIndex === 'undefined') {
+                        telemarketerIndexes[telemarketerIndex] = plan.telemarketers.push({
+                            name: visit.telemarketer.name,
+                            total: 1,
+                            conducted: visit.status,
+                            doctors: [{name: visit.medicalRepresentative.name, status: visit.status, time: visit.time}]
+                        }) - 1
+                    } else {
+                        plan.telemarketers[telemarketerIndex].doctors.push({
+                            name: visit.medicalRepresentative.name,
+                            status: visit.status,
+                            time: visit.time
+                        })
+
+                        plan.telemarketers[telemarketerIndex].total++
+                        if(visit.status)
+                            plan.telemarketers[telemarketerIndex].conducted++
+                    }
                 }
 
-
-                if(visit.status)
+                if (visit.status)
                     plan.fact++
-
             })
+
+            if(!plan.telemarketers[0].total)
+                plan.telemarketers = plan.telemarketers.slice(1)
         })
 
         return visitPlans

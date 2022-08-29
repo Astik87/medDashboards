@@ -83,8 +83,6 @@ const ExportPage = () => {
 
         const link = document.createElement('a')
 
-        console.log(page)
-
         link.href = page
         link.download = `Dashboard.${method}`
         document.body.appendChild(link);

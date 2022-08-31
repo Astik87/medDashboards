@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 
-import PageTop from "../../components/PageTop";
+import PageTop from "@components/PageTop";
 
 class BaseWithFilter extends Component {
     constructor(props) {
@@ -12,6 +12,13 @@ class BaseWithFilter extends Component {
 
     getFiltersList = () => {
         return ['date', 'directions', 'events']
+    }
+
+    /**
+     * Кастомная кнопка рядом с кнопкой экспорта страницы
+     */
+    pageTopCustomBtn = () => {
+        return ''
     }
 
     onChangeFilter = (filter) => {}
@@ -30,7 +37,12 @@ class BaseWithFilter extends Component {
 
         return (
             <div className="page">
-                <PageTop filter={filter} filtersList={this.getFiltersList()} filterChange={this.setFilter}/>
+                <PageTop
+                    filter={filter}
+                    filtersList={this.getFiltersList()}
+                    filterChange={this.setFilter}
+                    customBtn={this.pageTopCustomBtn()}/>
+
                 {this.content()}
             </div>
         )

@@ -26,7 +26,7 @@ const VisitPlans = visit_plans(sequelize, DataTypes)
 const VisitStatistic = visit_statistic(sequelize, DataTypes)
 
 User.hasOne(UserFields, {foreignKey: 'VALUE_ID'});
-UserFields.belongsTo(User, {foreignKey: 'VALUE_ID'});
+UserFields.belongsTo(User, {foreignKey: 'ID'});
 
 MedDirections.hasMany(UserFields, {foreignKey: 'ID'});
 UserFields.belongsTo(MedDirections, {foreignKey: 'UF_DIRECTION'});
@@ -45,6 +45,9 @@ IBlockSectionFields.belongsTo(IBlockSections, {foreignKey: 'ID'})
 
 User.hasMany(EventRegistrations, {foreignKey: 'ID'})
 EventRegistrations.belongsTo(User, {foreignKey: 'UF_USER'})
+
+UserFields.hasOne(EventRegistrations, {foreignKey: 'VALUE_ID'})
+EventRegistrations.belongsTo(UserFields, {foreignKey: 'UF_USER'})
 
 IBlockElement.hasMany(IBlockElementProperty, {foreignKey: 'IBLOCK_ELEMENT_ID'})
 IBlockElementProperty.belongsTo(IBlockElement, {foreignKey: 'ID'})

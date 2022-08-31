@@ -6,8 +6,8 @@ import done from './img/done.svg'
 import ongoing from './img/ongoing.svg'
 import preparing from './img/preparing.svg'
 
-import {formatDate} from "../../../utils/DateUtils";
-import PlanCardBlock from "./PlanCardBlock";
+import {formatDate} from "@utils/DateUtils";
+import PlanCardBlock from "../PlanCardBlock";
 
 const planColorClasses = {
     Done: 'green',
@@ -41,8 +41,10 @@ const PlanCard = (props) => {
         {title: 'Fact', value: data.fact}
     ]
 
+    const result = data.plan - data.fact
+
     if (status !== 'Preparing')
-        planBlacksList.push({title: status === 'Done' ? 'Result' : 'Target', value: Math.abs(data.plan - data.fact)})
+        planBlacksList.push({title: result < 0 ? 'Result' : 'Target', value: Math.abs(result)})
 
     return (
         <div className={`plans-list__item ${planColorClasses[status]}`}

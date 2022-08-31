@@ -1,4 +1,4 @@
-import {hostWithFilter} from "./Main";
+import {host, hostWithFilter} from "./Main";
 
 /**
  * API для мероприятий
@@ -9,7 +9,7 @@ class EventsApi {
      * @returns {Promise<[{id: number, name: string}]>}
      */
     async getAll() {
-        const events = await hostWithFilter.get('/api/events/get-all')
+        const events = await hostWithFilter.get('/api/events/all')
 
         return events.data
     }
@@ -31,6 +31,41 @@ class EventsApi {
             return {success: false, status: error.status, message: error.message}
         }
 
+    }
+
+    /**
+     * Получить кол-ва пользователей зарегистрированных на мероприятие
+     * @param {number} eventId
+     * @return {Promise<{success: boolean, message: *}|{data: any, success: boolean}>}
+     */
+    async getVisitsCount(eventId) {
+        try {
+
+            const response = await host.post('/api/events/visits-count', {eventId})
+
+            return {success: true, data: response.data}
+        } catch (error) {
+            return {success: false, message: error.message}
+        }
+    }
+
+    /**
+     * Получить количество пользователей смотревших мероприятие больше значения minutes
+     * @param {{}} filter
+     * @param {number} minutes
+     * @return {Promise<{success: boolean, message: *}|{data: any, success: boolean}>}
+     */
+    async getViewsGteMin(filter, minutes) {
+        try {
+            const response = await hostWithFilter.post('/api/events/views-gte-min', {...filter, minutes})
+
+            if(response.status !== 200)
+                return {success: false, message: response.message}
+
+            return {success: true, data: response.data}
+        } catch (error) {
+            return {success: false, message: error.message}
+        }
     }
 }
 

@@ -1,11 +1,11 @@
 import React, {useState} from "react"
 
 import './style.css'
-import Menu from "../Menu";
+import Menu from "@components/Header/Menu";
 
-import {menuItems} from '../menuItems'
-import Profile from "../Profile";
-import SearchInput from "../SearchInput";
+import {menuItems} from "@components/Header/menuItems";
+import Profile from "@components/Header/Profile";
+import SearchInput from "@components/Header/SearchInput";
 
 const MobileHeader = () => {
 

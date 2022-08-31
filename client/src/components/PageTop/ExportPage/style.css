@@ -41,4 +41,8 @@ div.export-page__control {
     .export-page-value {
         justify-content: center;
     }
+
+    .export-page {
+        width: 100%;
+    }
 }

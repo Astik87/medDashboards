@@ -97,7 +97,7 @@ const initChart = (datasets) => {
 
     props.chartOptions = defaultChartOptions
 
-    if (!datasets)
+    if (!datasets || !datasets.length)
         return props
 
     datasets = datasets.map((oneData) => {

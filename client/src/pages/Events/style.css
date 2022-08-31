@@ -1,7 +1,23 @@
 .events-page__content {
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
     margin-top: 35px;
+}
+
+.events-page__line {
+    display: flex;
+    justify-content: space-between;
+    align-items: stretch;
+    margin-bottom: 20px;
+}
+
+.events-page__top .events-visits-chart {
+    height: 100%;
+}
+
+.events-page__top .events-visits-chart canvas {
+    min-height: 200px;
+    max-height: 90%;
 }
 
 .events-page__left {
@@ -15,6 +31,7 @@
 .events-page__right-top {
     display: flex;
     justify-content: space-between;
+    margin-bottom: 20px;
 }
 
 .events-page__right-top-item {
@@ -41,6 +58,11 @@
 
 .events-visits-chart {
     height: 340px;
+    margin-bottom: 20px;
+}
+
+.events-visits-chart:last-child {
+    margin-bottom: 0;
 }
 
 .events-page__tops {
@@ -54,22 +76,40 @@
     min-height: 320px;
 }
 
+@media screen and (max-width: 1500px){
+    .events-page__right-top-item .dashboard-block-title span {
+        font-size: 14px;
+    }
+
+    .events-page-value {
+        font-size: 24px;
+    }
+
+    .views-gte-min__title {
+        font-size: 12px;
+    }
+}
+
 @media screen and (max-width: 1300px){
     .events-page__right-top {
         flex-direction: column;
         justify-content: space-between;
-        height: 340px;
     }
 
     .events-page__right-top-item {
         width: 100%;
+        margin-bottom: 20px;
+    }
+
+    .events-page__right-top-item:last-child {
+        margin-bottom: 0;
     }
 }
 
 
 @media screen and (max-width: 1200px){
-    .events-page__content {
-        flex-direction: column-reverse;
+    .events-page__line {
+        flex-wrap: wrap;
     }
 
     .events-page__right,
@@ -77,14 +117,47 @@
         width: 100%;
     }
 
+    .events-page__top .events-page__right {
+        display: flex;
+        justify-content: space-between;
+        align-items: stretch;
+        margin-top: 20px;
+    }
+
     .events-page__right-top {
         flex-direction: row;
-        margin: 20px 0;
+        margin: 0;
         height: unset;
+        width: 55%;
     }
 
     .events-page__right-top-item {
-        width: 48%;
+        width: 49%;
+        margin: 0;
+    }
+
+    .events-page__views-gte-min {
+        width: 43%;
+    }
+
+    .events-visits-chart {
+        min-height: 200px;
+        max-height: 340px;
+    }
+}
+
+@media screen and (max-width: 950px){
+    .events-page__views-gte-min {
+        width: 100%;
+    }
+
+    .events-page__right-top {
+        width: 100%;
+        margin-bottom: 20px;
+    }
+
+    .events-page__top .events-page__right {
+        flex-direction: column;
     }
 }
 

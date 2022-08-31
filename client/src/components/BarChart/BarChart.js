@@ -73,14 +73,19 @@ const initChart = (data) => {
                 max: 100,
                 ticks: {
                     callback: function (value, index, values) {
-                        return '%';
-                    }
+                        return value + '%';
+                    },
                 },
                 display: false,
             },
             xAxis: {
                 grid: {
                     display:false
+                },
+                ticks: {
+                    font: {
+                        size: 10
+                    }
                 }
             }
         }

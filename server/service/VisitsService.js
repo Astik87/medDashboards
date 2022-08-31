@@ -25,7 +25,7 @@ class VisitsService {
                     [Op.lte]: dateTo
                 }
             },
-            order: [['UF_START_DATE', 'ASC']],
+            order: [['UF_END_DATE', 'DESC']],
             limit: limit,
             offset: (page - 1) * limit
         })
@@ -195,6 +195,29 @@ class VisitsService {
         })
 
         return visitPlans
+    }
+
+    /**
+     * Создать новый план
+     * @param {string} name
+     * @param {Date} start
+     * @param {Date} end
+     * @param {number} plan
+     * @return {boolean}
+     */
+    async createPlan(name, start, end, plan) {
+        try {
+            await VisitPlans.create({
+                UF_NAME: name,
+                UF_PLAN: plan,
+                UF_START_DATE: start,
+                UF_END_DATE: end
+            })
+
+            return true
+        } catch (error) {
+            return false
+        }
     }
 }
 

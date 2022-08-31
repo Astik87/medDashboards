@@ -2,17 +2,19 @@ import React from "react"
 
 import './style.css'
 
-import VisitsApi from "../../api/VisitsApi";
-import BaseWithFilter from "../BaseWithFilter";
-import Loading from "../../components/Loading";
-import PaginationLinks from "../../components/PaginationLinks";
-import {withRouter} from "../../utils/RouteUtils";
-import Empty from "../../components/Empty";
-import DashboardBlock from "../../components/DashboardBlock";
-import LineChart from "../../components/LineChart";
-import PlanCard from "../../components/Plan/PlanCard";
+import VisitsApi from "@api/VisitsApi";
+import BaseWithFilter from "@pages/BaseWithFilter";
+import Loading from "@components/Loading";
+import PaginationLinks from "@components/PaginationLinks";
+import {withRouter} from "@utils/RouteUtils";
+import Empty from "@components/Empty";
+import DashboardBlock from "@components/DashboardBlock";
+import LineChart from "@components/LineChart";
+import PlanCard from "./Plan/PlanCard";
 
-import PlanDetailModal from "../../components/Plan/PlanDetailModal";
+import PlanDetailModal from "./Plan/PlanDetailModal";
+import AddButton from "@components/AddButton";
+import CreatePlanModal from "@pages/Visits/Plan/CreatePlanModal";
 
 class Visits extends BaseWithFilter {
 
@@ -29,6 +31,7 @@ class Visits extends BaseWithFilter {
             currentPlan: false,
             isLoading: true,
             error: false,
+            openedCreatePlanModal: false,
             ...this.state
         }
     }
@@ -39,6 +42,16 @@ class Visits extends BaseWithFilter {
      */
     getFiltersList = () => {
         return ['date']
+    }
+
+    /**
+     * Кастомная кнопка рядом с кнопкой экспорта страницы
+     */
+    pageTopCustomBtn = () => {
+        return (
+            <AddButton className="page-top-btn create-plan-btn"
+                       onClick={this.toggleCreatePlanModal}><span>Создать план</span></AddButton>
+        )
     }
 
     /**
@@ -124,10 +137,7 @@ class Visits extends BaseWithFilter {
      */
     getPlanDetailElement(planIndex) {
         const {plans} = this.state
-        const plan = plans[planIndex]
-
-        if (!plan)
-            return false
+        const plan = planIndex ? plans[planIndex] : false
 
         return (<PlanDetailModal plan={plan} close={this.closePlan}/>)
     }
@@ -187,8 +197,25 @@ class Visits extends BaseWithFilter {
         return [{options: plansDatasetOptions, data: plansData}, {options: factDatasetOptions, data: factData}]
     }
 
+    toggleCreatePlanModal = (reload) => {
+        const {openedCreatePlanModal} = this.state
+
+        if(reload === true) {
+            setTimeout(() => {
+                const {filter, limit} = this.state
+                this.getPlans(filter, 1, limit)
+            }, 500)
+        }
+
+        this.setState({openedCreatePlanModal: !openedCreatePlanModal})
+    }
+
+    createPlan = async (name, start, end, plan) => {
+        return await VisitsApi.createPlan(name, start, end, plan)
+    }
+
     content = () => {
-        const {isLoading, error, plans, page, plansCount, limit, currentPlan} = this.state
+        const {isLoading, error, plans, page, plansCount, limit, currentPlan, openedCreatePlanModal} = this.state
 
         if (error)
             return <div>{error}</div>
@@ -199,24 +226,25 @@ class Visits extends BaseWithFilter {
         const {baseUri} = this.props
         const pagesCount = plansCount < limit ? false : Math.ceil(plansCount / limit)
 
+        const currentPlanItem = currentPlan !== false ? plans[currentPlan] : false
+
         return (
             <div className="plans-page page__content">
-                {
-                    currentPlan !== false
-                    &&
-                    this.getPlanDetailElement(currentPlan)
-                }
+                <CreatePlanModal createPlan={this.createPlan} isOpen={openedCreatePlanModal} onClose={this.toggleCreatePlanModal}/>
+                <PlanDetailModal plan={currentPlanItem} close={this.closePlan} />
                 <div className="plans-list">
                     {
                         plans.length
                             ?
-                            plans.map((plan, index) => <PlanCard key={plan.id} data={plan} open={() => {this.setCurrentPlan(index)}}  />)
+                            plans.map((plan, index) => <PlanCard key={plan.id} data={plan} open={() => {
+                                this.setCurrentPlan(index)
+                            }}/>)
                             :
-                            <Empty />
+                            <Empty/>
                     }
                 </div>
-                <DashboardBlock title="Total touch" className="plans-chart" >
-                    <LineChart datasets={this.getPlansDataForChart(plans)} />
+                <DashboardBlock title="Total touch" className="plans-chart">
+                    <LineChart datasets={this.getPlansDataForChart(plans)}/>
                 </DashboardBlock>
                 {
                     pagesCount > 0

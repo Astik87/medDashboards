@@ -261,24 +261,80 @@ class EventsService {
     }
 
     /**
-     * Получить количество посетителей по id мероприятий
-     * @param {[number]} eventIds
-     * @return {Promise<[{name: string, total: number, date: string}]>}
+     * Получить количество посетителей по id мероприятия
+     * @param {number} eventId
+     * @return {Promise<{count: number, event: {name: string, date: string}}>}
      */
-    async getTotalVisitsByEventIds(eventIds) {
-        /* TODO Получить количество посетителей по id мероприятий */
+    async getTotalVisitsByEventId(eventId) {
+        let event = await IBlockSections.findOne({
+            attributes: [['ID', 'id'], ['NAME', 'name']],
+            where: {
+                ID: eventId
+            },
+            include: {
+                attributes: [['UF_START', 'date']],
+                model: IBlockSectionFields
+            }
+        })
+
+        event = event.toJSON()
+
+        const visitsCount = await EventRegistrations.count({
+            where: {
+                UF_EVENT: eventId
+            }
+        })
+
+        return {
+            id: event.id,
+            name: event.name,
+            date: event.b_uts_iblock_9_section.date,
+            count: visitsCount
+        }
     }
 
     /**
      * Получить количество пользователей смотревших мероприятие больше значения minutes
-     * @param dateFrom
-     * @param dateTo
-     * @param directionId
-     * @param minutes Временой интервал просмотра мероприятия
+     * @param {Date} dateFrom
+     * @param {Date} dateTo
+     * @param {number} eventId
+     * @param {number} directionId
+     * @param {number} minutes Временой интервал просмотра мероприятия
      * @return {Promise<number>}
      */
-    async getVisitorsCountByDate(dateFrom, dateTo, directionId, minutes) {
-        /* TODO Получить количество пользователей смотревших мероприятие больше значения minutes */
+    async getViewsGteMin(dateFrom, dateTo, eventId, directionId, minutes) {
+        const query = {
+            where: {
+                UF_DATE_CONNECTION: {
+                    [Op.ne]: null
+                },
+                UF_VIDTIME: {
+                    [Op.gte]: minutes
+                }
+            }
+        }
+
+        if (dateFrom && dateTo) {
+            query.where.UF_DATE_CONNECTION = {
+                [Op.gte]: dateFrom,
+                [Op.lte]: dateTo
+            }
+        }
+
+        if (eventId)
+            query.where.UF_EVENT = eventId
+
+        if (directionId) {
+            query.include = {
+                model: UserFields,
+                required: true,
+                where: {
+                    UF_DIRECTION: directionId
+                }
+            }
+        }
+
+        return await EventRegistrations.count(query)
     }
 }
 

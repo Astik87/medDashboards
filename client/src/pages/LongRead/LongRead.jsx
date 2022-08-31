@@ -3,20 +3,20 @@ import React from "react";
 import './style.css'
 
 import readIcon from './img/read-icon.svg'
-import eye from '../img/eye.svg'
+import eye from '@pages/img/eye.svg'
 import book from './img/book.svg'
 import link from './img/link.svg'
-import nurse from '../img/nurse.svg'
-import city from '../img/city.svg'
+import nurse from '@pages/img/nurse.svg'
+import city from '@pages/img/city.svg'
 import tape from './img/tape.svg'
 import note from './img/note.svg'
 
-import LongReadApi from "../../api/LongReadApi";
-import DashboardBlock from "../../components/DashboardBlock";
-import TopFive from "../../components/TopFive";
-import Loading from "../../components/Loading";
-import BarChart from "../../components/BarChart";
-import BaseWithFilter from "../BaseWithFilter";
+import LongReadApi from "@api/LongReadApi";
+import DashboardBlock from "@components/DashboardBlock";
+import TopFive from "@components/TopFive";
+import Loading from "@components/Loading";
+import BarChart from "@components/BarChart";
+import BaseWithFilter from "@pages/BaseWithFilter";
 
 class LongRead extends BaseWithFilter {
     constructor(props) {

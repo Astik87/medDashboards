@@ -1,6 +1,9 @@
 import './style.css'
 
-import Button from "@components/Button";
+import Icon from "@mui/material/Icon"
+import {Box} from "@mui/material"
+
+import Button from "@components/Button"
 
 const AddButton = (props) => {
     const {children, onClick, className} = props

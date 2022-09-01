@@ -1,20 +1,21 @@
-import React, {useContext, useState} from "react";
-import Select from "react-select";
-import {observer} from "mobx-react";
+import React, {useContext, useState} from "react"
+import Select from "react-select"
+import {observer} from "mobx-react"
+import {Modal, Fade, Box} from "@mui/material"
 
 import './style.css'
 
-import {Context} from "@/index";
-import Modal from "@components/Modal";
-import Button from "@components/Button";
-import EventsList from "./EventsList";
+import {Context} from "@/index"
+import Button from "@components/Button"
+import EventsList from "./EventsList"
+import {modalBoxStyle} from "@styles/Modal";
 
 const EventsSelector = observer((props) => {
 
     const {change} = props
     const {eventsList} = useContext(Context).filter
 
-    const [closed, setClosed] = useState(true)
+    const [opened, setOpened] = useState(false)
     const [events, setEvents] = useState([])
 
     const getEventOptions = () => eventsList.map(({id, name}) => {return {value: id, label: name}})
@@ -36,30 +37,33 @@ const EventsSelector = observer((props) => {
 
     return (
         <div className="events-selector">
-            <Button className="events-selector__btn" onClick={() => setClosed(false)}>Мероприятия</Button>
-            {
-                !closed
-                &&
-                <Modal close={() => setClosed(true)}>
-                    <div className="events-selector__content">
-                        <Select
-                            isMulti
-                            closeMenuOnSelect={false}
-                            value={events}
-                            controlShouldRenderValue={false}
-                            className="events-select"
-                            classNamePrefix="events-select"
-                            placeholder="Мероприятие"
-                            options={getEventOptions()}
-                            onChange={onSelectChange}
-                        />
+            <Button className="events-selector__btn" onClick={() => setOpened(true)}>Мероприятия</Button>
 
-                        <div className="events-selector__events-list">
-                            <EventsList deleteEvent={deleteEvent} events={events}/>
+            <Modal
+                open={opened}
+                onClose={() => setOpened(false)}>
+                <Fade in={opened}>
+                    <Box sx={modalBoxStyle}>
+                        <div className="events-selector__content">
+                            <Select
+                                isMulti
+                                closeMenuOnSelect={false}
+                                value={events}
+                                controlShouldRenderValue={false}
+                                className="events-select"
+                                classNamePrefix="events-select"
+                                placeholder="Мероприятие"
+                                options={getEventOptions()}
+                                onChange={onSelectChange}
+                            />
+
+                            <div className="events-selector__events-list">
+                                <EventsList deleteEvent={deleteEvent} events={events}/>
+                            </div>
                         </div>
-                    </div>
-                </Modal>
-            }
+                    </Box>
+                </Fade>
+            </Modal>
         </div>
     )
 })

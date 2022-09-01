@@ -11,72 +11,62 @@ import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs"
 import {DateTimePicker} from "@mui/x-date-pickers"
 
 import './style.css'
-import Loading from "@components/Loading";
 
-const CreateBtn = styled(Button)({
-    backgroundColor: '#3361FF',
-    fontWeight: 600,
-    padding: 10
-})
+import VisitsApi from "@api/VisitsApi"
+import Loading from "@components/Loading"
+import {modalBoxStyle} from "@styles/Modal"
+import {sendBtnStyle} from "@styles/Button";
 
-const formStyle = {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    backgroundColor: '#fff',
-    borderRadius: 5,
-    p: 4,
-    maxWidth: '90vw'
-}
+const CreateBtn = styled(Button)(sendBtnStyle)
 
 const messageModalStyle = {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    backgroundColor: '#fff',
-    borderRadius: 5,
-    p: 4,
-    border: false,
-    outline: false,
+    ...modalBoxStyle,
     minWidth: 250,
-    maxWidth: '90vw'
+    maxWidth: '90vw',
+    overflow: 'hidden'
 }
 
+/**
+ * Валидаця данных формы
+ * @param {{name: string, start: {$d: Date}, end: {$d: Date}, plan: number}} data
+ * @return {boolean}
+ */
 const validateFormData = (data) => {
     const {name, start, end, plan} = data
 
     return name.trim().length > 3 && start && end && start.$d < end.$d && plan > 0
 }
 
+/**
+ * Созать план
+ * @param {string} name
+ * @param {Date} start
+ * @param {Date} end
+ * @param {number} plan
+ * @return {Promise<{success: boolean, message: string}>}
+ */
+const createPlan = async (name, start, end, plan) => {
+    return await VisitsApi.createPlan(name, start, end, plan)
+}
+
 const CreatePlanModal = (props) => {
 
-    const {onClose, isOpen, createPlan} = props
+    const {onClose, isOpen} = props
 
     const [formData, setFormData] = useState({name: '', start: '', end: '', plan: false})
-    const [error, setError] = useState(false)
-    const [isSuccess, setIsSuccess] = useState(false)
-    const [isLoading, setIsLoading] = useState(false)
+    const [status, setStatus] = useState({success: false, loading: false, error: false})
 
     const createBtnHandler = () => {
         const {name, start, end, plan} = formData
 
         const planName = name.trim()
 
-        if (!validateFormData(formData) || typeof createPlan !== 'function')
+        if (!validateFormData(formData))
             return
 
-        setIsLoading(true)
+        setStatus({...status, loading: true})
         createPlan(planName, start, end, plan).then((response) => {
-            if (!response.success) {
-                setIsLoading(false)
-                setError(response.message)
-                return
-            }
-
-            setIsLoading(false)
-            setIsSuccess(true)
+            setStatus({...status, success: response.success, loading: false})
         })
     }
 
@@ -85,14 +75,14 @@ const CreatePlanModal = (props) => {
             onClose={onClose}
             open={isOpen}>
             <Fade in={isOpen}>
-                <Box sx={formStyle}>
+                <Box sx={modalBoxStyle}>
 
                     {/* Success modal */}
                     <Modal
                         onClose={() => onClose(true)}
-                        open={isOpen && isSuccess}>
+                        open={isOpen && status.success}>
 
-                        <Fade in={isOpen && isSuccess}>
+                        <Fade in={isOpen && status.success}>
                             <Box sx={messageModalStyle}>
                                 <Typography variant="h6" style={{textAlign: 'center'}} color="#34c759">
                                     План успешно создан
@@ -104,9 +94,9 @@ const CreatePlanModal = (props) => {
 
                     {/*Loading modal*/}
                     <Modal
-                        open={isOpen && isLoading}>
+                        open={isOpen && status.loading}>
 
-                        <Fade in={isOpen && isLoading}>
+                        <Fade in={isOpen && status.loading}>
                             <Box sx={messageModalStyle}>
                                 <Loading/>
                             </Box>
@@ -116,13 +106,13 @@ const CreatePlanModal = (props) => {
 
                     {/*Error modal*/}
                     <Modal
-                        onClose={() => setError(false)}
-                        open={isOpen && !!error}>
+                        onClose={() => setStatus({...status, error: false})}
+                        open={isOpen && !!status.error}>
 
-                        <Fade in={isOpen && !!error}>
+                        <Fade in={isOpen && !!status.error}>
                             <Box sx={messageModalStyle}>
                                 <Typography variant="h6" style={{textAlign: 'center'}}
-                                            color="#d32f2f">{error}</Typography>
+                                            color="#d32f2f">{status.error}</Typography>
                             </Box>
                         </Fade>
 

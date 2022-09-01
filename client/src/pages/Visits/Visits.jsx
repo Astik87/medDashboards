@@ -11,10 +11,11 @@ import Empty from "@components/Empty";
 import DashboardBlock from "@components/DashboardBlock";
 import LineChart from "@components/LineChart";
 import PlanCard from "./Plan/PlanCard";
+import {addBtnStyle} from "@styles/Button";
 
 import PlanDetailModal from "./Plan/PlanDetailModal";
-import AddButton from "@components/AddButton";
 import CreatePlanModal from "@pages/Visits/Plan/CreatePlanModal";
+import {Button} from "@mui/material";
 
 class Visits extends BaseWithFilter {
 
@@ -49,8 +50,7 @@ class Visits extends BaseWithFilter {
      */
     pageTopCustomBtn = () => {
         return (
-            <AddButton className="page-top-btn create-plan-btn"
-                       onClick={this.toggleCreatePlanModal}><span>Создать план</span></AddButton>
+            <Button style={addBtnStyle} onClick={this.toggleCreatePlanModal}><span>Создать план</span></Button>
         )
     }
 
@@ -197,6 +197,10 @@ class Visits extends BaseWithFilter {
         return [{options: plansDatasetOptions, data: plansData}, {options: factDatasetOptions, data: factData}]
     }
 
+    /**
+     * Показать/скрыть модалку создания нового плана
+     * @param {boolean} reload нужно ли заново получить все планы и перезагрузить компонент
+     */
     toggleCreatePlanModal = (reload) => {
         const {openedCreatePlanModal} = this.state
 
@@ -208,10 +212,6 @@ class Visits extends BaseWithFilter {
         }
 
         this.setState({openedCreatePlanModal: !openedCreatePlanModal})
-    }
-
-    createPlan = async (name, start, end, plan) => {
-        return await VisitsApi.createPlan(name, start, end, plan)
     }
 
     content = () => {
@@ -230,7 +230,7 @@ class Visits extends BaseWithFilter {
 
         return (
             <div className="plans-page page__content">
-                <CreatePlanModal createPlan={this.createPlan} isOpen={openedCreatePlanModal} onClose={this.toggleCreatePlanModal}/>
+                <CreatePlanModal isOpen={openedCreatePlanModal} onClose={this.toggleCreatePlanModal}/>
                 <PlanDetailModal plan={currentPlanItem} close={this.closePlan} />
                 <div className="plans-list">
                     {

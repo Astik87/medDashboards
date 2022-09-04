@@ -7,7 +7,9 @@ module.exports = {
             '@utils': path.resolve(__dirname, 'src', 'utils'),
             '@pages': path.resolve(__dirname, 'src', 'pages'),
             '@api': path.resolve(__dirname, 'src', 'api'),
-            '@styles': path.resolve(__dirname, 'src', 'styles')
+            '@styles': path.resolve(__dirname, 'src', 'styles'),
+            '@images': path.resolve(__dirname, 'src', 'images'),
+            '@globals': path.resolve(__dirname, 'src', 'globals')
         }
     }
 }

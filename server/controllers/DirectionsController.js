@@ -1,4 +1,4 @@
-const DirectionsService = require('../service/DirectionsService')
+const DirectionsService = require('../services/DirectionsService')
 
 class DirectionsController {
     getAll = async (req, res) => {

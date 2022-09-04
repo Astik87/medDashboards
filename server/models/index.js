@@ -9,6 +9,7 @@ const iblock_sections = require('../bx_models/b_iblock_section')
 const iblock_elements = require('../bx_models/b_iblock_element')
 const iblock_elemrnt_property = require('../bx_models/b_iblock_element_property')
 const event_registrations = require('../bx_models/event_registry')
+const event_plans = require('../bx_models/event_plans')
 const b_uts_iblock_9_section = require('../bx_models/b_uts_iblock_9_section')
 const visit_plans = require('../bx_models/dashboard_plans')
 const visit_statistic = require('../bx_models/visits_log')
@@ -21,6 +22,7 @@ const IBlockSections = iblock_sections(sequelize, DataTypes)
 const IBlockElement = iblock_elements(sequelize, DataTypes)
 const IBlockElementProperty = iblock_elemrnt_property(sequelize, DataTypes)
 const EventRegistrations = event_registrations(sequelize, DataTypes)
+const EventPlans = event_plans(sequelize, DataTypes)
 const IBlockSectionFields = b_uts_iblock_9_section(sequelize, DataTypes)
 const VisitPlans = visit_plans(sequelize, DataTypes)
 const VisitStatistic = visit_statistic(sequelize, DataTypes)
@@ -37,8 +39,11 @@ LongRead.belongsTo(User, {foreignKey: 'UF_USER'})
 IBlockSections.hasOne(LongRead, {foreignKey: 'ID'})
 LongRead.belongsTo(IBlockSections, {foreignKey: 'UF_EVENT'})
 
-IBlockSections.hasMany(EventRegistrations, {foreignKey: 'ID'})
+IBlockSections.hasMany(EventRegistrations, {foreignKey: 'UF_EVENT'})
 EventRegistrations.belongsTo(IBlockSections, {foreignKey: 'UF_EVENT'})
+
+// IBlockSections.hasMany(EventRegistrations, {foreignKey: 'UF_EVENT'})
+// EventRegistrations.belongsTo(IBlockSections, {foreignKey: 'ID'})
 
 IBlockSections.hasOne(IBlockSectionFields, {foreignKey: 'VALUE_ID'})
 IBlockSectionFields.belongsTo(IBlockSections, {foreignKey: 'ID'})
@@ -64,6 +69,7 @@ module.exports = {
     IBlockElement,
     IBlockElementProperty,
     EventRegistrations,
+    EventPlans,
     IBlockSectionFields,
     VisitPlans,
     VisitStatistic

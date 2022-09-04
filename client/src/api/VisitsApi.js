@@ -11,7 +11,7 @@ class VisitsApi {
      */
     async getPlans(filter, page, limit) {
         try {
-            const response = await hostWithFilter.post('/api/visits/get-plans', {...filter, limit, page})
+            const response = await hostWithFilter.get('/api/visits/plans', {params: {...filter, limit, page}})
 
             return {success: true, plans: response.data}
         } catch (error) {
@@ -31,7 +31,7 @@ class VisitsApi {
         try {
             const response = await host.post('/api/visits/create-plan', {name, start, end, plan})
 
-            return {success: response}
+            return {success: response.data}
         } catch (error) {
             return {success: false, message: error.message}
         }

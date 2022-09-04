@@ -3,6 +3,6 @@ const DirectionsController = require('../controllers/DirectionsController')
 
 const router = new Router()
 
-router.get('/get-all', DirectionsController.getAll)
+router.get('', DirectionsController.getAll)
 
 module.exports = router

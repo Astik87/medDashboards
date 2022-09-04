@@ -1,10 +1,10 @@
 const {User} = require('../models')
-const UserService = require('../service/UserService')
+const UserService = require('../services/UserService')
 const jwt = require('jsonwebtoken')
 
 class UserController {
     static async check(req, res) {
-        const {email, password} = req.body
+        const {email, password} = req.query
 
         if(!email || !password)
             return res.status(500).json({message: 'Email или пароль не могут быть пустыми'})
@@ -19,7 +19,7 @@ class UserController {
     }
 
     static async getStatistic(req, res) {
-        let {dateFrom, dateTo, directionId} = req.body
+        let {dateFrom, dateTo, directionId} = req.query
 
         dateFrom = new Date(dateFrom)
         dateTo = new Date(dateTo)

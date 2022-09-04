@@ -1,9 +1,9 @@
 import React from "react"
 import {BrowserRouter} from "react-router-dom";
 
-import AppRouter from "./components/AppRouter/AppRouter";
-import Header from "./components/Header";
-import Sidebar from "./components/Sidebar";
+import AppRouter from "@components/AppRouter";
+import Header from "@components/Layout/Header";
+import Sidebar from "@components/Layout/Sidebar";
 
 import './App.css';
 import './fonts/stylesheet.css'

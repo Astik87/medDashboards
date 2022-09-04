@@ -1,4 +1,4 @@
-import {host, hostWithFilter} from "./Main";
+import {host, hostWithFilter} from "./Main"
 
 /**
  * API для мероприятий
@@ -9,7 +9,7 @@ class EventsApi {
      * @returns {Promise<[{id: number, name: string}]>}
      */
     async getAll() {
-        const events = await hostWithFilter.get('/api/events/all')
+        const events = await hostWithFilter.get('/api/events')
 
         return events.data
     }
@@ -24,7 +24,7 @@ class EventsApi {
             return false
 
         try{
-            const statistic = await hostWithFilter.post('/api/events/statistic', {...filter})
+            const statistic = await hostWithFilter.get('/api/events/statistic', {params: {...filter}})
 
             return {success: true, data: statistic.data}
         } catch (error) {
@@ -57,12 +57,47 @@ class EventsApi {
      */
     async getViewsGteMin(filter, minutes) {
         try {
-            const response = await hostWithFilter.post('/api/events/views-gte-min', {...filter, minutes})
+            const response = await hostWithFilter.get('/api/events/views-gte-min', {params: {...filter, minutes}})
 
             if(response.status !== 200)
                 return {success: false, message: response.message}
 
             return {success: true, data: response.data}
+        } catch (error) {
+            return {success: false, message: error.message}
+        }
+    }
+
+    /**
+     * Получить планы мероприятий по дате
+     * @param {{year: number, month: number, day: number}} filter
+     * @param {number} limit
+     * @param {number} page
+     * @return {Promise<{success: boolean, message: string}|{success: boolean, data: [{name: string, start: string, end: string, plan: number, fact: number}]}>}
+     */
+    async getEventPlans(filter, limit= 15, page= 1) {
+        try {
+            const response = await hostWithFilter.get('/api/events/plans', {params: {...filter, limit, page}})
+
+            return {success: true, data: response.data}
+        } catch (error) {
+            return {success: false, message: error.message}
+        }
+    }
+
+    /**
+     * Создать план мероприятий
+     * @param {string} name
+     * @param {number} start Date TimeStamp
+     * @param {number} end Date TimeStamp
+     * @param {number} plan
+     * @return {Promise<{success: boolean, message: *}|{data: *, success: boolean}>}
+     */
+    async createPlan(name, start, end, plan) {
+        try {
+            const response = host.post('/api/events/plans', {name, start, end, plan})
+
+            return {success: true, data: response.date}
         } catch (error) {
             return {success: false, message: error.message}
         }

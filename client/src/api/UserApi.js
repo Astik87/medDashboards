@@ -3,7 +3,7 @@ import {hostWithFilter} from './Main'
 class UserApi {
     async getStatistic(filter) {
         try {
-            const statistic = await hostWithFilter.post('/api/user/statistic', filter)
+            const statistic = await hostWithFilter.get('/api/user/statistic', {params: filter})
 
             return {success: true, data: statistic.data}
         } catch (error) {

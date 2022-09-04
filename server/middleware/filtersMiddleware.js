@@ -1,5 +1,7 @@
 module.exports = function (req, res, next) {
-    let {dateFrom, dateTo, eventId} = req.body
+    let {dateFrom, dateTo, eventId, directionId} = req.method === 'GET' ? req.query : req.body
+
+    eventId = +eventId
 
     if(!eventId) {
         if(!dateFrom || !dateTo)
@@ -11,6 +13,9 @@ module.exports = function (req, res, next) {
         if(dateTo < dateFrom)
             return res.status(400).json({message: 'dateTo не может быть меньше dateFrom'})
     }
+
+    req.params.eventId = eventId
+    req.params.directionId = +directionId
 
     return next()
 }

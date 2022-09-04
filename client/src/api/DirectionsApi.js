@@ -9,7 +9,7 @@ class DirectionsApi {
      * @returns {Promise<[{id: number, code: string, name: string}]>}
      */
     async getAll() {
-        const directionsList = await host.get('/api/directions/get-all')
+        const directionsList = await host.get('/api/directions')
 
         return directionsList.data
     }

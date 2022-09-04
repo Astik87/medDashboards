@@ -4,6 +4,6 @@ const filtersMiddleware = require('../middleware/filtersMiddleware')
 
 const router = new Router()
 
-router.post('/statistic', filtersMiddleware, LongReadController.getStatistic)
+router.get('/statistic', filtersMiddleware, LongReadController.getStatistic)
 
 module.exports = router

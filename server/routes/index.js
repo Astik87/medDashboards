@@ -4,12 +4,12 @@ const userRouter = require('./UserRouter')
 const longReadRouter = require('./LongReadRouter')
 const directionsRouter = require('./DirectionsRouter')
 const eventsRouter = require('./EventsRouter')
-const visitsRouter = require('./VisitsRouter')
+const visitGroupsRouter = require('./VisitGroupsRouter')
 
 router.use('/user', userRouter)
 router.use('/long-read', longReadRouter)
 router.use('/directions', directionsRouter)
 router.use('/events', eventsRouter)
-router.use('/visits', visitsRouter)
+router.use('/visits', visitGroupsRouter)
 
 module.exports = router

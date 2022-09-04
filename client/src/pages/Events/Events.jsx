@@ -1,21 +1,27 @@
 import React from "react"
 
-
 import './style.css'
-import Loading from "@components/Loading"
-import DashboardBlock from "@components/DashboardBlock"
-import TopFive from "@components/TopFive"
-import LineChart from "@components/LineChart"
-import EventsSelector from "@components/EventsSelector"
-import EventsApi from "@api/EventsApi";
 
 import eventEye from './img/eye.svg'
-import eye from '@pages/img/eye.svg'
-import nurse from '@pages/img/nurse.svg'
-import city from '@pages/img/city.svg'
+import eye from '@images/eye.svg'
+import nurse from '@images/nurse.svg'
+import city from '@images/city.svg'
+
+import {
+    Loading,
+    DashboardBlock,
+    TotalCountBlock,
+    TopFive
+} from "@components/General"
+import {
+    EventsSelector,
+    ViewsGteMin,
+    EventsChart
+} from "@components/Events"
+import {LineChart} from "@components/Charts"
+import EventsApi from "@api/EventsApi";
 import BaseWithFilter from "@pages/BaseWithFilter"
 import {cutLongString} from "@utils/StringUtils"
-import ViewsGteMin from "./ViewsGteMin"
 
 class Events extends BaseWithFilter {
     constructor(props) {
@@ -179,7 +185,8 @@ class Events extends BaseWithFilter {
         if (data === false)
             return <Loading/>
 
-        const datasets = [{options: {}, data: data.uniqueViewers}]
+        const viewerDatasets = [{options: {}, data: data.uniqueViewers}]
+        const viewsGteMinPercent = data.total ? (viewsCountGteMin/data.total*100).toFixed() : 0
 
         this.eventIdsByChart = eventsVisitsCount.map(({id}) => id)
         const eventsSelectorValues = eventsVisitsCount.map(({id}) => ({label: id, value: id}))
@@ -188,40 +195,31 @@ class Events extends BaseWithFilter {
             <div className="events-page__content">
                 <div className="events-page__top events-page__line">
                     <div className="events-page__left">
-                        {/*График зричелей*/}
-                        <DashboardBlock className="events-visits-chart" title="Кол-во уникальных зрителей (1 день)"
-                                        icon={eventEye}>
-                            {
-                                isLoading
-                                    ? <Loading/>
-                                    : <LineChart datasets={datasets}/>
-                            }
-                        </DashboardBlock>
+                        {/*График зрителей*/}
+                        <EventsChart isLoading={isLoading} datasets={viewerDatasets} />
                     </div>
                     <div className="events-page__right">
                         <div className="events-page__right-top">
                             {/*Общее число зрителей*/}
-                            <DashboardBlock className="events-page__right-top-item" title="Зрители" icon={eye}>
-                                <div className="events-page-value">
-                                    {isLoading ? <Loading/> : data.total}
-                                </div>
-                                <div className="events-page-subtitle">
-                                    Пользователей
-                                </div>
-                            </DashboardBlock>
+                            <TotalCountBlock
+                                className="events-page__right-top-item"
+                                title="Зрители"
+                                icon={eye}
+                                subtitle="Пользователей"
+                                count={data.total}
+                                isLoading={isLoading} />
+
                             {/*Глубина просмотра*/}
-                            <DashboardBlock className="events-page__right-top-item" title="Глубина просмотра"
-                                            icon={eye}>
-                                <div className="events-page-value">
-                                    {isLoading ? <Loading/> : data.viewingDepth}
-                                </div>
-                                <div className="events-page-subtitle">
-                                    Минут
-                                </div>
-                            </DashboardBlock>
+                            <TotalCountBlock
+                                className="events-page__right-top-item"
+                                title="Глубина просмотра"
+                                subtitle="Минут"
+                                icon={eye}
+                                isLoading={isLoading}
+                                count={data.viewingDepth} />
                         </div>
                         <DashboardBlock className="events-page__views-gte-min">
-                            <ViewsGteMin value={(viewsCountGteMin/data.total*100).toFixed()} defaultValue={20} onChange={this.changeViewGteMin} />
+                            <ViewsGteMin value={viewsGteMinPercent} defaultValue={20} onChange={this.changeViewGteMin} />
                         </DashboardBlock>
                     </div>
                 </div>

@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 
-import PageTop from "@components/PageTop";
+import {PageTop} from "@components/Layout";
 
 class BaseWithFilter extends Component {
     constructor(props) {

@@ -4,17 +4,16 @@ import './style.css'
 
 import smiley from './img/smiley.svg'
 import userIcon from './img/user.svg'
-import nurse from '@pages/img/nurse.svg'
-import city from '@pages/img/city.svg'
+import nurse from '@images/nurse.svg'
+import city from '@images/city.svg'
 import human from './img/human.svg'
 
-import TopFive from "@components/TopFive";
-import Loading from "@components/Loading";
-import DashboardBlock from "@components/DashboardBlock";
-import LineChart from "@components/LineChart";
 import UserApi from "@api/UserApi";
 import EventsApi from "@api/EventsApi";
+
 import BaseWithFilter from "@pages/BaseWithFilter";
+import {TopFive, Loading, DashboardBlock} from "@components/General";
+import {LineChart} from "@components/Charts";
 
 
 class Medtouch extends BaseWithFilter {

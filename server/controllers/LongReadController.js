@@ -1,8 +1,8 @@
-const LongReadService = require('../service/LongReadService')
+const LongReadService = require('../services/LongReadService')
 
 class LongReadController {
     getStatistic = async (req, res) => {
-        let {dateFrom, dateTo, eventId, directionId} = req.body
+        let {dateFrom, dateTo, eventId, directionId} = req.query
 
         const longRead = new LongReadService()
 

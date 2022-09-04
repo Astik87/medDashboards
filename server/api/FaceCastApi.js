@@ -14,8 +14,6 @@ class FaceCastApi {
             config.params.uid = FaceCastApi.apiUid
             config.params.api_key = FaceCastApi.apiKey
 
-            // console.log(config)
-
             return config
         })
     }

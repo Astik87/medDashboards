@@ -1,6 +1,6 @@
 const {Op} = require('sequelize')
 
-const {LongRead, User, UserFields, MedDirections} = require('../models')
+const {LongRead, LongReadPlans, User, UserFields, MedDirections} = require('../models')
 const DirectionService = require('./DirectionsService')
 const CitiesService = require('./CitiesService')
 
@@ -173,6 +173,109 @@ class LongReadService {
      */
     isReReading(userId) {
         return this.userIds.indexOf(userId) !== -1
+    }
+
+    /**
+     * Получить планы по зфпросу query
+     * @param {{}} query sequelize query
+     * @param {number} limit
+     * @param {number} page
+     * @return {Promise<{count: number, rows: [{id: number, name: string, start: Date, end: Date, plan: number, fact: number}]}>}
+     */
+    async getPlansByQuery(query, limit, page) {
+        const plans = await LongReadPlans.findAndCountAll({
+            attributes: [['ID', 'id'], ['UF_NAME', 'name'], ['UF_START_DATE', 'start'], ['UF_END_DATE', 'end'], ['UF_PLAN', 'plan']],
+            limit,
+            offset: (page-1)*limit,
+            ...query
+        })
+
+        let plansStart = new Date()
+        let plansEnd = new Date()
+
+        const serializedPlans = plans.rows.map(plan => {
+            plan = plan.toJSON()
+
+            plan.start = new Date(plan.start)
+            plan.end = new Date(plan.end)
+
+            if(plan.start < plansStart)
+                plansStart = plan.start
+
+            if(plan.end > plansEnd)
+                plansEnd = plan.end
+
+            return plan
+        })
+
+        const longReadViewer = await LongRead.findAll({
+            attributes: [['UF_CONNECT_TIME', 'connectionTime']],
+            where: {
+                UF_CONNECT_TIME: {
+                    [Op.gte]: plansStart,
+                    [Op.lte]: plansEnd
+                }
+            },
+            order: [['UF_CONNECT_TIME', 'asc']]
+        })
+
+        const result = {count: plans.count, rows: []}
+
+        result.rows = serializedPlans.map(plan => {
+            plan.fact = 0
+            longReadViewer.forEach(view => {
+                view = view.toJSON()
+
+                view.connectionTime = new Date(view.connectionTime)
+
+                if(view.connectionTime > plan.end)
+                    return false
+
+                if (view.connectionTime >= plan.start)
+                    plan.fact++
+            })
+
+            return plan
+        })
+
+        return result
+    }
+
+    /**
+     * Получить планы по дате
+     * @param {Date} dateFrom
+     * @param {Date} dateTo
+     * @param {number} limit
+     * @param {number} page
+     * @return {Promise<{count: number, rows: {id: number, name: string, start: Date, end: Date, plan: number, fact: number}[]}>}
+     */
+    async getPlansByDate(dateFrom, dateTo, limit = 10, page = 1) {
+        const longReadPlansQuery = {
+            where: {
+                UF_START_DATE: {
+                    [Op.gte]: dateFrom,
+                    [Op.lte]: dateTo
+                }
+            }
+        }
+
+        return await this.getPlansByQuery(longReadPlansQuery, limit, page)
+    }
+
+    /**
+     * Создать новый план
+     * @param {string} name
+     * @param {Date} start
+     * @param {Date} end
+     * @param {number} plan
+     */
+    async createPlan(name, start, end, plan) {
+        return await LongReadPlans.create({
+            UF_NAME: name,
+            UF_START_DATE: start,
+            UF_END_DATE: end,
+            UF_PLAN: plan
+        })
     }
 }
 

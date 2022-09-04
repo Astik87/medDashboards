@@ -5,6 +5,7 @@ const b_user = require('../bx_models/b_user')
 const b_uts_user = require('../bx_models/b_uts_user')
 const med_directions = require('../bx_models/med_directions')
 const long_read = require('../bx_models/long_read')
+const long_read_plans = require('../bx_models/long_read_plans')
 const iblock_sections = require('../bx_models/b_iblock_section')
 const iblock_elements = require('../bx_models/b_iblock_element')
 const iblock_elemrnt_property = require('../bx_models/b_iblock_element_property')
@@ -18,6 +19,7 @@ const User = b_user(sequelize, DataTypes)
 const UserFields = b_uts_user(sequelize, DataTypes)
 const MedDirections = med_directions(sequelize, DataTypes)
 const LongRead = long_read(sequelize, DataTypes)
+const LongReadPlans = long_read_plans(sequelize, DataTypes)
 const IBlockSections = iblock_sections(sequelize, DataTypes)
 const IBlockElement = iblock_elements(sequelize, DataTypes)
 const IBlockElementProperty = iblock_elemrnt_property(sequelize, DataTypes)
@@ -65,6 +67,7 @@ module.exports = {
     UserFields,
     MedDirections,
     LongRead,
+    LongReadPlans,
     IBlockSections,
     IBlockElement,
     IBlockElementProperty,

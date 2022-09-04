@@ -328,6 +328,7 @@ var _iqsms_sender_list = require("./iqsms_sender_list");
 var _iqsms_sender_template = require("./iqsms_sender_template");
 var _iqsms_sender_template_site = require("./iqsms_sender_template_site");
 var _long_read = require("./long_read");
+var _long_read_plans = require("./long_read_plans");
 var _long_read_uf_estimation = require("./long_read_uf_estimation");
 var _long_read_uf_test = require("./long_read_uf_test");
 var _med_directions = require("./med_directions");
@@ -355,6 +356,7 @@ var _user_group_settings = require("./user_group_settings");
 var _user_log = require("./user_log");
 var _visits_log = require("./visits_log");
 var _vslider = require("./vslider");
+var _waves = require("./waves");
 
 function initModels(sequelize) {
   var answer_active = _answer_active(sequelize, DataTypes);
@@ -686,6 +688,7 @@ function initModels(sequelize) {
   var iqsms_sender_template = _iqsms_sender_template(sequelize, DataTypes);
   var iqsms_sender_template_site = _iqsms_sender_template_site(sequelize, DataTypes);
   var long_read = _long_read(sequelize, DataTypes);
+  var long_read_plans = _long_read_plans(sequelize, DataTypes);
   var long_read_uf_estimation = _long_read_uf_estimation(sequelize, DataTypes);
   var long_read_uf_test = _long_read_uf_test(sequelize, DataTypes);
   var med_directions = _med_directions(sequelize, DataTypes);
@@ -713,6 +716,7 @@ function initModels(sequelize) {
   var user_log = _user_log(sequelize, DataTypes);
   var visits_log = _visits_log(sequelize, DataTypes);
   var vslider = _vslider(sequelize, DataTypes);
+  var waves = _waves(sequelize, DataTypes);
 
   b_iblock_group.belongsTo(b_group, { as: "GROUP", foreignKey: "GROUP_ID"});
   b_group.hasMany(b_iblock_group, { as: "b_iblock_groups", foreignKey: "GROUP_ID"});
@@ -1095,6 +1099,7 @@ function initModels(sequelize) {
     iqsms_sender_template,
     iqsms_sender_template_site,
     long_read,
+    long_read_plans,
     long_read_uf_estimation,
     long_read_uf_test,
     med_directions,
@@ -1122,6 +1127,7 @@ function initModels(sequelize) {
     user_log,
     visits_log,
     vslider,
+    waves,
   };
 }
 module.exports = initModels;

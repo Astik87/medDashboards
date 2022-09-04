@@ -10,6 +10,7 @@ import LongRead from "@pages/LongRead";
 import Events from "@pages/Events";
 import VisitPlan from "@pages/VisitPlan";
 import EventPlans from "@pages/EventPlans";
+import LongReadPlans from "@pages/LongReadPlans";
 
 const authRoutes = [
     {
@@ -39,6 +40,10 @@ const authRoutes = [
     {
         path: '/waves/event-plans',
         Component: <EventPlans />
+    },
+    {
+        path: '/waves/long-read-plans',
+        Component: <LongReadPlans />
     }
 ]
 
@@ -55,6 +60,7 @@ const sidebarRoutes = [
     {path: "/waves", Component: <WavesTabs/>},
     {path: "/waves/visit-plans", Component: <WavesTabs/>},
     {path: "/waves/event-plans", Component: <WavesTabs/>},
+    {path: "/waves/long-read-plans", Component: <WavesTabs/>},
     {path: '*', Component: <NotFoundTab/>}
 ]
 

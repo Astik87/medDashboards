@@ -1,25 +1,25 @@
 import React from "react";
 
+import './style.css'
+
 import BaseWithFilter from "@pages/BaseWithFilter";
-import EventsApi from "@api/EventsApi";
+import LongReadApi from "@api/LongReadApi";
 import {AddButton, DashboardBlock, Loading} from "@components/General";
-import {PlansList, CreatePlanModal} from "@components/Plans";
+import {CreatePlanModal, PlansList} from "@components/Plans";
 import {PlansChart} from "@components/Charts";
 import {TablePagination} from "@mui/material";
 
-class EventPlans extends BaseWithFilter {
-
+class LongReadPlans extends BaseWithFilter {
     constructor(props) {
         super(props);
 
         this.state = {
             isLoading: true,
             error: false,
-            plans: false,
-            openedCreatePlanModal: false,
             limit: 15,
             page: 1,
             plansCount: 0,
+            openedCreatePlanModal: false,
             ...this.state
         }
     }
@@ -37,56 +37,17 @@ class EventPlans extends BaseWithFilter {
         return ['date']
     }
 
-    /**
-     * Кастомная кнопка рядом с кнопкой экспорта страницы
-     */
     pageTopCustomBtn = () => {
-        return (
-            <AddButton className="add-plan-btn" onClick={this.toggleCreatePlanModal}><span>Создать план</span></AddButton>
-        )
+        return <AddButton className="add-plan-btn" onClick={this.toggleCreatePlanModal}><span>Создать план</span></AddButton>
     }
 
-    /**
-     * Обновить планы на странице
-     * @return {Promise<void>}
-     */
     getPlans = async (filter, limit, page) => {
         this.setState({isLoading: true})
-        EventsApi.getEventPlans(filter, limit, page).then(response => {
-            if(!response.success) {
-                this.setState({error: response.message, isLoading: false, limit, page})
-                return false
-            }
+        const response = await LongReadApi.getPlans(filter, limit, page)
+        if(!response.success)
+            return this.setState({error: response.message, isLoading: false})
 
-            this.setState({plans: response.data.rows, plansCount: response.data.count, isLoading: false, limit, page})
-        })
-    }
-
-    /**
-     * Показать/скрыть форму создания плана
-     */
-    toggleCreatePlanModal = (reload) => {
-        const {openedCreatePlanModal} = this.state
-
-        if(reload === true)
-            setTimeout(() => {
-                const {filter, limit, page} = this.state
-                this.getPlans(filter, limit, page)
-            }, 500)
-
-        this.setState({openedCreatePlanModal: !openedCreatePlanModal})
-    }
-
-    /**
-     * Создать новый план
-     * @param {string} name
-     * @param {string} start Date TimeStamp
-     * @param {string} end Date TimeStamp
-     * @param {string} plan
-     * @return {Promise<{success: boolean, message: *}|{data: *, success: boolean}>}
-     */
-    createPlan = async (name, start, end, plan) => {
-        return await EventsApi.createPlan(name, start, end, plan)
+        this.setState({plans: response.data.rows, plansCount: response.data.count, isLoading: false, page, limit})
     }
 
     changePage = (event, page) => {
@@ -94,15 +55,31 @@ class EventPlans extends BaseWithFilter {
     }
 
     changePageLimit = (event) => {
+        console.log(event.target.value)
         this.getPlans(this.state.filter, event.target.value, 1)
     }
 
-    content() {
+    toggleCreatePlanModal = (reload = false) => {
+        const {openedCreatePlanModal} = this.state
 
-        const {plans, isLoading, error, openedCreatePlanModal, limit, page, plansCount} = this.state
+        if(reload === true)
+            setTimeout(() => {
+                const {filter, limit} = this.state
+                this.getPlans(filter, limit, 1)
+            }, 500)
+
+        this.setState({openedCreatePlanModal: !openedCreatePlanModal})
+    }
+
+    createPlan = async (name, start, end, plan) => {
+        return await LongReadApi.createPlans(name, start, end, plan)
+    }
+
+    content() {
+        const {plans, isLoading, error, plansCount, page, limit, openedCreatePlanModal} = this.state
 
         if(error)
-            return <div className="error">{error}</div>
+            return <div>{error}</div>
 
         if(isLoading)
             return <Loading />
@@ -123,4 +100,4 @@ class EventPlans extends BaseWithFilter {
     }
 }
 
-export default EventPlans
+export default LongReadPlans

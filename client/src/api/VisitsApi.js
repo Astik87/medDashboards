@@ -29,7 +29,7 @@ class VisitsApi {
      */
     async createPlan(name, start, end, plan) {
         try {
-            const response = await host.post('/api/visits/create-plan', {name, start, end, plan})
+            const response = await host.post('/api/visits/plans', {name, start, end, plan})
 
             return {success: response.data}
         } catch (error) {

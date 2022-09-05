@@ -10,6 +10,18 @@ module.exports = function(sequelize, DataTypes) {
     UF_NAME: {
       type: DataTypes.TEXT,
       allowNull: true
+    },
+    UF_VISIT_PLAN: {
+      type: DataTypes.INTEGER,
+      allowNull: true
+    },
+    UF_EVENT_PLAN: {
+      type: DataTypes.INTEGER,
+      allowNull: true
+    },
+    UF_LONG_READ_PLAN: {
+      type: DataTypes.INTEGER,
+      allowNull: true
     }
   }, {
     sequelize,

@@ -86,6 +86,20 @@ class EventsApi {
     }
 
     /**
+     * Получить список планов для react-select
+     * @return {Promise<{success: boolean, message: *}|{data: {label: string, value: number}, success: boolean}>}
+     */
+    async getEventPlansForSelector() {
+        try {
+            const response = await host.get('/api/events/plans/for-selector')
+
+            return {success: true, data: response.data}
+        } catch (error) {
+            return {success: false, message: error.message}
+        }
+    }
+
+    /**
      * Создать план мероприятий
      * @param {string} name
      * @param {number} start Date TimeStamp

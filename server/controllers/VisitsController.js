@@ -1,7 +1,7 @@
 const VisitsService = require('../services/VisitsService')
 
 class VisitsController {
-    static async getVisitGroups(req, res) {
+    static async getPlans(req, res) {
         let {dateFrom, dateTo, page, limit} = req.query
 
         dateFrom = new Date(dateFrom)
@@ -15,10 +15,17 @@ class VisitsController {
         if(!limit)
             limit = 10
 
-        return res.json(await VisitsService.getVisitGroupsByDate(dateFrom, dateTo, limit, page))
+        const visitsService = new VisitsService()
+
+        return res.json(await visitsService.getPlansByDate(dateFrom, dateTo, limit, page))
     }
 
-    static async createGroup(req, res) {
+    static async getPlansForSelector(req, res) {
+        const visitsService = new VisitsService()
+        return res.json(await visitsService.getPlansForSelector())
+    }
+
+    static async createPlan(req, res) {
         let {name, start, end, plan} = req.body
 
         if(!start || !end || !name || !plan)
@@ -38,7 +45,7 @@ class VisitsController {
         if(!end.getTime())
             return res.status(400).json({message: 'Дата окончания не валидна'})
 
-        return res.json(await visitsService.createGroup(name, start, end, plan))
+        return res.json(await visitsService.createPlan(name, start, end, plan))
     }
 }
 

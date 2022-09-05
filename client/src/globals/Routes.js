@@ -11,6 +11,7 @@ import Events from "@pages/Events";
 import VisitPlan from "@pages/VisitPlan";
 import EventPlans from "@pages/EventPlans";
 import LongReadPlans from "@pages/LongReadPlans";
+import Waves from "@pages/Waves";
 
 const authRoutes = [
     {
@@ -27,7 +28,7 @@ const authRoutes = [
     },
     {
         path: '/waves',
-        Component: <NotFound />
+        Component: <Waves />
     },
     {
         path: '/waves/visit-plans',

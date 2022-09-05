@@ -347,31 +347,14 @@ class EventsService {
 
     /**
      * Получить планы мероприятий
-     * @param {[number]|boolean} planIds
-     * @param {Date} dateFrom
-     * @param {Date} dateTo
-     * @param {number} page
-     * @param {number} limit
+     * @param {{}} query Sequelize query
      * @return {Promise<[{name: string, start: Date, end: Date, plan: number, fact: number}]>}
      */
-    async getPlans(planIds, dateFrom, dateTo, page = 1, limit = 10) {
-
-        const plansQueryWhere = {}
-
-        if (planIds === false)
-            plansQueryWhere.UF_START_DATE = {
-                [Op.gte]: dateFrom,
-                [Op.lte]: dateTo
-            }
-        else
-            plansQueryWhere.ID = {[Op.in]: planIds}
-
+    async getPlans(query) {
         const eventPlans = await EventPlans.findAndCountAll({
             attributes: [['ID', 'id'], ['UF_NAME', 'name'], ['UF_START_DATE', 'start'], ['UF_END_DATE', 'end'], ['UF_PLAN', 'plan']],
-            where: plansQueryWhere,
-            limit,
-            offset: limit * (page - 1),
-            order: [['UF_START_DATE', 'asc']]
+            order: [['UF_START_DATE', 'asc']],
+            ...query
         })
 
         let startDate = new Date()
@@ -436,6 +419,50 @@ class EventsService {
         })
 
         return result
+    }
+
+    /**
+     * Получить планы мероприятий по дате
+     * @param {Date} dateFrom
+     * @param {Date} dateTo
+     * @param {number} limit
+     * @param {number} page
+     * @return {Promise<{name: string, start: Date, end: Date, plan: number, fact: number}[]>}
+     */
+    async getPlansByDate(dateFrom, dateTo, limit = 10, page = 1) {
+        const eventPlansQuery = {
+            UF_START_DATE: {
+                [Op.gte]: dateFrom,
+                [Op.lte]: dateTo
+            },
+            limit,
+            offset: (page-1)*limit
+        }
+
+        return await this.getPlans(eventPlansQuery)
+    }
+
+    /**
+     * Получить планы мероприятий по их id
+     * @param {[number]} planIds
+     * @return {Promise<{name: string, start: Date, end: Date, plan: number, fact: number}[]>}
+     */
+    async getPlansByIds(planIds) {
+        const eventPlansQuery = {
+            where: {
+                ID: {
+                    [Op.in]: planIds
+                }
+            }
+        }
+
+        return await this.getPlans(eventPlansQuery)
+    }
+
+    getPlansForSelector() {
+        return EventPlans.findAll({
+            attributes: [['UF_NAME', 'label'], ['ID', 'value']]
+        })
     }
 
     /**

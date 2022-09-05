@@ -10,6 +10,7 @@ router.post('/visits-count', EventsController.getVisitsCount)
 router.get('/views-gte-min', filtersMiddleware, EventsController.getViewsGteMin)
 
 router.get('/plans', filtersMiddleware, EventsController.getEventPlans)
+router.get('/plans/for-selector', EventsController.getEventPlansForSelector)
 router.post('/plans', EventsController.createPlan)
 
 module.exports = router

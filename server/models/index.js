@@ -14,6 +14,7 @@ const event_plans = require('../bx_models/event_plans')
 const b_uts_iblock_9_section = require('../bx_models/b_uts_iblock_9_section')
 const visit_plans = require('../bx_models/dashboard_plans')
 const visit_statistic = require('../bx_models/visits_log')
+const waves = require('../bx_models/waves')
 
 const User = b_user(sequelize, DataTypes)
 const UserFields = b_uts_user(sequelize, DataTypes)
@@ -28,6 +29,7 @@ const EventPlans = event_plans(sequelize, DataTypes)
 const IBlockSectionFields = b_uts_iblock_9_section(sequelize, DataTypes)
 const VisitPlans = visit_plans(sequelize, DataTypes)
 const VisitStatistic = visit_statistic(sequelize, DataTypes)
+const Waves = waves(sequelize, DataTypes)
 
 User.hasOne(UserFields, {foreignKey: 'VALUE_ID'});
 UserFields.belongsTo(User, {foreignKey: 'ID'});
@@ -62,6 +64,15 @@ IBlockElementProperty.belongsTo(IBlockElement, {foreignKey: 'ID'})
 IBlockElement.hasOne(VisitStatistic, {foreignKey: 'UF_ELEMID'})
 VisitStatistic.belongsTo(IBlockElement, {foreignKey: 'ID'})
 
+VisitPlans.hasOne(Waves, {foreignKey: 'ID'})
+Waves.belongsTo(VisitPlans, {foreignKey: 'UF_VISIT_PLAN'})
+
+EventPlans.hasOne(Waves, {foreignKey: 'ID'})
+Waves.belongsTo(EventPlans, {foreignKey: 'UF_EVENT_PLAN'})
+
+LongReadPlans.hasOne(Waves, {foreignKey: 'ID'})
+Waves.belongsTo(LongReadPlans, {foreignKey: 'UF_LONG_READ_PLAN'})
+
 module.exports = {
     User,
     UserFields,
@@ -75,5 +86,6 @@ module.exports = {
     EventPlans,
     IBlockSectionFields,
     VisitPlans,
-    VisitStatistic
+    VisitStatistic,
+    Waves
 }

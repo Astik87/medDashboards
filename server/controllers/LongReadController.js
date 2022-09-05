@@ -24,6 +24,11 @@ class LongReadController {
         return res.json(await longReadService.getPlansByDate(new Date(dateFrom), new Date(dateTo), +limit, +page))
     }
 
+    async getPlansForSelector(req, res) {
+        const longReadService = new LongReadService()
+        return res.json(await longReadService.getPlansForSelector())
+    }
+
     async createPlan(req, res) {
         let {name, start, end, plan} = req.body
 

@@ -40,7 +40,12 @@ class EventsController {
 
         const eventsService = new EventService()
 
-        return res.json(await eventsService.getPlans(false, dateFrom, dateTo, +page, +limit))
+        return res.json(await eventsService.getPlansByDate(dateFrom, dateTo, +limit, +page))
+    }
+
+    async getEventPlansForSelector(req, res) {
+        const eventsService = new EventService()
+        return res.json(await eventsService.getPlansForSelector())
     }
 
     async createPlan(req, res) {

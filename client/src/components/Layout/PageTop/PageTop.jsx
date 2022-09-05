@@ -10,10 +10,16 @@ const PageTop = (props) => {
 
     return (
         <div className="page-top">
-            <Filter filter={filter} filtersList={filtersList} change={filterChange}/>
+            {
+                filtersList !== false
+                    ?
+                    <Filter filter={filter} filtersList={filtersList} change={filterChange}/>
+                    :
+                    <div></div>
+            }
             <div className="page-top__right">
                 {customBtn}
-                <ExportPage />
+                <ExportPage/>
             </div>
         </div>
     )

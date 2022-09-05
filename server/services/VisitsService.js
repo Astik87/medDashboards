@@ -5,29 +5,55 @@ const {VisitPlans, VisitStatistic, IBlockElement, IBlockElementProperty, User} =
 class VisitsService {
 
     /**
-     * Получить список планов
+     * Получить список планов по дате
      * @param {Date} dateFrom
      * @param {Date} dateTo
      * @param {number} limit максимальное кол-ва элементов
      * @param {number} page номер страницы
      */
-    static async getVisitGroupsByDate(dateFrom, dateTo, limit = 10, page = 1) {
+    async getPlansByDate(dateFrom, dateTo, limit = 10, page = 1) {
 
         /**
          * Планы из базы
          * @type {VisitPlans[]}
          */
-        let visitPlans = await VisitPlans.findAndCountAll({
-            attributes: [['ID', 'id'], ['UF_START_DATE', 'start'], ['UF_END_DATE', 'end'], ['UF_NAME', 'name'], ['UF_PLAN', 'plan']],
+        const visitPlansQuery = {
             where: {
                 UF_START_DATE: {
                     [Op.gte]: dateFrom,
                     [Op.lte]: dateTo
                 }
             },
-            order: [['UF_END_DATE', 'DESC']],
             limit: limit,
             offset: (page - 1) * limit
+        }
+
+        return await this.getPlans(visitPlansQuery)
+    }
+
+    /**
+     * Получить список планов по их id
+     * @param {[number]} planIds
+     * @return {Promise<VisitPlans[]>}
+     */
+    async getPlansById(planIds) {
+        return await this.getPlans({where: {ID: {[Op.in]: planIds}}})
+    }
+
+    /**
+     * Получить список планов
+     * @param {{}} query Sequelize query object
+     * @return {Promise<VisitPlans[]>}
+     */
+    async getPlans(query) {
+        /**
+         * Планы из базы
+         * @type {VisitPlans[]}
+         */
+        let visitPlans = await VisitPlans.findAndCountAll({
+            attributes: [['ID', 'id'], ['UF_START_DATE', 'start'], ['UF_END_DATE', 'end'], ['UF_NAME', 'name'], ['UF_PLAN', 'plan']],
+            order: [['UF_END_DATE', 'DESC']],
+            ...query
         })
 
         let visitsDateFrom = new Date()
@@ -181,7 +207,7 @@ class VisitsService {
                         })
 
                         plan.telemarketers[telemarketerIndex].total++
-                        if(visit.status)
+                        if (visit.status)
                             plan.telemarketers[telemarketerIndex].conducted++
                     }
                 }
@@ -190,11 +216,17 @@ class VisitsService {
                     plan.fact++
             })
 
-            if(!plan.telemarketers[0].total)
+            if (!plan.telemarketers[0].total)
                 plan.telemarketers = plan.telemarketers.slice(1)
         })
 
         return visitPlans
+    }
+
+    async getPlansForSelector() {
+        return await VisitPlans.findAll({
+            attributes: [['UF_NAME', 'label'], ['ID', 'value']]
+        })
     }
 
     /**
@@ -205,7 +237,7 @@ class VisitsService {
      * @param {number} plan
      * @return {boolean}
      */
-    async createGroup(name, start, end, plan) {
+    async createPlan(name, start, end, plan) {
         try {
             await VisitPlans.create({
                 UF_NAME: name,

@@ -178,15 +178,11 @@ class LongReadService {
     /**
      * Получить планы по зфпросу query
      * @param {{}} query sequelize query
-     * @param {number} limit
-     * @param {number} page
      * @return {Promise<{count: number, rows: [{id: number, name: string, start: Date, end: Date, plan: number, fact: number}]}>}
      */
-    async getPlansByQuery(query, limit, page) {
+    async getPlansByQuery(query) {
         const plans = await LongReadPlans.findAndCountAll({
             attributes: [['ID', 'id'], ['UF_NAME', 'name'], ['UF_START_DATE', 'start'], ['UF_END_DATE', 'end'], ['UF_PLAN', 'plan']],
-            limit,
-            offset: (page-1)*limit,
             ...query
         })
 
@@ -256,10 +252,35 @@ class LongReadService {
                     [Op.gte]: dateFrom,
                     [Op.lte]: dateTo
                 }
+            },
+            limit,
+            offset: (page-1) * limit
+        }
+
+        return await this.getPlansByQuery(longReadPlansQuery)
+    }
+
+    /**
+     * Получить планы по их id
+     * @param {number} planIds
+     * @return {Promise<void>}
+     */
+    async getPlansByIds(planIds) {
+        const longReadPlansQuery = {
+            where: {
+                ID: {
+                    [Op.in]: planIds
+                }
             }
         }
 
-        return await this.getPlansByQuery(longReadPlansQuery, limit, page)
+        return await this.getPlansByQuery(longReadPlansQuery)
+    }
+
+    async getPlansForSelector() {
+        return await LongReadPlans.findAll({
+            attributes: [['UF_NAME', 'label'], ['ID', 'value']]
+        })
     }
 
     /**

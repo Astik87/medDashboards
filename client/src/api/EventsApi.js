@@ -89,7 +89,7 @@ class EventsApi {
      * Получить список планов для react-select
      * @return {Promise<{success: boolean, message: *}|{data: {label: string, value: number}, success: boolean}>}
      */
-    async getEventPlansForSelector() {
+    async getPlansForSelector() {
         try {
             const response = await host.get('/api/events/plans/for-selector')
 

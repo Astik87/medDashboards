@@ -20,6 +20,20 @@ class VisitsApi {
     }
 
     /**
+     * Массив планов мероприятий для react-select
+     * @return {Promise<{success: boolean, message: *}|{data: [{label: string, value: number}], success: boolean}>}
+     */
+    async getPlansForSelector() {
+        try {
+            const response = await host.get('/api/visits/plans/for-selector')
+
+            return {success: true, data: response.data}
+        } catch (error) {
+            return {success: false, message: error.message}
+        }
+    }
+
+    /**
      * Создать план
      * @param {string} name
      * @param {Date} start

@@ -47,6 +47,16 @@ class LongReadApi {
         }
     }
 
+    async getPlansForSelector() {
+        try {
+            const response = await host.get('/api/long-read/plans/for-selector')
+
+            return {success: true, data: response.data}
+        } catch (error) {
+            return {success: false, message: error.message}
+        }
+    }
+
     /**
      * Создать новый план
      * @param {string} name

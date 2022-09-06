@@ -28,7 +28,7 @@ class WavesController {
         }
 
         if(longReadPlanId) {
-            const longReadPlan = await EventPlans.findOne({where: {ID: longReadPlanId}})
+            const longReadPlan = await LongReadPlans.findOne({where: {ID: longReadPlanId}})
             if(!longReadPlan)
                 return res.status(400).json({message: `План LongRead'а с id ${longReadPlanId} не найден`})
         }

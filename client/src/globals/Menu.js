@@ -4,7 +4,7 @@ const menuItems = [
     {link: '/events', text: 'Мероприятия'},
     {link: '/campus', text: 'Кампус'},
     {link: '/long-read', text: 'Лонгрид'},
-    {link: '/waves', text: 'Волны'},
+    {link: '/waves', text: 'Омниканальный проект'},
 ]
 
 export {

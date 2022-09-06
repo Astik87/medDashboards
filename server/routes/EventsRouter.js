@@ -10,6 +10,7 @@ router.post('/visits-count', EventsController.getVisitsCount)
 router.get('/views-gte-min', filtersMiddleware, EventsController.getViewsGteMin)
 
 router.get('/plans', filtersMiddleware, EventsController.getEventPlans)
+router.delete('/plans', EventsController.deletePlan)
 router.get('/plans/for-selector', EventsController.getEventPlansForSelector)
 router.post('/plans', EventsController.createPlan)
 

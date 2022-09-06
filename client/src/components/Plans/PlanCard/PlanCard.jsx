@@ -1,4 +1,5 @@
 import React from "react";
+import {Delete, ListAlt} from '@mui/icons-material'
 
 import './style.css'
 
@@ -8,6 +9,7 @@ import preparing from './img/preparing.svg'
 
 import {formatDate} from "@utils/DateUtils";
 import {PlanCardBlock} from "@components/Plans";
+import {IconButton} from "@mui/material";
 
 const groupColorClasses = {
     Done: 'green',
@@ -22,7 +24,7 @@ const statusIcons = {
 }
 
 const PlanCard = (props) => {
-    const {data, open} = props
+    const {data, open, deletePlan} = props
 
     const now = new Date()
 
@@ -47,8 +49,31 @@ const PlanCard = (props) => {
         groupBlacksList.push({title: result < 0 ? 'Result' : 'Target', value: Math.abs(result)})
 
     return (
-        <div className={`plans-list__item ${groupColorClasses[status]}`}
-             onClick={open}>
+        <div className={`plans-list__item ${groupColorClasses[status]}`}>
+            {
+                (deletePlan || open)
+                &&
+                <div className="plan-actions">
+                    {
+                        deletePlan
+                        &&
+                        <IconButton
+                            onClick={deletePlan}
+                            variant="outlined">
+                            <Delete color="error"/>
+                        </IconButton>
+                    }
+                    {
+                        open
+                        &&
+                        <IconButton
+                            onClick={open}
+                            variant="outlined">
+                            <ListAlt color="primary"/>
+                        </IconButton>
+                    }
+                </div>
+            }
             <div className="plans-list__item-left">
                 <div className="plans-list__item-name">
                     {data.name}
@@ -66,7 +91,8 @@ const PlanCard = (props) => {
             </div>
             <div className="plans-list__item-right">
                 {
-                    groupBlacksList.map(({title, value}, index) => <PlanCardBlock key={data.id + '.' + index} title={title} value={value}/>)
+                    groupBlacksList.map(({title, value}, index) => <PlanCardBlock key={data.id + '.' + index}
+                                                                                  title={title} value={value}/>)
                 }
                 <div className="plans-list__item-end">
                     {formatDate(end)}

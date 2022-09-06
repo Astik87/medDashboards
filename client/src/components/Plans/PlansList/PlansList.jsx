@@ -7,11 +7,22 @@ import {Empty} from "@components/General";
 
 const PlansList = (props) => {
 
-    const {plansList, setCurrentPlan} = props
+    const {plansList, setCurrentPlan, deletePlan} = props
 
-    const planCardClick = (index) => {
+    const getOpenHandler = (index) => {
         if(typeof setCurrentPlan === 'function')
-            setCurrentPlan(index)
+            return () => setCurrentPlan(index)
+
+        return false
+    }
+
+    const getDeleteHandler = (index) => {
+        if(typeof deletePlan === 'function')
+            return () => {
+                deletePlan(index)
+            }
+
+        return false
     }
 
     return (
@@ -19,9 +30,7 @@ const PlansList = (props) => {
             {
                 plansList.length
                     ?
-                    plansList.map((plan, index) => <PlanCard key={plan.id} data={plan} open={() => {
-                        planCardClick(index)
-                    }}/>)
+                    plansList.map((plan, index) => <PlanCard key={plan.id} data={plan} deletePlan={getDeleteHandler(index)} open={getOpenHandler(index)}/>)
                     :
                     <Empty/>
             }

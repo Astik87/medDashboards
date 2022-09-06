@@ -54,6 +54,13 @@ class LongReadController {
 
         return res.json(await longReadService.createPlan(name, start, end, plan))
     }
+
+    async deletePlan(req,res) {
+        const {id} = req.query
+        const longReadService = new LongReadService()
+
+        return res.json(await longReadService.deletePlan(id))
+    }
 }
 
 module.exports = new LongReadController()

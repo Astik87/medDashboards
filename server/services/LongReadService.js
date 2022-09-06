@@ -1,6 +1,13 @@
 const {Op} = require('sequelize')
 
-const {LongRead, LongReadPlans, User, UserFields, MedDirections} = require('../models')
+const {
+    LongRead,
+    LongReadPlans,
+    User,
+    UserFields,
+    MedDirections,
+    Waves
+} = require('../models')
 const DirectionService = require('./DirectionsService')
 const CitiesService = require('./CitiesService')
 
@@ -296,6 +303,25 @@ class LongReadService {
             UF_START_DATE: start,
             UF_END_DATE: end,
             UF_PLAN: plan
+        })
+    }
+
+    /**
+     * Удалить план
+     * @param {number} id
+     * @return {Promise<*>}
+     */
+    async deletePlan(id) {
+        Waves.destroy({
+            where: {
+                UF_LONG_READ_PLAN: id
+            }
+        })
+
+        return await LongReadPlans.destroy({
+            where: {
+                ID: id
+            }
         })
     }
 }

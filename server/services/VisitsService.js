@@ -1,6 +1,13 @@
 const {Op} = require('sequelize')
 
-const {VisitPlans, VisitStatistic, IBlockElement, IBlockElementProperty, User} = require('../models')
+const {
+    VisitPlans,
+    VisitStatistic,
+    IBlockElement,
+    IBlockElementProperty,
+    User,
+    Waves
+} = require('../models')
 
 class VisitsService {
 
@@ -250,6 +257,25 @@ class VisitsService {
         } catch (error) {
             return false
         }
+    }
+
+    /**
+     * Удалить план
+     * @param {number} id
+     * @return {Promise<void>}
+     */
+    async deletePlan(id) {
+        Waves.destroy({
+            where: {
+                UF_VISIT_PLAN: id
+            }
+        })
+
+        return await VisitPlans.destroy({
+            where: {
+                ID: id
+            }
+        })
     }
 }
 

@@ -35,6 +35,21 @@ class WavesApi {
             return {success: false, message: error.message}
         }
     }
+
+    /**
+     * Удалить волну
+     * @param {number} id
+     * @return {Promise<{success: boolean, message: string}|{data: {}, success: boolean}>}
+     */
+    async deleteWave(id) {
+        try {
+            const response = await host.delete('/api/waves', {params: {id}})
+
+            return {success: true, data: response.data}
+        } catch (error) {
+            return {success: false, message: error.message}
+        }
+    }
 }
 
 export default new WavesApi()

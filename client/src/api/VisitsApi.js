@@ -50,6 +50,21 @@ class VisitsApi {
             return {success: false, message: error.message}
         }
     }
+
+    /**
+     * Удалить план
+     * @param {number} id
+     * @return {Promise<{success: boolean, message: string}|{data: any, success: boolean}>}
+     */
+    async deletePlan(id) {
+        try {
+            const response = await host.delete('/api/visits/plans', {params: {id}})
+
+            return {success: true, data: response.data}
+        } catch (error) {
+            return {success: false, message: error.message}
+        }
+    }
 }
 
 export default new VisitsApi()

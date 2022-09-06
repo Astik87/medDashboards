@@ -166,6 +166,18 @@ class VisitPlan extends BaseWithFilter {
         return await VisitsApi.createPlan(name, start, end, plan)
     }
 
+    /**
+     * Удалить план
+     * @param {number} planIndex
+     * @return {Promise<{success: boolean, message: string}|{data: *, success: boolean}>}
+     */
+    deletePlan = async (planIndex) => {
+        const {plans} = this.state
+        await VisitsApi.deletePlan(plans[planIndex].id)
+        const {filter, limit} = this.state
+        this.getPlans(filter, 1, limit)
+    }
+
     content = () => {
         const {isLoading, error, plans, page, plansCount, limit, currentPlan, openedCreatePlanModal} = this.state
 
@@ -180,7 +192,7 @@ class VisitPlan extends BaseWithFilter {
             <div className="plans-page page__content">
                 <CreatePlanModal onSendForm={this.createPlan} isOpen={openedCreatePlanModal} onClose={this.toggleCreatePlanModal}/>
                 <PlanDetailModal plan={currentPlanItem} close={this.closePlan}/>
-                <PlansList plansList={plans} setCurrentPlan={this.setCurrentPlan} />
+                <PlansList deletePlan={this.deletePlan} plansList={plans} setCurrentPlan={this.setCurrentPlan} />
                 <DashboardBlock title="Total touch" className="plans-chart">
                     <PlansChart plans={plans}/>
                 </DashboardBlock>

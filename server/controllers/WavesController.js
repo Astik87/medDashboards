@@ -36,6 +36,13 @@ class WavesController {
         const wavesService = new WavesService()
         return res.json(await wavesService.createWave(name, visitPlanId, eventPlanId, longReadPlanId))
     }
+
+    async deleteWave(req, res) {
+        const {id} = req.query
+
+        const wavesService = new WavesService()
+        return res.json(await wavesService.deleteWave(id))
+    }
 }
 
 module.exports = new WavesController()

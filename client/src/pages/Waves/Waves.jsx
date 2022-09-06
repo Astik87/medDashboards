@@ -128,6 +128,17 @@ class Waves extends BaseWithFilter {
         this.getWaves(event.target.value, 1)
     }
 
+    /**
+     * Удалить волну
+     * @param {number} id
+     * @return {Promise<void>}
+     */
+    deleteWave = async (id) => {
+        const {limit} = this.state
+        await WavesApi.deleteWave(id)
+        this.getWaves(limit, 1)
+    }
+
     content() {
 
         const {isLoading, error, waves, page, limit, wavesCount, createModalIsOpen, createModalLoading, plansSelectOptions} = this.state
@@ -165,7 +176,7 @@ class Waves extends BaseWithFilter {
         return (
             <div className="page__content">
                 <WaveCreateModal sendForm={this.createWave} plansSelectOptions={plansSelectOptions} isLoading={createModalLoading} isOpen={createModalIsOpen} onClose={this.closeWaveCreateModal} />
-                <WavesList waves={waves}/>
+                <WavesList deleteWave={this.deleteWave} waves={waves}/>
                 <DashboardBlock className="wave-charts" title="Wave Visits">
                     <LineChart datasets={[visitsPlansChartDatasets, visitFactChartDatasets]}/>
                 </DashboardBlock>

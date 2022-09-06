@@ -47,6 +47,12 @@ class VisitsController {
 
         return res.json(await visitsService.createPlan(name, start, end, plan))
     }
+
+    static async deletePlan(req, res) {
+        const {id} = req.query
+        const visitsService = new VisitsService()
+        return res.json(await visitsService.deletePlan(id))
+    }
 }
 
 module.exports = VisitsController

@@ -10,6 +10,26 @@
     margin: 0 0.65% 20px;
     min-height: 200px;
     cursor: pointer;
+    position: relative;
+    overflow: hidden;
+}
+
+.plan-actions {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(33, 33, 33, .6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: .5s opacity;
+}
+
+.plans-list__item:hover .plan-actions {
+    opacity: 1;
 }
 
 .plans-list__item-left,

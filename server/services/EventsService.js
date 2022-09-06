@@ -7,7 +7,8 @@ const {
     MedDirections,
     User,
     IBlockSectionFields,
-    EventPlans
+    EventPlans,
+    Waves
 } = require('../models')
 
 const DateService = require("./DateService");
@@ -479,6 +480,25 @@ class EventsService {
             UF_START_DATE: start,
             UF_END_DATE: end,
             UF_PLAN: plan
+        })
+    }
+
+    /**
+     * Удалить план
+     * @param {number} id
+     * @return {Promise<void>}
+     */
+    async deletePlan(id) {
+        Waves.destroy({
+            where: {
+                UF_EVENT_PLAN: id
+            }
+        })
+
+        await EventPlans.destroy({
+            where: {
+                ID: id
+            }
         })
     }
 }

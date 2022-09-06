@@ -78,6 +78,19 @@ class WavesService {
             UF_LONG_READ_PLAN: longReadPlanId
         })
     }
+
+    /**
+     * Удалить волну
+     * @param {number} id
+     * @return {Promise<Waves>}
+     */
+    async deleteWave(id) {
+        return await Waves.destroy({
+            where: {
+                ID: id
+            }
+        })
+    }
 }
 
 module.exports = WavesService

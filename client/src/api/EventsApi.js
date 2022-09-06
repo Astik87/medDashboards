@@ -116,6 +116,21 @@ class EventsApi {
             return {success: false, message: error.message}
         }
     }
+
+    /**
+     * Удалить план
+     * @param {number} id
+     * @return {Promise<void>}
+     */
+    async deletePlan(id) {
+        try {
+            const response = await host.delete('/api/events/plans', {params: {id}})
+
+            return {success: true, data: response.data}
+        } catch (error) {
+            return {success: false, message: error.message}
+        }
+    }
 }
 
 export default new EventsApi()

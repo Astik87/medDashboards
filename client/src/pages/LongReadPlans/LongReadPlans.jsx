@@ -75,6 +75,13 @@ class LongReadPlans extends BaseWithFilter {
         return await LongReadApi.createPlans(name, start, end, plan)
     }
 
+    deletePlan = async (planIndex) => {
+        const {plans, filter, limit} = this.state
+
+        await LongReadApi.deletePlan(plans[planIndex].id)
+        this.getPlans(filter, limit, 1)
+    }
+
     content() {
         const {plans, isLoading, error, plansCount, page, limit, openedCreatePlanModal} = this.state
 
@@ -86,7 +93,7 @@ class LongReadPlans extends BaseWithFilter {
 
         return (
             <div className="page__content">
-                <PlansList plansList={plans} />
+                <PlansList deletePlan={this.deletePlan} plansList={plans} />
                 <CreatePlanModal isOpen={openedCreatePlanModal} onClose={this.toggleCreatePlanModal} onSendForm={this.createPlan}/>
                 <DashboardBlock title="Total touch" className="plans-chart">
                     <PlansChart plans={plans} />

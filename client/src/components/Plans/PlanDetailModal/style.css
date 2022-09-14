@@ -1,21 +1,23 @@
 .plan-wrapper {
-    display: flex;
-    justify-content: center;
     align-items: center;
-    width: 100vw;
-    height: 100vh;
     position: fixed;
     top: 0;
     left: 0;
     background-color: rgba(0,0,0,0.5);
+    overflow-x: auto;
+}
+
+.plan-modal {
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .plan {
     position: relative;
     padding: 20px;
-    max-height: 80vh;
+    height: 80vh;
     width: 80vw;
-    max-width: 600px;
     overflow-y: auto;
     overflow-x: hidden;
     border-radius: 20px;
@@ -79,26 +81,4 @@
 
 .plan__doctors-name {
     margin-right: 20px;
-}
-
-@media screen and (max-width: 420px) {
-    .plan-telemarketers-list {
-        flex-direction: column;
-    }
-
-    .plan-telemarketer,
-    .plan__doctors-list {
-        width: 100%;
-    }
-
-    .plan__doctors-list {
-        margin-top: 10px;
-        padding-left: 10px;
-    }
-}
-
-@media screen and (max-width: 620px){
-    .plan__doctors-item {
-        flex-direction: column;
-    }
 }

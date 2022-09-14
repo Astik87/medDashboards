@@ -7,6 +7,7 @@
     "@material-ui/pickers": "4.0.0-alpha.11",
     "@mui/icons-material": "^5.10.3",
     "@mui/material": "^5.10.3",
+    "@mui/x-data-grid": "^5.17.2",
     "@mui/x-date-pickers": "^5.0.0-beta.7",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.3.0",
@@ -33,7 +34,7 @@
   "scripts": {
     "start:dev": "cp .env.dev .env && cross-env GENERATE_SOURCEMAP=false craco start",
     "start:prod": "cp .env.prod .env && cross-env GENERATE_SOURCEMAP=false craco start",
-    "build": "react-scripts build",
+    "build": "craco build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

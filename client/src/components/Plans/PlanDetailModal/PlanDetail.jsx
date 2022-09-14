@@ -1,11 +1,11 @@
-import React from "react";
+import React from "react"
+import {DataGrid} from "@mui/x-data-grid"
+import ClearIcon from '@mui/icons-material/Clear';
+import DoneIcon from '@mui/icons-material/Done'
+import {Modal, Fade, Box} from "@mui/material"
 
 import './style.css'
-
-import {formatDate} from '@utils/DateUtils';
-import Empty from "@components/General/Empty";
-import {Modal, Fade, Box} from "@mui/material";
-import {randomString} from "@utils/StringUtils";
+import {formatDate} from "@utils/DateUtils";
 
 const modalStyle = {
     position: 'absolute',
@@ -19,56 +19,55 @@ const modalStyle = {
     maxHeight: '90vh',
 }
 
+const cols = [
+    {field: 'date', headerName: 'Дата', width: 150},
+    {field: 'telemarketer', headerName: 'Телемаркетолог', width: 150},
+    {field: 'medicalRepresentative', headerName: 'Мед. представитель', width: 150},
+    {field: 'doctor', headerName: 'Доктор', width: 150},
+    {field: 'doctorDirection', headerName: 'Специальность', width: 150},
+    {field: 'status', headerName: 'Проведен', width: 150},
+]
+
+
 const PlanDetailModal = (props) => {
     const {plan, close} = props
 
+    const rows = []
+
+    if(plan) {
+        plan.telemarketers.forEach((telemarketer, telemarketerIndex) => {
+
+            telemarketer.visits.forEach(({time, name, doctor, doctorDirection, status}, visitIndex) => {
+                rows.push({
+                    id: `${telemarketerIndex}${visitIndex}`,
+                    date: formatDate(new Date(time)),
+                    telemarketer: telemarketer.name,
+                    medicalRepresentative: name,
+                    doctor,
+                    doctorDirection,
+                    status: status ? '+' : '-'
+                })
+            })
+        })
+
+        console.log(rows)
+    }
     return (
         <Modal
+            className="plan-modal"
             open={!!plan}
             onClose={close}>
             <Fade in={!!plan}>
-                <Box sx={modalStyle}>
+                <Box className="plan-wrapper" sx={modalStyle}>
                     {
                         !!plan &&
                         <div>
                             <div className="plan">
-                                {
-                                    plan.telemarketers.length > 0
-                                        ?
-                                        plan.telemarketers.map(({name, conducted, total, doctors}) => (
-                                            <div key={name+randomString(5)} className="plan-telemarketers-list">
-                                                <div className="plan-telemarketer">
-                                                    <div className="plan-telemarketer-name">
-                                                        {name}
-                                                    </div>
-                                                    <div className="plan-telemarketer-visits">
-                                                        <span className="plan-telemarketer-conducted">{conducted}</span>
-                                                        /
-                                                        <span className="plan-telemarketer-total">
-                                                        {total}
-                                                    </span>
-                                                    </div>
-                                                </div>
-                                                <div className="plan__doctors-list">
-                                                    {
-                                                        doctors.map(({name, status, time}, index) => (
-                                                            <div key={name+index+randomString(5)}
-                                                                 className={`plan__doctors-item ${status ? 'conducted' : ''}`}>
-                                                                <div className="plan__doctors-name">
-                                                                    {name}
-                                                                </div>
-                                                                <div className="plan__doctors-time">
-                                                                    {formatDate(new Date(time))}
-                                                                </div>
-                                                            </div>
-                                                        ))
-                                                    }
-                                                </div>
-                                            </div>
-                                        ))
-                                        :
-                                        <Empty/>
-                                }
+                                <DataGrid
+
+                                    columns={cols}
+                                    rows={rows}
+                                />
                             </div>
                         </div>
                     }

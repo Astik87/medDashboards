@@ -1,54 +1,47 @@
 import axios from "axios";
+import userState from "@/state/UserState";
 
 const host = axios.create({
+    withCredentials: true,
     baseURL: process.env.REACT_APP_DOMAIN_NAME
 })
 
-const hostWithFilter = axios.create({
+const authHost = axios.create({
+    withCredentials: true,
     baseURL: process.env.REACT_APP_DOMAIN_NAME
 })
 
-const filterInterceptor = config => {
+const authResponseInterceptors = async error => {
+    const originalRequest = error.config
+    if(!error.config || error.config._isRetry)
+        throw error
 
-    if (config.method !== 'get')
-        return config
-
-    const filter = config.params
-
-    if (!filter)
-        return config
-
-    const apiFilter = {}
-
-    const month = filter.month < 10 ? '0' + filter.month : filter.month
-    const day = filter.day < 10 ? '0' + filter.day : filter.day
-    if (filter.month && !filter.day) {
-        const maxDay = new Date(filter.year, filter.month, 0).getDate()
-        apiFilter.dateFrom = `${filter.year}-${month}-01T00:00:00`
-        apiFilter.dateTo = `${filter.year}-${month}-${maxDay}T23:59:00`
-    } else if (filter.day) {
-        apiFilter.dateFrom = `${filter.year}-${month}-${day}T00:00:00`
-        apiFilter.dateTo = `${filter.year}-${month}-${day}T23:59:00`
-    } else {
-        apiFilter.dateFrom = `${filter.year}-01-01T00:00:00`
-        apiFilter.dateTo = `${filter.year}-12-31T23:59:00`
+    try {
+        originalRequest._isRetry = true
+        if(error.response.status === 401) {
+            const response = await axios.get(process.env.REACT_APP_DOMAIN_NAME+'/api/user/refresh', {withCredentials: true})
+            localStorage.setItem('accessToken', 'Bearer ' + response.data.accessToken)
+            return host.request(originalRequest)
+        }
+    } catch (error) {
+        userState.setUser(false)
+        userState.setIsAuth(false)
     }
+}
 
-    apiFilter.directionId = filter.directionId ? filter.directionId : ''
-    apiFilter.eventId = filter.eventId ? filter.eventId : ''
-
-    delete config.params.year
-    delete config.params.month
-    delete config.params.day
-
-    config.params = {...config.params, ...apiFilter}
-
+const authRequestInterceptor = async config => {
+    config.headers.authorization = localStorage.getItem('accessToken')
+    config.withCredentials = true
     return config
 }
 
-hostWithFilter.interceptors.request.use(filterInterceptor)
+authHost.interceptors.request.use(authRequestInterceptor)
+
+authHost.interceptors.response.use(config => {
+    return config
+}, authResponseInterceptors)
 
 export {
     host,
-    hostWithFilter
+    authHost
 }

@@ -12,6 +12,7 @@ import VisitPlan from "@pages/VisitPlan";
 import EventPlans from "@pages/EventPlans";
 import LongReadPlans from "@pages/LongReadPlans";
 import Waves from "@pages/Waves";
+import Auth from "@pages/Auth";
 
 const authRoutes = [
     {
@@ -49,6 +50,10 @@ const authRoutes = [
 ]
 
 const publicRoutes = [
+    {
+        path: '/auth',
+        Component: <Auth />
+    },
     {
         path: '*',
         Component: <NotFound />

@@ -1,3 +1,7 @@
+const jwt = require('jsonwebtoken')
+
+const {DashboardUser} = require('../models')
+
 class TokenService {
     /**
      * Генерация токенов
@@ -5,7 +9,10 @@ class TokenService {
      * @return {{accessToken: string, refreshToken: string}}
      */
     generateTokens(payload) {
-        /* TODO Генерация access и refresh токенов */
+        const accessToken = jwt.sign(payload, process.env.SECRET_KEY, {expiresIn: '30m'})
+        const refreshToken = jwt.sign(payload, process.env.SECRET_KEY, {expiresIn: '30d'})
+
+        return {accessToken, refreshToken}
     }
 
     /**
@@ -14,8 +21,18 @@ class TokenService {
      * @param refreshToken
      * @return {boolean}
      */
-    saveToken(userId, refreshToken) {
-        /* TODO Сохранение refresh токена в базу */
+    async saveToken(userId, refreshToken) {
+        const user = await DashboardUser.findOne({
+            where: {
+                ID: userId
+            }
+        })
+
+        if(!user)
+            throw new Error(`Пользователь с id ${userId} не найден`)
+
+        user.UF_REFRESH_TOKEN = refreshToken
+        return await user.save()
     }
 
     /**
@@ -23,33 +40,50 @@ class TokenService {
      * @param refreshToken
      * @return {boolean}
      */
-    removeToken(refreshToken) {
-        /* TODO Удаление refresh токена из базы */
+    async removeToken(refreshToken) {
+        console.log(refreshToken)
+
+        const user = await DashboardUser.findOne({
+            where: {
+                UF_REFRESH_TOKEN: refreshToken
+            }
+        })
+
+        console.log(user)
+        if(!user)
+            return false
+
+        const token = user.UF_REFRESH_TOKEN
+        user.UF_REFRESH_TOKEN = ''
+        user.save()
+
+        return token
     }
 
     /**
-     * Валидация accessToken
+     * Валидация токена
      * @param token
      * @return {boolean}
      */
-    validateAccessToken(token) {
-        /* TODO Валидация access токена */
-    }
-
-    /**
-     * Валидация refreshToken
-     * @param token
-     * @return {boolean}
-     */
-    validateRefreshToken(token) {
-        /* TODO Валидация refresh токена */
+    verifyToken(token) {
+        try {
+            return jwt.verify(token, process.env.SECRET_KEY)
+        } catch (error) {
+            return false
+        }
     }
 
     /**
      * Найти токен в базе
      * @param refreshToken
      */
-    findToken(refreshToken) {
-        /* TODO Поиск токена в базе */
+    async findUserByToken(refreshToken) {
+        return DashboardUser.findOne({
+            where: {
+                UF_REFRESH_TOKEN: refreshToken
+            }
+        })
     }
 }
+
+module.exports = TokenService

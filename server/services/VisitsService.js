@@ -6,7 +6,9 @@ const {
     IBlockElement,
     IBlockElementProperty,
     User,
-    Waves
+    UserFields,
+    MedDirections,
+    Waves,
 } = require('../models')
 
 class VisitsService {
@@ -170,6 +172,14 @@ class VisitsService {
                 ID: {
                     [Op.in]: userIds
                 }
+            },
+            include: {
+                attributes: [['UF_DIRECTION', 'direction']],
+                model: UserFields,
+                include: {
+                    attributes: [['UF_NAME', 'name']],
+                    model: MedDirections,
+                }
             }
         })
 
@@ -190,7 +200,8 @@ class VisitsService {
          */
         visitPlans.rows.forEach((plan) => {
             plan.fact = 0
-            plan.telemarketers = [{name: 'Не указан', doctors: [], conducted: 0, total: 0}]
+            plan.planned = 0
+            plan.telemarketers = [{name: 'Не указан', visits: [], conducted: 0, total: 0}]
             const telemarketerIndexes = {}
             visitsList.forEach((visit) => {
                 if (visit.time > plan.end || visit.time < plan.start)
@@ -199,24 +210,37 @@ class VisitsService {
                 if (visit.medicalRepresentative) {
                     const telemarketerIndex = visit.telemarketer ? telemarketerIndexes[visit.telemarketer.id] : 0
 
+                    let doctorName = 'Не указан'
+                    let doctorDirection = 'Не указан'
+
+                    if(visit.doctor) {
+                        doctorName = visit.doctor.name
+
+                        if(visit.doctor.b_uts_user && visit.doctor.b_uts_user.med_direction)
+                            doctorDirection = visit.doctor.b_uts_user.med_direction.name
+                    }
+
                     if (typeof telemarketerIndex === 'undefined') {
                         telemarketerIndexes[visit.telemarketer.id] = plan.telemarketers.push({
                             name: visit.telemarketer.name,
                             total: 1,
                             conducted: visit.status,
-                            doctors: [{name: visit.medicalRepresentative.name, status: visit.status, time: visit.time}]
+                            visits: [{name: visit.medicalRepresentative.name, status: visit.status, time: visit.time, doctor: doctorName, doctorDirection}]
                         }) - 1
                     } else {
-                        plan.telemarketers[telemarketerIndex].doctors.push({
+                        plan.telemarketers[telemarketerIndex].visits.push({
                             name: visit.medicalRepresentative.name,
                             status: visit.status,
-                            time: visit.time
+                            time: visit.time,
+                            doctor: doctorName,
+                            doctorDirection
                         })
 
                         plan.telemarketers[telemarketerIndex].total++
                         if (visit.status)
                             plan.telemarketers[telemarketerIndex].conducted++
                     }
+                    plan.planned++
                 }
 
                 if (visit.status)

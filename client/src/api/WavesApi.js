@@ -1,4 +1,4 @@
-import {host} from "./Main";
+import {authHost} from "./Main";
 
 class WavesApi {
 
@@ -10,7 +10,7 @@ class WavesApi {
      */
     async getAll(limit, page) {
         try {
-            const response = await host.get('/api/waves', {params: {limit, page}})
+            const response = await authHost.get('/api/waves', {params: {limit, page}})
 
             return {success: true, data: response.data}
         } catch (error) {
@@ -28,7 +28,7 @@ class WavesApi {
      */
     async createWave(name, visitPlanId, eventPlanId, longReadPlanId) {
         try {
-            const response = await host.post('/api/waves', {name, visitPlanId, eventPlanId, longReadPlanId})
+            const response = await authHost.post('/api/waves', {name, visitPlanId, eventPlanId, longReadPlanId})
 
             return {success: true, data: response.data}
         } catch (error) {
@@ -43,7 +43,7 @@ class WavesApi {
      */
     async deleteWave(id) {
         try {
-            const response = await host.delete('/api/waves', {params: {id}})
+            const response = await authHost.delete('/api/waves', {params: {id}})
 
             return {success: true, data: response.data}
         } catch (error) {

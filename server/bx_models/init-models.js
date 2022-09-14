@@ -319,6 +319,7 @@ var _bx_db_migrations = require("./bx_db_migrations");
 var _course_registry = require("./course_registry");
 var _course_registry_stat = require("./course_registry_stat");
 var _dashboard_plans = require("./dashboard_plans");
+var _dashboard_users = require("./dashboard_users");
 var _event_plans = require("./event_plans");
 var _event_program = require("./event_program");
 var _event_registry = require("./event_registry");
@@ -679,6 +680,7 @@ function initModels(sequelize) {
   var course_registry = _course_registry(sequelize, DataTypes);
   var course_registry_stat = _course_registry_stat(sequelize, DataTypes);
   var dashboard_plans = _dashboard_plans(sequelize, DataTypes);
+  var dashboard_users = _dashboard_users(sequelize, DataTypes);
   var event_plans = _event_plans(sequelize, DataTypes);
   var event_program = _event_program(sequelize, DataTypes);
   var event_registry = _event_registry(sequelize, DataTypes);
@@ -1090,6 +1092,7 @@ function initModels(sequelize) {
     course_registry,
     course_registry_stat,
     dashboard_plans,
+    dashboard_users,
     event_plans,
     event_program,
     event_registry,

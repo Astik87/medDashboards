@@ -1,4 +1,5 @@
-import {host, hostWithFilter} from './Main'
+import {authHost} from './Main'
+import {getDateForFilter} from "@utils/DateUtils";
 
 class VisitsApi {
 
@@ -11,7 +12,8 @@ class VisitsApi {
      */
     async getPlans(filter, page, limit) {
         try {
-            const response = await hostWithFilter.get('/api/visits/plans', {params: {...filter, limit, page}})
+            filter = getDateForFilter(filter)
+            const response = await authHost.get('/api/visits/plans', {params: {...filter, limit, page}})
 
             return {success: true, plans: response.data}
         } catch (error) {
@@ -25,7 +27,7 @@ class VisitsApi {
      */
     async getPlansForSelector() {
         try {
-            const response = await host.get('/api/visits/plans/for-selector')
+            const response = await authHost.get('/api/visits/plans/for-selector')
 
             return {success: true, data: response.data}
         } catch (error) {
@@ -43,7 +45,7 @@ class VisitsApi {
      */
     async createPlan(name, start, end, plan) {
         try {
-            const response = await host.post('/api/visits/plans', {name, start, end, plan})
+            const response = await authHost.post('/api/visits/plans', {name, start, end, plan})
 
             return {success: response.data}
         } catch (error) {
@@ -58,7 +60,7 @@ class VisitsApi {
      */
     async deletePlan(id) {
         try {
-            const response = await host.delete('/api/visits/plans', {params: {id}})
+            const response = await authHost.delete('/api/visits/plans', {params: {id}})
 
             return {success: true, data: response.data}
         } catch (error) {

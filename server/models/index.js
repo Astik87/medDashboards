@@ -3,6 +3,7 @@ const {DataTypes} = require('sequelize')
 
 const b_user = require('../bx_models/b_user')
 const b_uts_user = require('../bx_models/b_uts_user')
+const dashboard_users = require('../bx_models/dashboard_users')
 const med_directions = require('../bx_models/med_directions')
 const long_read = require('../bx_models/long_read')
 const long_read_plans = require('../bx_models/long_read_plans')
@@ -18,6 +19,7 @@ const waves = require('../bx_models/waves')
 
 const User = b_user(sequelize, DataTypes)
 const UserFields = b_uts_user(sequelize, DataTypes)
+const DashboardUser = dashboard_users(sequelize, DataTypes)
 const MedDirections = med_directions(sequelize, DataTypes)
 const LongRead = long_read(sequelize, DataTypes)
 const LongReadPlans = long_read_plans(sequelize, DataTypes)
@@ -76,6 +78,7 @@ Waves.belongsTo(LongReadPlans, {foreignKey: 'UF_LONG_READ_PLAN'})
 module.exports = {
     User,
     UserFields,
+    DashboardUser,
     MedDirections,
     LongRead,
     LongReadPlans,

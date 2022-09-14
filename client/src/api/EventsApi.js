@@ -1,4 +1,5 @@
-import {host, hostWithFilter} from "./Main"
+import {authHost} from "./Main"
+import {getDateForFilter} from "@utils/DateUtils";
 
 /**
  * API для мероприятий
@@ -9,9 +10,13 @@ class EventsApi {
      * @returns {Promise<[{id: number, name: string}]>}
      */
     async getAll() {
-        const events = await hostWithFilter.get('/api/events')
+        try {
+            const events = await authHost.get('/api/events')
 
-        return events.data
+            return events.data
+        } catch (error) {
+            return false
+        }
     }
 
     /**
@@ -24,7 +29,8 @@ class EventsApi {
             return false
 
         try{
-            const statistic = await hostWithFilter.get('/api/events/statistic', {params: {...filter}})
+            filter = getDateForFilter(filter)
+            const statistic = await authHost.get('/api/events/statistic', {params: {...filter}})
 
             return {success: true, data: statistic.data}
         } catch (error) {
@@ -41,7 +47,7 @@ class EventsApi {
     async getVisitsCount(eventId) {
         try {
 
-            const response = await host.post('/api/events/visits-count', {eventId})
+            const response = await authHost.post('/api/events/visits-count', {eventId})
 
             return {success: true, data: response.data}
         } catch (error) {
@@ -57,7 +63,8 @@ class EventsApi {
      */
     async getViewsGteMin(filter, minutes) {
         try {
-            const response = await hostWithFilter.get('/api/events/views-gte-min', {params: {...filter, minutes}})
+            filter = getDateForFilter(filter)
+            const response = await authHost.get('/api/events/views-gte-min', {params: {...filter, minutes}})
 
             if(response.status !== 200)
                 return {success: false, message: response.message}
@@ -77,7 +84,8 @@ class EventsApi {
      */
     async getEventPlans(filter, limit= 15, page= 1) {
         try {
-            const response = await hostWithFilter.get('/api/events/plans', {params: {...filter, limit, page}})
+            filter = getDateForFilter(filter)
+            const response = await authHost.get('/api/events/plans', {params: {...filter, limit, page}})
 
             return {success: true, data: response.data}
         } catch (error) {
@@ -91,7 +99,7 @@ class EventsApi {
      */
     async getPlansForSelector() {
         try {
-            const response = await host.get('/api/events/plans/for-selector')
+            const response = await authHost.get('/api/events/plans/for-selector')
 
             return {success: true, data: response.data}
         } catch (error) {
@@ -109,7 +117,7 @@ class EventsApi {
      */
     async createPlan(name, start, end, plan) {
         try {
-            const response = host.post('/api/events/plans', {name, start, end, plan})
+            const response = authHost.post('/api/events/plans', {name, start, end, plan})
 
             return {success: true, data: response.date}
         } catch (error) {
@@ -124,7 +132,7 @@ class EventsApi {
      */
     async deletePlan(id) {
         try {
-            const response = await host.delete('/api/events/plans', {params: {id}})
+            const response = await authHost.delete('/api/events/plans', {params: {id}})
 
             return {success: true, data: response.data}
         } catch (error) {

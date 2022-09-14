@@ -4,7 +4,7 @@ import Select from "react-select"
 const getYearOptions = (now) => {
     const yearOptions = []
 
-    for(let year = 2020; year <= now.getFullYear(); year++)
+    for(let year = 2020; year <= now.getFullYear() + 2; year++)
         yearOptions.push({value: year, label: year})
 
     return yearOptions

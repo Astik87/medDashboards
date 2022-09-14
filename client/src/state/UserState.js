@@ -1,6 +1,6 @@
 import {makeAutoObservable} from 'mobx'
 
-export default class UserState {
+class UserState {
     constructor() {
         this._isAuth = false
         this._user = false
@@ -13,6 +13,7 @@ export default class UserState {
     }
 
     setUser(user) {
+        this._isAuth = !!user
         this._user = user
     }
 
@@ -24,5 +25,11 @@ export default class UserState {
         return this._user
     }
 
+    async check() {
+        return false
+    }
+
 
 }
+
+export default new UserState()

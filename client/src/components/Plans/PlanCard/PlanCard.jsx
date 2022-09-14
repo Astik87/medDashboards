@@ -40,7 +40,8 @@ const PlanCard = (props) => {
 
     const groupBlacksList = [
         {title: 'Plan', value: data.plan},
-        {title: 'Fact', value: data.fact}
+        {title: 'Fact', value: data.fact},
+        {title: 'Planned', value: data.planned}
     ]
 
     const result = data.plan - data.fact

@@ -1,4 +1,5 @@
-import {host, hostWithFilter} from "@api/Main";
+import {authHost} from "@api/Main";
+import {getDateForFilter} from "@utils/DateUtils";
 
 /**
  * API для статистики LongRead
@@ -11,7 +12,8 @@ class LongReadApi {
      */
     async getStatistic(filter) {
         try {
-            const statistic = await hostWithFilter.get('/api/long-read/statistic', {params: filter})
+            filter = getDateForFilter(filter)
+            const statistic = await authHost.get('/api/long-read/statistic', {params: filter})
 
             return {success: true, data: statistic.data}
         } catch (error) {
@@ -39,7 +41,8 @@ class LongReadApi {
      */
     async getPlans(filter, limit, page) {
         try {
-            const response = await hostWithFilter.get('/api/long-read/plans', {params: {...filter, limit, page}})
+            filter = getDateForFilter(filter)
+            const response = await authHost.get('/api/long-read/plans', {params: {...filter, limit, page}})
 
             return {success: true, data: response.data}
         } catch (error) {
@@ -49,7 +52,7 @@ class LongReadApi {
 
     async getPlansForSelector() {
         try {
-            const response = await host.get('/api/long-read/plans/for-selector')
+            const response = await authHost.get('/api/long-read/plans/for-selector')
 
             return {success: true, data: response.data}
         } catch (error) {
@@ -67,7 +70,7 @@ class LongReadApi {
      */
     async createPlans(name, start, end, plan) {
         try {
-            const response = await host.post('/api/long-read/plans', {name, start, end, plan})
+            const response = await authHost.post('/api/long-read/plans', {name, start, end, plan})
 
             return {success: true, data: response.data}
         } catch (error) {
@@ -82,7 +85,7 @@ class LongReadApi {
      */
     async deletePlan(id) {
         try {
-            const response = await host.delete('/api/long-read/plans', {params: {id}})
+            const response = await authHost.delete('/api/long-read/plans', {params: {id}})
 
             return {success: true, data: response.data}
         } catch (error) {

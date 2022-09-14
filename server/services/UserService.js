@@ -1,33 +1,134 @@
 const {Op} = require('sequelize')
+const jwt = require('jsonwebtoken')
+const bcrypt = require('bcrypt')
 
-const {User, UserFields, MedDirections} = require('../models')
+const {User, UserFields, DashboardUser, MedDirections} = require('../models')
 const DateService = require('./DateService')
 const DirectionsService = require('./DirectionsService')
 const CitiesService = require('./CitiesService')
+const TokenService = require('./TokenService')
 
 class UserService {
     /**
      * Регисрация пользователя
-     * @param {string} email
+     * @param {string} name
+     * @param {string} login
      * @param {string} password
      * @returns {Promise<{}>} - Об
      */
-    registration(email, password) {
-        /* TODO Регистрация пользователя */
+    async registration(name, login, password) {
+
+        if (!name)
+            throw new Error('Имя не может быть пустым')
+
+        if(!login || login.length < 3)
+            throw new Error('Логин не может быть меньше 3 симвалов')
+
+        if(!password || password.length < 6)
+            throw new Error('Пароль не может быть меньше 6 симвалов')
+
+        const candidate = await DashboardUser.findOne({
+            where: {
+                UF_LOGIN: login
+            }
+        })
+
+        if (candidate)
+            throw new Error('Пользователь с таки логином уже зарегистрирован')
+
+        const hashPassword = await bcrypt.hash(password, 3)
+        const user = await DashboardUser.create({
+            UF_NAME: name,
+            UF_LOGIN: login,
+            UF_PASSWORD_HASH: hashPassword
+        })
+
+        const tokenService = new TokenService()
+        const {accessToken, refreshToken} = tokenService.generateTokens({id: user.ID, name, login})
+        await tokenService.saveToken(user.ID, refreshToken)
+
+        return {
+            id: user.id,
+            name,
+            login,
+            accessToken,
+            refreshToken
+        }
     }
 
     /**
      * Авторизация пользователя
      */
-    login() {
-        /* TODO Авторизация */
+    async login(login, password) {
+        const user = await DashboardUser.findOne({
+            attributes: [['ID', 'id'], ['UF_LOGIN', 'login'], ['UF_NAME', 'name'], ['UF_PASSWORD_HASH', 'passwordHash']],
+            where: {
+                UF_LOGIN: login
+            }
+        })
+
+        if(!user)
+            throw Error(`Пользователь с логином ${login} не найден`)
+
+        const jsonUser = user.toJSON()
+
+        const isPasswordEquals = await bcrypt.compare(password, jsonUser.passwordHash)
+        if(!isPasswordEquals)
+            throw Error('Неверный пароль')
+
+        const resUser = {
+            id: jsonUser.id,
+            name: jsonUser.name,
+            login: jsonUser.login,
+        }
+
+        const tokenService = new TokenService()
+        const {accessToken, refreshToken} = tokenService.generateTokens(resUser)
+        tokenService.saveToken(resUser.id, refreshToken)
+
+        return {
+            accessToken,
+            refreshToken,
+            ...resUser
+        }
+    }
+
+    /**
+     *
+     * @param {string} refreshToken
+     * @return {Promise<*>}
+     */
+    async logout(refreshToken) {
+        const tokenService = new TokenService()
+        return await tokenService.removeToken(refreshToken)
     }
 
     /**
      * Перезапись токенов
      */
-    refresh() {
-        /* TODO Обновление токена пользователя */
+    async refresh(refreshToken) {
+        if(!refreshToken)
+            return false
+
+        const tokenService = new TokenService()
+        const user = tokenService.verifyToken(refreshToken)
+        const userData = await tokenService.findUserByToken(refreshToken)
+
+        if(!user || !userData)
+            return false
+
+        const resUser = {
+            id: userData.ID,
+            name: userData.UF_NAME,
+            login: userData.UF_LOGIN
+        }
+        const tokens = tokenService.generateTokens(resUser)
+        await tokenService.saveToken(resUser.id, tokens.refreshToken)
+
+        return {
+            ...tokens,
+            ...resUser
+        }
     }
 
     /**

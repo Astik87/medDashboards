@@ -1,4 +1,4 @@
-import {host} from "./Main";
+import {authHost} from "./Main";
 
 /**
  * API для мед. направлений
@@ -9,9 +9,13 @@ class DirectionsApi {
      * @returns {Promise<[{id: number, code: string, name: string}]>}
      */
     async getAll() {
-        const directionsList = await host.get('/api/directions')
+        try {
+            const directionsList = await authHost.get('/api/directions')
 
-        return directionsList.data
+            return directionsList.data
+        } catch (error) {
+            return false
+        }
     }
 }
 

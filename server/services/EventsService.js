@@ -501,6 +501,37 @@ class EventsService {
             }
         })
     }
+
+    /**
+     * Получить список пользователей зарегистрированных на мероприятие и время просмотра
+     * @param {number} eventId
+     * @returns {Promise<{}>} Объект в котором ключ - email пользователь, занчение - время просмотра мероприятия
+     */
+    async getEventVisits(eventId) {
+        const visitsList = await EventRegistrations.findAll({
+            attributes: [['UF_VIDTIME', 'viewingTime']],
+            where: {
+                UF_EVENT: eventId
+            },
+            include: {
+                attributes: [['LOGIN', 'email']],
+                model: User
+            }
+        })
+
+        const result = {}
+
+        visitsList.forEach(visit => {
+            visit = visit.toJSON()
+
+            if(!visit.b_user || !visit.b_user.email)
+                return false
+
+            result[visit.b_user.email] = visit.viewingTime
+        })
+
+        return result
+    }
 }
 
 module.exports = EventsService

@@ -13,6 +13,7 @@ import EventPlans from "@pages/EventPlans";
 import LongReadPlans from "@pages/LongReadPlans";
 import Waves from "@pages/Waves";
 import Auth from "@pages/Auth";
+import CRM from "@pages/CRM";
 
 const authRoutes = [
     {
@@ -46,6 +47,10 @@ const authRoutes = [
     {
         path: '/waves/long-read-plans',
         Component: <LongReadPlans />
+    },
+    {
+        path: '/crm',
+        Component: <CRM />
     }
 ]
 

@@ -13,6 +13,14 @@ const authHost = axios.create({
 
 const authResponseInterceptors = async error => {
     const originalRequest = error.config
+
+    if(error.response.status !== 401) {
+        if(error.response.data && error.response.data.message)
+            error.message = error.response.data.message
+
+        throw error
+    }
+
     if(!error.config || error.config._isRetry)
         throw error
 

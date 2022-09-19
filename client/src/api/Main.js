@@ -16,6 +16,13 @@ const authResponseInterceptors = async error => {
     if(!error.config || error.config._isRetry)
         throw error
 
+    if(error.response.status !== 401) {
+        if(error.response.data && error.response.data.message)
+            error.message = error.response.data.message
+
+        throw error
+    }
+
     try {
         originalRequest._isRetry = true
         if(error.response.status === 401) {

@@ -55,7 +55,7 @@ class TokenService {
 
         const token = user.UF_REFRESH_TOKEN
         user.UF_REFRESH_TOKEN = ''
-        user.save()
+        await user.save()
 
         return token
     }

@@ -18,13 +18,24 @@ class UserController {
         return res.json(await userService.getUserStatistic(dateFrom, dateTo, directionId))
     }
 
-    static async registration(req, res) {
+    static async get(req, res, next) {
         try {
-            const {name, login, password} = req.body
+            const {limit, page} = req.query
 
             const userService = new UserService()
-            const user = await userService.registration(name, login, password)
-            UserController.setCookieToken(res, user.refreshToken)
+            const users = await userService.get(limit, page)
+            return res.json(users)
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    static async create(req, res) {
+        try {
+            const {name, login, password, isAdmin} = req.body
+
+            const userService = new UserService()
+            const user = await userService.create(name, login, password, isAdmin)
             return res.json(user)
         } catch (error) {
             return res.status(400).json({message: error.message})
@@ -68,6 +79,19 @@ class UserController {
             return res.json({...user})
         } catch (error) {
             return res.json({message: error.message})
+        }
+    }
+
+    static async delete(req, res, next) {
+        try {
+            const {userIds} = req.body
+
+            const userService = new UserService()
+            const result = await userService.delete(userIds)
+
+            return res.json(result)
+        } catch (error) {
+            next(error)
         }
     }
 }

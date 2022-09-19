@@ -1,5 +1,5 @@
 import React from "react";
-import {Delete, ListAlt} from '@mui/icons-material'
+import {Delete, Clear, ListAlt} from '@mui/icons-material'
 
 import './style.css'
 
@@ -14,13 +14,15 @@ import {IconButton} from "@mui/material";
 const groupColorClasses = {
     Done: 'green',
     Ongoing: 'blue',
-    Preparing: 'yellow'
+    Preparing: 'yellow',
+    Failed: 'red'
 }
 
 const statusIcons = {
     Done: <img src={done} alt=""/>,
     Ongoing: <img src={ongoing} alt=""/>,
-    Preparing: <img src={preparing} alt=""/>
+    Preparing: <img src={preparing} alt=""/>,
+    Failed: <Clear fontSize="small" />
 }
 
 const PlanCard = (props) => {
@@ -32,11 +34,14 @@ const PlanCard = (props) => {
     const start = new Date(data.start)
     const end = new Date(data.end)
 
-    if (end < now)
+    if (data.fact >= data.plan)
         status = 'Done'
 
     if (start < now && end > now)
         status = 'Ongoing'
+
+    if(end < now && data.plan > data.fact)
+        status = 'Failed'
 
     const groupBlacksList = [
         {title: 'Plan', value: data.plan},
@@ -92,8 +97,15 @@ const PlanCard = (props) => {
             </div>
             <div className="plans-list__item-right">
                 {
-                    groupBlacksList.map(({title, value}, index) => <PlanCardBlock key={data.id + '.' + index}
-                                                                                  title={title} value={value}/>)
+                    groupBlacksList.map(({title, value}, index) => {
+                        if (typeof value === 'undefined')
+                            return ''
+
+                        return <PlanCardBlock
+                            key={data.id + '.' + index}
+                            title={title}
+                            value={value}/>
+                    })
                 }
                 <div className="plans-list__item-end">
                     {formatDate(end)}

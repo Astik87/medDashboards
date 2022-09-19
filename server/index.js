@@ -8,6 +8,7 @@ const sequelize = require('./db')
 const models = require('./models')
 const router = require('./routes/index')
 const apiMiddleware = require('./middleware/apiMiddleware')
+const apiError = require('./middleware/apiError')
 
 const PORT = process.env.PORT || 5000
 
@@ -29,6 +30,7 @@ app.use(express.json())
 app.use(cookieParser())
 app.use('/static', express.static(path.resolve(__dirname, 'static')))
 app.use('/api', apiMiddleware, router)
+app.use(apiError)
 
 const start = async () => {
     try {

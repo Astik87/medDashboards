@@ -22,6 +22,10 @@ module.exports = function(sequelize, DataTypes) {
     UF_REFRESH_TOKEN: {
       type: DataTypes.TEXT,
       allowNull: true
+    },
+    UF_IS_ADMIN: {
+      type: DataTypes.INTEGER,
+      allowNull: true
     }
   }, {
     sequelize,

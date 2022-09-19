@@ -13,6 +13,18 @@ import EventPlans from "@pages/EventPlans";
 import LongReadPlans from "@pages/LongReadPlans";
 import Waves from "@pages/Waves";
 import Auth from "@pages/Auth";
+import AdminUsers from "@/adminPages/Users";
+
+const adminRoutes = [
+    {
+        path: '/admin',
+        Component: <AdminUsers/>
+    },
+    {
+        path: "/admin/*",
+        Component: <NotFound />
+    }
+]
 
 const authRoutes = [
     {
@@ -72,6 +84,7 @@ const sidebarRoutes = [
 
 
 export {
+    adminRoutes,
     publicRoutes,
     authRoutes,
     sidebarRoutes

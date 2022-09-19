@@ -110,6 +110,15 @@
     color: #FF9500;
 }
 
+.plans-list__item.red .plans-list__item-block__value  {
+    background-color: #d32f2f;
+}
+
+.plans-list__item.red .plans-list__item-result-percent,
+.plans-list__item.red .plans-list__item-status {
+    color: #d32f2f;
+}
+
 @media screen and (max-width: 1300px){
     .plans-list__item {
         width: 48%;

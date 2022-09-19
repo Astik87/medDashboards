@@ -40,7 +40,7 @@ class Waves extends BaseWithFilter {
     }
 
     pageTopCustomBtn = () => {
-        return <AddButton onClick={this.openCreateWaveModal}>Создвть план</AddButton>
+        return <AddButton onClick={this.openCreateWaveModal}>Создать план</AddButton>
     }
 
     /**

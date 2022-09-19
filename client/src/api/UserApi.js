@@ -1,15 +1,35 @@
-import {host} from './Main'
+import {authHost, host} from './Main'
 import {getDateForFilter} from "@utils/DateUtils";
 
 class UserApi {
     async getStatistic(filter) {
         try {
             filter = getDateForFilter(filter)
-            const statistic = await host.get('/api/user/statistic', {params: filter})
+            const statistic = await authHost.get('/api/user/statistic', {params: filter})
 
             return {success: true, data: statistic.data}
         } catch (error) {
             return {success: false, message: error.message, status: error.status}
+        }
+    }
+
+    async get(limit = 25, page = 1) {
+        try {
+            const response = await authHost.get('/api/user', {params: {limit, page}})
+
+            return {success: true, data: response.data}
+        } catch (error) {
+            return {success: false, message: error.message}
+        }
+    }
+
+    async create(data) {
+        try {
+            const response = await authHost.post('/api/user', data)
+
+            return {success: true, data: response.data}
+        } catch (error) {
+            return  {success: false, message: error.message}
         }
     }
 
@@ -30,6 +50,16 @@ class UserApi {
         }
     }
 
+    async logout() {
+        try {
+            const response = await authHost.get('/api/user/logout')
+
+            return {success: true}
+        } catch (error) {
+            return  {success: false, message: error.message}
+        }
+    }
+
     async check() {
         try {
             const response = await host.get('/api/user/refresh', {withCredentials: true})
@@ -40,6 +70,16 @@ class UserApi {
             return {success: true, data: response.data}
         } catch (error) {
             return {success: false}
+        }
+    }
+
+    async delete(userIds) {
+        try {
+            const response = await authHost.delete('/api/user', {data: {userIds}})
+
+            return {success: true, data: response.data}
+        } catch (error) {
+            return {success: false, message: error.message}
         }
     }
 }

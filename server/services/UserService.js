@@ -9,14 +9,39 @@ const CitiesService = require('./CitiesService')
 const TokenService = require('./TokenService')
 
 class UserService {
+
+    async get(limit = 25, page = 1) {
+
+        limit = +limit
+        page = +page
+
+        if(!limit)
+            limit = 25
+
+        if(!page || page <= 0)
+            page = 1
+
+        return await DashboardUser.findAndCountAll({
+            attributes: [
+                ['ID', 'id'],
+                ['UF_NAME', 'name'],
+                ['UF_LOGIN', 'login'],
+                ['UF_IS_ADMIN', 'isAdmin']
+            ],
+            limit,
+            offset: (page-1)*limit
+        })
+    }
+
     /**
      * Регисрация пользователя
      * @param {string} name
      * @param {string} login
      * @param {string} password
+     * @param {boolean} isAdmin
      * @returns {Promise<{}>} - Об
      */
-    async registration(name, login, password) {
+    async create(name, login, password, isAdmin = false) {
 
         if (!name)
             throw new Error('Имя не может быть пустым')
@@ -40,19 +65,14 @@ class UserService {
         const user = await DashboardUser.create({
             UF_NAME: name,
             UF_LOGIN: login,
-            UF_PASSWORD_HASH: hashPassword
+            UF_PASSWORD_HASH: hashPassword,
+            UF_IS_ADMIN: Boolean(isAdmin)
         })
-
-        const tokenService = new TokenService()
-        const {accessToken, refreshToken} = tokenService.generateTokens({id: user.ID, name, login})
-        await tokenService.saveToken(user.ID, refreshToken)
 
         return {
             id: user.id,
             name,
-            login,
-            accessToken,
-            refreshToken
+            login
         }
     }
 
@@ -61,7 +81,13 @@ class UserService {
      */
     async login(login, password) {
         const user = await DashboardUser.findOne({
-            attributes: [['ID', 'id'], ['UF_LOGIN', 'login'], ['UF_NAME', 'name'], ['UF_PASSWORD_HASH', 'passwordHash']],
+            attributes: [
+                ['ID', 'id'],
+                ['UF_LOGIN', 'login'],
+                ['UF_NAME', 'name'],
+                ['UF_PASSWORD_HASH', 'passwordHash'],
+                ['UF_IS_ADMIN', 'isAdmin']
+            ],
             where: {
                 UF_LOGIN: login
             }
@@ -80,6 +106,7 @@ class UserService {
             id: jsonUser.id,
             name: jsonUser.name,
             login: jsonUser.login,
+            isAdmin: jsonUser.isAdmin
         }
 
         const tokenService = new TokenService()
@@ -233,6 +260,16 @@ class UserService {
         })
 
         return res
+    }
+
+    async delete(userIds) {
+        return await DashboardUser.destroy({
+            where: {
+                ID: {
+                    [Op.in]: userIds
+                }
+            }
+        })
     }
 }
 

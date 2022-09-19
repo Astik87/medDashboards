@@ -509,7 +509,7 @@ class EventsService {
      */
     async getEventVisits(eventId) {
         const visitsList = await EventRegistrations.findAll({
-            attributes: [['UF_VIDTIME', 'viewingTime']],
+            attributes: [['UF_VIDTIME', 'viewingTime'], ['UF_UTM_SOURCE', 'utm']],
             where: {
                 UF_EVENT: eventId
             },
@@ -527,7 +527,7 @@ class EventsService {
             if(!visit.b_user || !visit.b_user.email)
                 return false
 
-            result[visit.b_user.email] = visit.viewingTime
+            result[visit.b_user.email] = {viewingTime: visit.viewingTime, utm: visit.utm}
         })
 
         return result

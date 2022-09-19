@@ -8,11 +8,21 @@ import {CRMContext} from "@pages/CRM/CRMContext";
 
 const CRM = observer(() => {
 
+    const {chartData, messagesCount, event, campaign} = CRMState
+
     const [currentStep, setCurrentStep] = useState(0)
-    const [currentCampaign, setCurrentCampaign] = useState(false)
-    const [event, setEvent] = useState(false)
     const [unisenderStatistic, setUnisenderStatistic] = useState(false)
     const [error, setError] = useState(false)
+
+    const restart = () => {
+        CRMState.setCampaign(false)
+        CRMState.setEvent(false)
+        CRMState.setMessagesCount(false)
+        CRMState.setChartData(false)
+        setCurrentStep(0)
+        setUnisenderStatistic(false)
+        setError(false)
+    }
 
     return (
         <div className="page">
@@ -23,17 +33,14 @@ const CRM = observer(() => {
                         setCurrentStep,
                         unisenderStatistic,
                         setUnisenderStatistic,
-                        event,
-                        setEvent,
-                        currentCampaign,
-                        setCurrentCampaign,
                         error,
-                        setError
+                        setError,
+                        restart
                     }}>
                     {
-                        !CRMState.chartData
+                        !chartData
                         ? <CRMSteps/>
-                        : <CRMResult chartData={CRMState.chartData} />
+                        : <CRMResult chartData={CRMState.chartData} messagesCount={messagesCount} event={event} campaign={campaign} />
                     }
                 </CRMContext.Provider>
             </div>

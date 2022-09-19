@@ -8,6 +8,7 @@ import {
 import UnisenderApi from "@api/UnisenderApi";
 import {CRMContext} from "@pages/CRM/CRMContext";
 import {CSVToArray} from "@utils/CSVParser";
+import CRMState from "@/state/CRMState";
 
 const steps = [
     'Собираем статистику из Unisender',
@@ -22,7 +23,9 @@ const GetUnisenderStatistic = () => {
     const [statisticFileUrl, setStatisticFileUrl] = useState(false)
     const [taskStatusCount, setTaskStatusCount] = useState(0)
 
-    const {currentCampaign, error, setError, setUnisenderStatistic, currentStep, setCurrentStep} = useContext(CRMContext)
+    const {campaign} = CRMState
+
+    const {error, setError, setUnisenderStatistic, currentStep, setCurrentStep} = useContext(CRMContext)
 
     const nextStep = () => {
         const nextStep = step.index + 1
@@ -36,7 +39,7 @@ const GetUnisenderStatistic = () => {
 
     const getCampaignDeliveryStats = () => {
         setTimeout(async () => {
-            const response = await UnisenderApi.getCampaignDeliveryStats(currentCampaign.value)
+            const response = await UnisenderApi.getCampaignDeliveryStats(campaign.value)
 
             if (!response.success) {
                 setError(response.message)
@@ -82,6 +85,9 @@ const GetUnisenderStatistic = () => {
     }
 
     useEffect(() => {
+        if (taskUuid)
+            return
+
         getCampaignDeliveryStats()
     }, [])
 

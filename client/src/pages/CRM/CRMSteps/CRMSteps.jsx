@@ -1,5 +1,5 @@
-import {useContext, useState} from "react";
-import {Button, Step, StepLabel, Stepper} from "@mui/material";
+import {useContext} from "react";
+import {Alert, Button, Step, StepLabel, Stepper} from "@mui/material";
 
 import './style.css'
 
@@ -12,13 +12,13 @@ import {CRMContext} from "@pages/CRM/CRMContext";
 const steps = [
     {label: 'Выбор рассылки', Component: <SelectCampaign/>},
     {label: 'Выбор мероприятия', Component: <SelectEvent/>},
-    {label: 'Сбор статистики из Unisender', Component: <GetUnisenderStatistic />},
-    {label: 'Сбор статистики мероприятия', Component: <GetEventStatistic />}
+    {label: 'Сбор статистики из Unisender', Component: <GetUnisenderStatistic/>},
+    {label: 'Сбор статистики мероприятия', Component: <GetEventStatistic/>}
 ]
 
 const CRMSteps = () => {
 
-    const {error, currentStep} = useContext(CRMContext)
+    const {restart, error, currentStep} = useContext(CRMContext)
 
     return (
         <>
@@ -32,7 +32,16 @@ const CRMSteps = () => {
                 }
             </Stepper>
             <div className="crm-step__content">
-                {steps[currentStep].Component}
+                {
+                    error
+                        ?
+                        <>
+                            <Alert severity="error">{error}</Alert>
+                            <Button onClick={restart}>Повторить попытку</Button>
+                        </>
+                        :
+                        steps[currentStep].Component
+                }
             </div>
         </>
     )

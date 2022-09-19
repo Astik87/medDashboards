@@ -5,11 +5,13 @@ import {Backdrop, Button, CircularProgress} from "@mui/material";
 import Select from "react-select";
 import {Context} from "@/index";
 import {CRMContext} from "@pages/CRM/CRMContext";
+import CRMState from "@/state/CRMState";
 
 const SelectEvent = observer(() => {
 
     const {filter} = useContext(Context)
-    const {event, setEvent, currentStep, setCurrentStep} = useContext(CRMContext)
+    const {event} = CRMState
+    const {currentStep, setCurrentStep} = useContext(CRMContext)
     const {eventsList} = filter
 
     return (
@@ -26,7 +28,7 @@ const SelectEvent = observer(() => {
                 <div className="events-selector">
                     <Select
                         placeholder="Мероприятие"
-                        onChange={setEvent}
+                        onChange={CRMState.setEvent}
                         value={event}
                         options={eventsList.map(({id, name}) => {
                             return {label: name, value: id}

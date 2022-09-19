@@ -30,7 +30,8 @@ button.next-btn {
     width: 100%;
 }
 
-.get-unisender-statistic {
+.get-unisender-statistic,
+.get-event-statistic {
     align-items: center;
     justify-content: center;
 }

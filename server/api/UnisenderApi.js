@@ -1,4 +1,5 @@
 const axios = require('axios')
+const ApiError = require('../utils/ApiError')
 
 class UnisenderApi {
     constructor() {
@@ -84,6 +85,10 @@ class UnisenderApi {
         }
 
         const response = await this.host.get('/getCampaigns', {params: request})
+
+        if(response.data.error)
+            throw ApiError.BadRequest(response.data.error)
+
         return response.data
     }
 
@@ -100,19 +105,13 @@ class UnisenderApi {
         //     "status": "new"
         // }
 
-        if(!campaign_id) {
-            /* TODO обработка ошибки */
-            return false
-        }
+        if(!campaign_id)
+            throw ApiError.BadRequest('campaign_id is required')
 
         const response = await this.host.get('/async/getCampaignDeliveryStats', {params: {campaign_id}})
 
-        console.log(response.data)
-
-        if(response.data.error) {
-            /* TODO обработка ошибки */
-            return false
-        }
+        if(response.data.error)
+            throw ApiError.BadRequest(response.data.error)
 
         return response.data.result
     }
@@ -124,18 +123,13 @@ class UnisenderApi {
      * @returns {Promise<boolean|*>}
      */
     async getTaskResult(task_uuid) {
-        if(!task_uuid) {
-            /* TODO обработка ошибки */
-            return false
-        }
+        if(!task_uuid)
+            throw ApiError.BadRequest('task_uuid is required')
 
         const response = await this.host.get('/async/getTaskResult', {params: {task_uuid}})
 
-        console.log(response.data.error)
-        if(response.data.error) {
-            /* TODO обработка ошибки */
-            return false
-        }
+        if(response.data.error)
+            throw ApiError.BadRequest(response.data.error)
 
         return response.data.result
     }

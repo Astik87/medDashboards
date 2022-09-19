@@ -8,6 +8,7 @@ import Select from "react-select";
 
 import UnisenderApi from "@api/UnisenderApi";
 import {CRMContext} from "@pages/CRM/CRMContext";
+import CRMState from "@/state/CRMState";
 
 const dateTo = new Date()
 const dateFrom = new Date()
@@ -18,7 +19,9 @@ const SelectCampaign = () => {
     const [campaigns, setCampaigns] = useState(false)
     const [loading, setLoading] = useState(true)
 
-    const {currentCampaign, setCurrentCampaign, error, setError, currentStep, setCurrentStep} = useContext(CRMContext)
+    const {error, setError, currentStep, setCurrentStep} = useContext(CRMContext)
+
+    const {campaign} = CRMState
 
     const getCompaigns = async () => {
         setLoading(true)
@@ -33,7 +36,7 @@ const SelectCampaign = () => {
     }
 
     const selectCampaign = (value) => {
-        setCurrentCampaign(value)
+        CRMState.setCampaign(value)
     }
 
     useEffect(() => {
@@ -60,14 +63,14 @@ const SelectCampaign = () => {
                     <div className="campaigns-selector">
                         <Select
                             onChange={selectCampaign}
-                            value={currentCampaign}
+                            value={campaign}
                             placeholder="Рассылка"
                             options={campaigns.map(({subject, id}) => {
                                 return {label: subject, value: id}
                             })}/>
                     </div>
             }
-            <Button className="next-btn" onClick={() => {setCurrentStep(currentStep+1)}} disabled={!Boolean(currentCampaign)}>Next</Button>
+            <Button className="next-btn" onClick={() => {setCurrentStep(currentStep+1)}} disabled={!Boolean(campaign)}>Next</Button>
         </div>
     )
 }

@@ -19,7 +19,9 @@ const GetEventStatistic = () => {
     const [step, setStep] = useState({index: 0, status: 'info'})
     const [eventVisits, setEventVisits] = useState(false)
 
-    const {event, error, setError, unisenderStatistic} = useContext(CRMContext)
+    const {event} = CRMState
+
+    const {error, setError, unisenderStatistic} = useContext(CRMContext)
 
     const nextStep = () => {
         const nextStep = step.index + 1
@@ -32,9 +34,9 @@ const GetEventStatistic = () => {
     const getEventVisits = async () => {
         const response = await EventsApi.getEventVisits(event.value)
 
-        if(!response.success) {
+        if (!response.success) {
             setError(response.message)
-            return  setStep({...step, status: 'error'})
+            return setStep({...step, status: 'error'})
         }
 
         setEventVisits(response.data)
@@ -42,31 +44,68 @@ const GetEventStatistic = () => {
     }
 
     const getResultStatistic = async () => {
+        const chartDataIndexes = {
+            email: 0,
+            vk: 1,
+            tg: 2,
+            sms: 3,
+        }
+
         const chartData = [
-            {label: 'Отправлено', value: 0},
-            {label: 'OR', value: 0},
-            {label: 'CTR', value: 0},
-            {label: 'Регистрация', value: 0},
-            {label: 'Присутствие', value: 0},
+            {
+                label: 'Email',
+                data: [0, 0, 0, 0, 0],
+                borderRadius: 10,
+                backgroundColor: 'rgba(51, 97, 255, 1)'
+            },
+            {
+                label: 'VK',
+                data: [0, 0, 0, 0, 0],
+                borderRadius: 10,
+                backgroundColor: 'rgba(51, 97, 255, 0.85)'
+            },
+            {
+                label: 'TG',
+                data: [0, 0, 0, 0, 0],
+                borderRadius: 10,
+                backgroundColor: 'rgba(51, 97, 255, 0.70)'
+            },
+            {
+                label: 'SMS',
+                data: [0, 0, 0, 0, 0],
+                borderRadius: 10,
+                backgroundColor: 'rgba(51, 97, 255, 0.55)'
+            },
         ]
 
+        const indexChartData = (message, chartDataIndex) => {
+            if (linkVisitedStatuses.indexOf(message.send_result) !== -1) {
+                chartData[chartDataIndex].data[0]++
+                chartData[chartDataIndex].data[1]++
+                chartData[chartDataIndex].data[2]++
+            } else if (readStatuses.indexOf(message.send_result) !== -1) {
+                chartData[chartDataIndex].data[0]++
+                chartData[chartDataIndex].data[1]++
+            } else if (deliveredStstuses.indexOf(message.send_result) !== -1)
+                chartData[chartDataIndex].data[0]++
+        }
+
         unisenderStatistic.forEach(message => {
-            if(linkVisitedStatuses.indexOf(message.send_result) !== -1) {
-                chartData[0].value++
-                chartData[1].value++
-                chartData[2].value++
-            } else if(readStatuses.indexOf(message.send_result) !== -1) {
-                chartData[0].value++
-                chartData[1].value++
-            } else if(deliveredStstuses.indexOf(message.send_result) !== -1)
-                chartData[0].value++
+            let utm = false
+            let chartDataIndex = chartDataIndexes.email
 
-            if(eventVisits[message.email]) {
-                chartData[3].value++
+            if (eventVisits[message.email]) {
+                utm = eventVisits[message.email].utm
+                if (utm && typeof chartDataIndexes[utm] !== 'undefined')
+                    chartDataIndex = chartDataIndexes[utm]
 
-                if(eventVisits[message.email] > 0)
-                    chartData[4].value++
+                chartData[chartDataIndex].data[3]++
+
+                if (eventVisits[message.email].viewingTime > 0)
+                    chartData[chartDataIndex].data[4]++
             }
+
+            indexChartData(message, chartDataIndex)
         })
 
         nextStep()
@@ -77,14 +116,14 @@ const GetEventStatistic = () => {
     }
 
     useEffect(() => {
-        if(!eventVisits)
+        if (!eventVisits)
             setTimeout(() => {
                 getEventVisits()
             }, 500)
     }, [])
 
     useEffect(() => {
-        if(eventVisits)
+        if (eventVisits)
             setTimeout(() => {
                 getResultStatistic()
             }, 500)

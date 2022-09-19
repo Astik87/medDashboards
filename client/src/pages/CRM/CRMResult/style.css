@@ -1,3 +1,68 @@
+.crm-result__chart {
+    width: 90%;
+    margin-left: auto;
+}
+
 .crm-chart canvas {
-    max-height: 60vh;
+    max-height: 200px;
+    height: 60vh;
+}
+
+.current-filter {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.current-filter > span {
+    padding: 10px 20px;
+    display: block;
+}
+
+.current-filter .separator {
+    white-space: nowrap;
+    padding: 0px;
+}
+
+.current-filter .edit {
+    margin-left: auto;
+}
+
+.crm-result__table {
+    display: flex;
+    margin-top: 20px;
+}
+
+.crm-result__table-title {
+    display: flex;
+    flex-direction: column;
+    margin-right: 20px;
+    width: 10%;
+}
+
+.crm-result__table-title span {
+    margin-bottom: 10px;
+    color: #a0afc4;
+    text-align: right;
+}
+
+.crm-result__table-value {
+    display: flex;
+    flex-direction: column;
+    width: 86%;
+    margin-left: auto;
+}
+
+.crm-result__table-value .cols {
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 10px;
+}
+
+.crm-result__table-value .rows {
+    display: inline-block;
+    width: 6%;
+    text-align: center;
+    color: #040404;
 }

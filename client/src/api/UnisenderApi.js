@@ -1,6 +1,4 @@
 import {authHost} from "@api/Main";
-import {gridDensityRowHeightSelector} from "@mui/x-data-grid";
-import axios from "axios";
 
 class UnisenderApi {
     async getCampaigns(dateFrom, dateTo, limit, page) {

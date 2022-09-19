@@ -139,6 +139,16 @@ class EventsApi {
             return {success: false, message: error.message}
         }
     }
+
+    async getEventVisits(eventId) {
+        try {
+            const response = await authHost.get('/api/events/get-event-visits', {params: {eventId}})
+
+            return {success: true, data: response.data}
+        } catch (error) {
+            return {success: false, message: error.message}
+        }
+    }
 }
 
 export default new EventsApi()

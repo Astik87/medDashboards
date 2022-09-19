@@ -81,6 +81,19 @@ class EventsController {
 
         return res.json(await eventsService.deletePlan(id))
     }
+
+    async getEventVisits(req, res, next) {
+        try {
+            const {eventId} = req.query
+
+            const eventService = new EventService()
+            const result = await eventService.getEventVisits(eventId)
+
+            return res.json(result)
+        } catch (error) {
+            next(error)
+        }
+    }
 }
 
 module.exports = new EventsController()

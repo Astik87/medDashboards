@@ -107,6 +107,7 @@ const BarChart = (props) => {
 
     const {chartOptions, chartData} = initChart(data)
 
+    console.log(data)
     return <Bar options={chartOptions} data={chartData} />
 }
 

@@ -14,6 +14,8 @@ import LongReadPlans from "@pages/LongReadPlans";
 import Waves from "@pages/Waves";
 import Auth from "@pages/Auth";
 import AdminUsers from "@/adminPages/Users";
+import CRM from "@pages/CRM";
+
 
 const adminRoutes = [
     {
@@ -22,53 +24,57 @@ const adminRoutes = [
     },
     {
         path: "/admin/*",
-        Component: <NotFound />
+        Component: <NotFound/>
     }
 ]
 
 const authRoutes = [
     {
         path: '/medtouch',
-        Component: <Medtouch />
+        Component: <Medtouch/>
     },
     {
         path: '/long-read',
-        Component: <LongRead />
+        Component: <LongRead/>
     },
     {
         path: '/events',
-        Component: <Events />
+        Component: <Events/>
     },
     {
         path: '/waves',
-        Component: <Waves />
+        Component: <Waves/>
     },
     {
         path: '/waves/visit-plans',
-        Component: <VisitPlan baseUri="/visits" />
+        Component: <VisitPlan baseUri="/visits"/>
     },
     {
         path: '/visits/:page',
-        Component: <VisitPlan baseUri="/visits" />
+        Component: <VisitPlan baseUri="/visits"/>
     },
     {
         path: '/waves/event-plans',
-        Component: <EventPlans />
+        Component: <EventPlans/>
     },
     {
         path: '/waves/long-read-plans',
-        Component: <LongReadPlans />
+        Component: <LongReadPlans/>
+    },
+    {
+        path: '/crm',
+        Component: <CRM/>
     }
 ]
 
 const publicRoutes = [
     {
         path: '/auth',
-        Component: <Auth />
+        Component: <Auth/>
     },
     {
         path: '*',
-        Component: <NotFound />
+        Component: <NotFound/>
     }
 ]
 

@@ -8,6 +8,7 @@ router.get('', EventsController.getAll)
 router.get('/statistic', filtersMiddleware, EventsController.getStatistic)
 router.post('/visits-count', EventsController.getVisitsCount)
 router.get('/views-gte-min', filtersMiddleware, EventsController.getViewsGteMin)
+router.get('/get-event-visits', EventsController.getEventVisits)
 
 router.get('/plans', filtersMiddleware, EventsController.getEventPlans)
 router.delete('/plans', EventsController.deletePlan)

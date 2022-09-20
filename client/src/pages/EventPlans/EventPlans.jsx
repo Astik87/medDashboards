@@ -37,6 +37,11 @@ class EventPlans extends BaseWithFilter {
         return ['date']
     }
 
+    onChangeFilter = (filter) => {
+        const {limit} = this.state
+        this.getPlans(filter, limit, 1)
+    }
+
     /**
      * Кастомная кнопка рядом с кнопкой экспорта страницы
      */

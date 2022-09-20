@@ -12,7 +12,6 @@ class LongReadApi {
      */
     async getStatistic(filter) {
         try {
-            filter = getDateForFilter(filter)
             const statistic = await authHost.get('/api/long-read/statistic', {params: filter})
 
             return {success: true, data: statistic.data}
@@ -41,7 +40,6 @@ class LongReadApi {
      */
     async getPlans(filter, limit, page) {
         try {
-            filter = getDateForFilter(filter)
             const response = await authHost.get('/api/long-read/plans', {params: {...filter, limit, page}})
 
             return {success: true, data: response.data}

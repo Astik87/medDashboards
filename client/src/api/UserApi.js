@@ -4,7 +4,6 @@ import {getDateForFilter} from "@utils/DateUtils";
 class UserApi {
     async getStatistic(filter) {
         try {
-            filter = getDateForFilter(filter)
             const statistic = await authHost.get('/api/user/statistic', {params: filter})
 
             return {success: true, data: statistic.data}

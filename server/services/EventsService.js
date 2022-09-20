@@ -432,9 +432,11 @@ class EventsService {
      */
     async getPlansByDate(dateFrom, dateTo, limit = 10, page = 1) {
         const eventPlansQuery = {
-            UF_START_DATE: {
-                [Op.gte]: dateFrom,
-                [Op.lte]: dateTo
+            where: {
+                UF_START_DATE: {
+                    [Op.gte]: dateFrom,
+                    [Op.lte]: dateTo
+                },
             },
             limit,
             offset: (page-1)*limit

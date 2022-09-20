@@ -12,7 +12,6 @@ class VisitsApi {
      */
     async getPlans(filter, page, limit) {
         try {
-            filter = getDateForFilter(filter)
             const response = await authHost.get('/api/visits/plans', {params: {...filter, limit, page}})
 
             return {success: true, plans: response.data}

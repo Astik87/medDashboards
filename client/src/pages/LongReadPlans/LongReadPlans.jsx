@@ -41,6 +41,11 @@ class LongReadPlans extends BaseWithFilter {
         return <AddButton className="add-plan-btn" onClick={this.toggleCreatePlanModal}><span>Создать план</span></AddButton>
     }
 
+    onChangeFilter = (filter) => {
+        const {limit} = this.state
+        this.getPlans(filter, limit, 1)
+    }
+
     getPlans = async (filter, limit, page) => {
         this.setState({isLoading: true})
         const response = await LongReadApi.getPlans(filter, limit, page)

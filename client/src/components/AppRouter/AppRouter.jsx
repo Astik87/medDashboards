@@ -11,8 +11,6 @@ const AppRouter = observer(() => {
     const {userState} = useContext(Context)
     const {isAuth, user} = userState
 
-    console.log(user)
-
     return (
         <Routes>
             {publicRoutes.map(({path, Component}) => {

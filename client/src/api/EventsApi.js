@@ -29,7 +29,6 @@ class EventsApi {
             return false
 
         try{
-            filter = getDateForFilter(filter)
             const statistic = await authHost.get('/api/events/statistic', {params: {...filter}})
 
             return {success: true, data: statistic.data}
@@ -63,7 +62,6 @@ class EventsApi {
      */
     async getViewsGteMin(filter, minutes) {
         try {
-            filter = getDateForFilter(filter)
             const response = await authHost.get('/api/events/views-gte-min', {params: {...filter, minutes}})
 
             if(response.status !== 200)
@@ -84,7 +82,6 @@ class EventsApi {
      */
     async getEventPlans(filter, limit= 15, page= 1) {
         try {
-            filter = getDateForFilter(filter)
             const response = await authHost.get('/api/events/plans', {params: {...filter, limit, page}})
 
             return {success: true, data: response.data}

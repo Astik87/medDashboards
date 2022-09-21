@@ -70,3 +70,15 @@
     text-align: center;
     color: #040404;
 }
+
+.crm-top__btns {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.crm-users-list {
+    height: 70vh;
+    width: 80vw;
+}

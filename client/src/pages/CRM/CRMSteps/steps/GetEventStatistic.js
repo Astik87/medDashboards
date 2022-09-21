@@ -10,9 +10,98 @@ const steps = [
     'Готово'
 ]
 
-const deliveredStstuses = ['ok_delivered', 'ok_read', 'ok_link_visited']
+const deliveredStatuses = ['ok_delivered', 'ok_read', 'ok_link_visited']
 const readStatuses = ['ok_read', 'ok_link_visited']
 const linkVisitedStatuses = ['ok_link_visited']
+
+const getUsersList = (unisenderStatistic, eventVisits) => {
+
+    const usersList = []
+
+    unisenderStatistic.forEach((message, index) => {
+        if (!message.email)
+            return
+
+        const user = {
+            id: index,
+            email: message.email,
+            utmSource: '',
+            lastUpdate: message.last_update,
+            isDelivered: false,
+            isRead: false,
+            isVisitedLink: false,
+            isRegistered: false,
+            isViewing: false
+        }
+
+        user.isDelivered = deliveredStatuses.indexOf(message.send_result) !== -1
+        user.isRead = readStatuses.indexOf(message.send_result) !== -1
+        user.isVisitedLink = linkVisitedStatuses.indexOf(message.send_result) !== -1
+
+        user.isRegistered = typeof eventVisits[user.email] !== 'undefined'
+        user.isViewing = eventVisits[user.email] ? eventVisits[user.email].viewingTime > 0 : false
+
+        user.utmSource = eventVisits[user.email] ? eventVisits[user.email].utm : ''
+
+        usersList.push(user)
+    })
+
+    return usersList
+}
+
+const getChartDatasets = (usersList) => {
+
+    const chartDataIndexes = {}
+
+    const funnelAttraction = [{
+        label: 'Не указан',
+        data: [0, 0, 0, 0, 0],
+        borderRadius: 10,
+        backgroundColor: 'rgba(51, 97, 255, 0.5)'
+    }]
+
+    const bounceFunnel = [
+        {
+            label: 'Не указан',
+            data: [0, 0, 0, 0, 0],
+            borderRadius: 10,
+            backgroundColor: 'rgba(255, 149, 0, 0.5)'
+        }
+    ]
+
+    usersList.forEach(user => {
+        let chartDataIndex = user.utmSource ? chartDataIndexes[user.utmSource] : 0
+        if (typeof chartDataIndex === 'undefined') {
+            chartDataIndexes[user.utmSource] = funnelAttraction.push({
+                label: user.utmSource,
+                data: [0, 0, 0, 0, 0],
+                borderRadius: 10,
+                backgroundColor: `rgba(51, 97, 255, 0.${5+funnelAttraction.length})`
+            }) - 1
+
+            chartDataIndex = bounceFunnel.push({
+                label: user.utmSource,
+                data: [0, 0, 0, 0, 0],
+                borderRadius: 10,
+                backgroundColor: `rgba(255, 149, 0, 0.${5+funnelAttraction.length})`
+            }) - 1
+        }
+
+        funnelAttraction[chartDataIndex].data[0] += Number(user.isDelivered)
+        funnelAttraction[chartDataIndex].data[1] += Number(user.isRead)
+        funnelAttraction[chartDataIndex].data[2] += Number(user.isVisitedLink)
+        funnelAttraction[chartDataIndex].data[3] += Number(user.isRegistered)
+        funnelAttraction[chartDataIndex].data[4] += Number(user.isViewing)
+
+        bounceFunnel[chartDataIndex].data[0] += Number(!user.isDelivered)
+        bounceFunnel[chartDataIndex].data[1] += Number(!user.isRead)
+        bounceFunnel[chartDataIndex].data[2] += Number(!user.isVisitedLink)
+        bounceFunnel[chartDataIndex].data[3] += Number(!user.isRegistered)
+        bounceFunnel[chartDataIndex].data[4] += Number(!user.isViewing)
+    })
+
+    return {funnelAttraction, bounceFunnel}
+}
 
 const GetEventStatistic = () => {
 
@@ -44,92 +133,15 @@ const GetEventStatistic = () => {
     }
 
     const getResultStatistic = async () => {
-        const chartDataIndexes = {}
+        const usersList = getUsersList(unisenderStatistic, eventVisits)
 
-        const chartData = [{
-            label: 'Не указан',
-            data: [0, 0, 0, 0, 0],
-            borderRadius: 10,
-            backgroundColor: 'rgba(51, 97, 255, 0.5)'
-        }]
-
-        const failuresData = [
-            {
-                label: 'Не указан',
-                data: [0, 0, 0, 0, 0],
-                borderRadius: 10,
-                backgroundColor: 'rgba(51, 97, 255, 0.5)'
-            }
-        ]
-
-        const indexChartData = (message, chartDataIndex) => {
-            if (linkVisitedStatuses.indexOf(message.send_result) !== -1) {
-                chartData[chartDataIndex].data[0]++
-                chartData[chartDataIndex].data[1]++
-                chartData[chartDataIndex].data[2]++
-            } else if (readStatuses.indexOf(message.send_result) !== -1) {
-                chartData[chartDataIndex].data[0]++
-                chartData[chartDataIndex].data[1]++
-            } else if (deliveredStstuses.indexOf(message.send_result) !== -1)
-                chartData[chartDataIndex].data[0]++
-
-            if(deliveredStstuses.indexOf(message.send_result) === -1) {
-                failuresData[chartDataIndex].data[0]++
-                failuresData[chartDataIndex].data[1]++
-                failuresData[chartDataIndex].data[2]++
-            } else if(readStatuses.indexOf(message.send_result) === -1) {
-                failuresData[chartDataIndex].data[1]++
-                failuresData[chartDataIndex].data[2]++
-            } else if(linkVisitedStatuses.indexOf(message.send_result) === -1) {
-                failuresData[chartDataIndex].data[2]++
-            }
-        }
-
-        unisenderStatistic.forEach(message => {
-            let utm = false
-            let chartDataIndex = 0
-
-            if (eventVisits[message.email]) {
-                utm = eventVisits[message.email].utm
-
-                if (utm) {
-                    if(typeof chartDataIndexes[utm] === 'undefined') {
-                        chartDataIndexes[utm] = chartData.push({
-                            label: utm,
-                            data: [0, 0, 0, 0, 0],
-                            borderRadius: 10,
-                            backgroundColor: `rgba(51, 97, 255, ${0.5+(chartData.length)/10})`
-                        }) - 1
-                        failuresData.push({
-                            label: utm,
-                            data: [0, 0, 0, 0, 0],
-                            borderRadius: 10,
-                            backgroundColor: `rgba(51, 97, 255, ${0.5+(chartData.length)/10})`
-                        })
-                    }
-
-                    chartDataIndex = chartDataIndexes[utm]
-                }
-
-                chartData[chartDataIndex].data[3]++
-
-                if (eventVisits[message.email].viewingTime > 0)
-                    chartData[chartDataIndex].data[4]++
-                else
-                    failuresData[chartDataIndex].data[4]++
-            } else {
-                failuresData[0].data[3]++
-            }
-
-            indexChartData(message, chartDataIndex)
-        })
-
-        console.log(failuresData)
+        const {funnelAttraction, bounceFunnel} = getChartDatasets(usersList)
 
         nextStep()
         setTimeout(() => {
-            CRMState.setChartData(chartData)
-            CRMState.setFailuresData(failuresData)
+            CRMState.setFunnelAttraction(funnelAttraction)
+            CRMState.setBounceFunnel(bounceFunnel)
+            CRMState.setUsersList(usersList)
             CRMState.setMessagesCount(unisenderStatistic.length)
         }, 500)
     }

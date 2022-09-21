@@ -1,32 +1,35 @@
 import {makeAutoObservable} from 'mobx'
 
+// 1172
+
 class CRMState {
     constructor() {
-        this._chartData = false
-        this._failuresData = false
+        this._funnelAttraction = false
+        this._bounceFunnel = false
         this._messagesCount = 0
         this._campaign = false
-        this._event = false
+        this._event = 0
+        this._usersList = 0
 
         makeAutoObservable(this)
     }
 
-    get chartData() {
-        return this._chartData
+    get funnelAttraction() {
+        return this._funnelAttraction
     }
 
-    setChartData(data) {
-        this._chartData = data
-        return this._chartData
+    setFunnelAttraction(data) {
+        this._funnelAttraction = data
+        return this._funnelAttraction
     }
 
-    get failuresData() {
-        return this._failuresData
+    get bounceFunnel() {
+        return this._bounceFunnel
     }
 
-    setFailuresData(data) {
-        this._failuresData = data
-        return this._failuresData
+    setBounceFunnel(data) {
+        this._bounceFunnel = data
+        return this._bounceFunnel
     }
 
     get messagesCount() {
@@ -54,6 +57,15 @@ class CRMState {
     setCampaign = (campaign) => {
         this._campaign = campaign
         return this._campaign
+    }
+
+    get usersList() {
+        return this._usersList
+    }
+
+    setUsersList = (usersList) => {
+        this._usersList = usersList
+        return this._usersList
     }
 
 }

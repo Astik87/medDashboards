@@ -6,7 +6,6 @@ import {
 import './style.css'
 
 import {UsersTableContext} from "@/adminPages/Users/Users";
-import UserApi from "@api/UserApi";
 import {Alert, Button, LinearProgress} from "@mui/material";
 
 const columns = [

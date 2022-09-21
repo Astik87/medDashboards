@@ -528,7 +528,7 @@ class EventsService {
                 UF_EVENT: eventId
             },
             include: {
-                attributes: [['LOGIN', 'email']],
+                attributes: [['EMAIL', 'email']],
                 model: User
             }
         })

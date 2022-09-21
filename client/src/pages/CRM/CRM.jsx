@@ -8,7 +8,7 @@ import {CRMContext} from "@pages/CRM/CRMContext";
 
 const CRM = observer(() => {
 
-    const {chartData, messagesCount, event, campaign} = CRMState
+    const {usersList, funnelAttraction, bounceFunnel, messagesCount, event, campaign} = CRMState
 
     const [currentStep, setCurrentStep] = useState(0)
     const [unisenderStatistic, setUnisenderStatistic] = useState(false)
@@ -18,7 +18,8 @@ const CRM = observer(() => {
         CRMState.setCampaign(false)
         CRMState.setEvent(false)
         CRMState.setMessagesCount(false)
-        CRMState.setChartData(false)
+        CRMState.setFunnelAttraction(false)
+        CRMState.setBounceFunnel(false)
         setCurrentStep(0)
         setUnisenderStatistic(false)
         setError(false)
@@ -38,9 +39,9 @@ const CRM = observer(() => {
                         restart
                     }}>
                     {
-                        !chartData
+                        !funnelAttraction || !bounceFunnel
                         ? <CRMSteps/>
-                        : <CRMResult chartData={CRMState.chartData} failuresData={CRMState.failuresData} messagesCount={messagesCount} event={event} campaign={campaign} />
+                        : <CRMResult usersList={usersList} funnelAttraction={funnelAttraction} bounceFunnel={bounceFunnel} messagesCount={messagesCount} event={event} campaign={campaign} />
                     }
                 </CRMContext.Provider>
             </div>

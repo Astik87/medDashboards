@@ -6,6 +6,7 @@ import DateFilter from "./DateFilter";
 import {useContext} from "react";
 import {Context} from "@/index";
 import {observer} from "mobx-react";
+import {getDateForFilter} from "@utils/DateUtils";
 
 const Filter = observer((props) => {
     const {filtersList, filter} = props
@@ -25,7 +26,15 @@ const Filter = observer((props) => {
     const setDirection = (option) =>
         change({...filter, directionId: !option ? false : option.value})
 
-    const getEventOptions = () => eventsList.map(({id, name}) => {return {value: id, label: name}})
+    const getEventOptions = () => {
+        let {dateFrom, dateTo} = getDateForFilter(filter)
+        dateTo = new Date(dateTo)
+        dateFrom = new Date(dateFrom)
+        return eventsList.filter(event => {
+            const start = new Date(event.start)
+            return start > dateFrom && start < dateTo
+        })
+    }
 
     const getDirectionOptions = () => directionsList.map(({id, name}) => {return {value: id, label: name}})
 

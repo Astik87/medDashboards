@@ -44,38 +44,22 @@ const GetEventStatistic = () => {
     }
 
     const getResultStatistic = async () => {
-        const chartDataIndexes = {
-            email: 0,
-            vk: 1,
-            tg: 2,
-            sms: 3,
-        }
+        const chartDataIndexes = {}
 
-        const chartData = [
+        const chartData = [{
+            label: 'Не указан',
+            data: [0, 0, 0, 0, 0],
+            borderRadius: 10,
+            backgroundColor: 'rgba(51, 97, 255, 0.5)'
+        }]
+
+        const failuresData = [
             {
-                label: 'Email',
+                label: 'Не указан',
                 data: [0, 0, 0, 0, 0],
                 borderRadius: 10,
-                backgroundColor: 'rgba(51, 97, 255, 1)'
-            },
-            {
-                label: 'VK',
-                data: [0, 0, 0, 0, 0],
-                borderRadius: 10,
-                backgroundColor: 'rgba(51, 97, 255, 0.85)'
-            },
-            {
-                label: 'TG',
-                data: [0, 0, 0, 0, 0],
-                borderRadius: 10,
-                backgroundColor: 'rgba(51, 97, 255, 0.70)'
-            },
-            {
-                label: 'SMS',
-                data: [0, 0, 0, 0, 0],
-                borderRadius: 10,
-                backgroundColor: 'rgba(51, 97, 255, 0.55)'
-            },
+                backgroundColor: 'rgba(51, 97, 255, 0.5)'
+            }
         ]
 
         const indexChartData = (message, chartDataIndex) => {
@@ -88,29 +72,64 @@ const GetEventStatistic = () => {
                 chartData[chartDataIndex].data[1]++
             } else if (deliveredStstuses.indexOf(message.send_result) !== -1)
                 chartData[chartDataIndex].data[0]++
+
+            if(deliveredStstuses.indexOf(message.send_result) === -1) {
+                failuresData[chartDataIndex].data[0]++
+                failuresData[chartDataIndex].data[1]++
+                failuresData[chartDataIndex].data[2]++
+            } else if(readStatuses.indexOf(message.send_result) === -1) {
+                failuresData[chartDataIndex].data[1]++
+                failuresData[chartDataIndex].data[2]++
+            } else if(linkVisitedStatuses.indexOf(message.send_result) === -1) {
+                failuresData[chartDataIndex].data[2]++
+            }
         }
 
         unisenderStatistic.forEach(message => {
             let utm = false
-            let chartDataIndex = chartDataIndexes.email
+            let chartDataIndex = 0
 
             if (eventVisits[message.email]) {
                 utm = eventVisits[message.email].utm
-                if (utm && typeof chartDataIndexes[utm] !== 'undefined')
+
+                if (utm) {
+                    if(typeof chartDataIndexes[utm] === 'undefined') {
+                        chartDataIndexes[utm] = chartData.push({
+                            label: utm,
+                            data: [0, 0, 0, 0, 0],
+                            borderRadius: 10,
+                            backgroundColor: `rgba(51, 97, 255, ${0.5+(chartData.length)/10})`
+                        }) - 1
+                        failuresData.push({
+                            label: utm,
+                            data: [0, 0, 0, 0, 0],
+                            borderRadius: 10,
+                            backgroundColor: `rgba(51, 97, 255, ${0.5+(chartData.length)/10})`
+                        })
+                    }
+
                     chartDataIndex = chartDataIndexes[utm]
+                }
 
                 chartData[chartDataIndex].data[3]++
 
                 if (eventVisits[message.email].viewingTime > 0)
                     chartData[chartDataIndex].data[4]++
+                else
+                    failuresData[chartDataIndex].data[4]++
+            } else {
+                failuresData[0].data[3]++
             }
 
             indexChartData(message, chartDataIndex)
         })
 
+        console.log(failuresData)
+
         nextStep()
         setTimeout(() => {
             CRMState.setChartData(chartData)
+            CRMState.setFailuresData(failuresData)
             CRMState.setMessagesCount(unisenderStatistic.length)
         }, 500)
     }

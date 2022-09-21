@@ -3,9 +3,10 @@ import {makeAutoObservable} from 'mobx'
 class CRMState {
     constructor() {
         this._chartData = false
+        this._failuresData = false
         this._messagesCount = 0
         this._campaign = false
-        this._event = 714
+        this._event = false
 
         makeAutoObservable(this)
     }
@@ -17,6 +18,15 @@ class CRMState {
     setChartData(data) {
         this._chartData = data
         return this._chartData
+    }
+
+    get failuresData() {
+        return this._failuresData
+    }
+
+    setFailuresData(data) {
+        this._failuresData = data
+        return this._failuresData
     }
 
     get messagesCount() {

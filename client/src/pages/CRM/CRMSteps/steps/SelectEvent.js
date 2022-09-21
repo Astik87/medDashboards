@@ -30,9 +30,7 @@ const SelectEvent = observer(() => {
                         placeholder="Мероприятие"
                         onChange={CRMState.setEvent}
                         value={event}
-                        options={eventsList.map(({id, name}) => {
-                            return {label: name, value: id}
-                        })}/>
+                        options={eventsList}/>
                 </div>
             }
             <Button className="next-btn" onClick={() => {setCurrentStep(currentStep+1)}} disabled={!Boolean(event)}>Next</Button>

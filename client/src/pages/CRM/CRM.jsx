@@ -40,7 +40,7 @@ const CRM = observer(() => {
                     {
                         !chartData
                         ? <CRMSteps/>
-                        : <CRMResult chartData={CRMState.chartData} messagesCount={messagesCount} event={event} campaign={campaign} />
+                        : <CRMResult chartData={CRMState.chartData} failuresData={CRMState.failuresData} messagesCount={messagesCount} event={event} campaign={campaign} />
                     }
                 </CRMContext.Provider>
             </div>

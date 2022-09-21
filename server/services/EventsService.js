@@ -102,9 +102,21 @@ class EventsService {
      * @return {Promise<IBlockSections[]>}
      */
     static async getAll() {
-        return await IBlockSections.findAll({
-            attributes: [['ID', 'id'], ['NAME', 'name']],
-            where: {IBLOCK_ID: EventsService.EventsIBlockId}
+        const events = await IBlockSections.findAll({
+            attributes: [['ID', 'value'], ['NAME', 'label']],
+            where: {IBLOCK_ID: EventsService.EventsIBlockId},
+            include: {
+                attributes: [['UF_START', 'start']],
+                model: IBlockSectionFields,
+            }
+        })
+
+        return events.map(event => {
+            event = event.toJSON()
+
+            event.start = event.b_uts_iblock_9_section.start
+
+            return event
         })
     }
 

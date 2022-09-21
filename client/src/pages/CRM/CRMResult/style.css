@@ -3,6 +3,10 @@
     margin-left: auto;
 }
 
+.crm-chart {
+    margin-bottom: 20px;
+}
+
 .crm-chart canvas {
     max-height: 200px;
     height: 60vh;

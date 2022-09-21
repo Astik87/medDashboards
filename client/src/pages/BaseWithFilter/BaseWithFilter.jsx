@@ -39,8 +39,6 @@ class BaseWithFilter extends Component {
         if(filter.directionId)
             resultFilter.directionId = filter.directionId
 
-        console.log(resultFilter)
-
         this.onChangeFilter(resultFilter)
 
         this.setState({filter: resultFilter, _filter: filter})

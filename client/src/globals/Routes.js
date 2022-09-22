@@ -15,12 +15,18 @@ import Waves from "@pages/Waves";
 import Auth from "@pages/Auth";
 import AdminUsers from "@/adminPages/Users";
 import CRM from "@pages/CRM";
+import AdminTabs from "@components/Layout/Sidebar/Tabs/AdminTabs";
+import UnisenderExport from "@/adminPages/UnisenderExport";
 
 
 const adminRoutes = [
     {
         path: '/admin',
         Component: <AdminUsers/>
+    },
+    {
+        path: "/admin/unisender",
+        Component: <UnisenderExport />
     },
     {
         path: "/admin/*",
@@ -85,6 +91,7 @@ const sidebarRoutes = [
     {path: "/waves/visit-plans", Component: <WavesTabs/>},
     {path: "/waves/event-plans", Component: <WavesTabs/>},
     {path: "/waves/long-read-plans", Component: <WavesTabs/>},
+    {path: "/admin/*", Component: <AdminTabs />},
     {path: '*', Component: <NotFoundTab/>}
 ]
 

@@ -1,0 +1,12 @@
+.error {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+li.contacts-list__item {
+    font-size: 20px;
+    display: flex;
+    justify-content: space-between;
+}

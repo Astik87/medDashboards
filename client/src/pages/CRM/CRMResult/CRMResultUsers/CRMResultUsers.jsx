@@ -4,7 +4,7 @@ import {Empty} from "@components/General";
 
 const columns = [
     {field: 'lastUpdate', width: 150},
-    {field: 'email', width: 150},
+    {field: 'email', width: 250},
     {field: 'utmSource', width: 150},
     {field: 'isDelivered', width: 150},
     {field: 'isRead', width: 150},

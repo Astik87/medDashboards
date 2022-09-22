@@ -50,6 +50,40 @@ class UnisenderController {
             next(error)
         }
     }
+
+    async getLists(req, res, next) {
+        try {
+            const contactLists = await UnisenderApi.getLists()
+
+            return res.json(contactLists)
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    async deleteList(req, res, next) {
+        try {
+            const {listId} = req.body
+
+            const result = await UnisenderApi.deleteList(listId)
+
+            return res.json(result)
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    async createList(req, res, next) {
+        try {
+            const {title} = req.body
+
+            const result = await UnisenderApi.createList(title)
+
+            return res.json(result)
+        } catch (error) {
+            next(error)
+        }
+    }
 }
 
 module.exports = new UnisenderController()

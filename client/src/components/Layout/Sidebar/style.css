@@ -27,6 +27,10 @@ button.sidebar-tab a {
     justify-content: center;
 }
 
+button.sidebar-tab.current path {
+    fill: #3361FF;
+}
+
 button.sidebar-tab .sidebar-tab-icon {
     display: inline-flex;
     justify-content: center;

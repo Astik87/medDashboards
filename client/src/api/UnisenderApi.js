@@ -40,6 +40,26 @@ class UnisenderApi {
             return {success: false, message: error.message}
         }
     }
+
+    async getLists() {
+        try {
+            const response = await authHost.get('/api/unisender/getLists')
+
+            return {success: true, data: response.data}
+        } catch (error) {
+            return {success: false, message: error.message}
+        }
+    }
+
+    async deleteList(listId) {
+        try {
+            const response = await authHost.delete('/api/unisender/deleteList', {data: {listId}})
+
+            return {success: true, data: response.data}
+        } catch (error) {
+            return {success: false, message: error.message}
+        }
+    }
 }
 
 export default new UnisenderApi()

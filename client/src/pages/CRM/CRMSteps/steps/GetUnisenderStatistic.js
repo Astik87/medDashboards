@@ -13,7 +13,7 @@ import CRMState from "@/state/CRMState";
 const steps = [
     'Собираем статистику из Unisender',
     'Ждем ответ от Unisender',
-    'Обробатываем ответ'
+    'Обрабатываем ответ'
 ]
 
 const GetUnisenderStatistic = () => {

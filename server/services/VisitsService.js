@@ -61,7 +61,7 @@ class VisitsService {
          */
         let visitPlans = await VisitPlans.findAndCountAll({
             attributes: [['ID', 'id'], ['UF_START_DATE', 'start'], ['UF_END_DATE', 'end'], ['UF_NAME', 'name'], ['UF_PLAN', 'plan']],
-            order: [['UF_END_DATE', 'DESC']],
+            order: [['UF_END_DATE', 'ASC']],
             ...query
         })
 

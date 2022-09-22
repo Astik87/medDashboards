@@ -8,6 +8,9 @@ class UnisenderApi {
         })
 
         const requestInterceptor = config => {
+            if(!config.params)
+                config.params = {}
+
             config.params.api_key = process.env.UNISENDER_API_KEY
             return config
         }
@@ -143,6 +146,54 @@ class UnisenderApi {
         const response = await this.host.get(fileUrl, {params: {}, contentType: 'text'})
 
         return response.data
+    }
+
+    /**
+     * Получить список контактов
+     * https://www.unisender.com/ru/support/api/contacts/getlists/
+     * @returns {Promise<[{id: number, title: string}]>}
+     */
+    async getLists() {
+        const response = await this.host.get('/getLists')
+
+        if(response.data.error)
+            throw ApiError.BadRequest(response.data.error)
+
+        return response.data.result
+    }
+
+    /**
+     * Создвть список контактов
+     * https://www.unisender.com/ru/support/api/contacts/createlist/
+     * @returns {Promise<{}>}
+     */
+    async createList(title) {
+        if(!title)
+            throw ApiError.BadRequest('title is required')
+
+        const response = await this.host.get('/deleteList', {params: {title}})
+
+        if(response.data.error)
+            throw ApiError.BadRequest(response.data.error)
+
+        return response.data.result
+    }
+
+    /**
+     * Удалить список контактов
+     * https://www.unisender.com/ru/support/api/contacts/deletelist/
+     * @returns {Promise<{}>}
+     */
+    async deleteList(list_id) {
+        if(!list_id)
+            throw ApiError.BadRequest('listId is required')
+
+        const response = await this.host.get('/deleteList', {params: {list_id}})
+
+        if(response.data.error)
+            throw ApiError.BadRequest(response.data.error)
+
+        return response.data.result
     }
 }
 

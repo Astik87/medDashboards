@@ -1,0 +1,39 @@
+.create-list-progress {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.create-list__status {
+    height: 80vh;
+}
+
+div.progress-wrapper {
+    position: relative;
+    display: inline-flex;
+    width: 100%;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+ul.log-list {
+    max-width: 320px;
+    max-height: 400px;
+    overflow: auto;
+}
+
+div.progress-content {
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+div.progress-content .MuiTypography-root {
+    font-size: 20px;
+}

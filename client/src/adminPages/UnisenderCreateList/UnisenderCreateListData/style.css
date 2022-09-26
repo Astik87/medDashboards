@@ -1,0 +1,23 @@
+div.list-name {
+    width: 100%;
+}
+
+.list-users {
+    margin-top: 20px;
+}
+
+.list-grid {
+    min-height: 300px;
+    height: 60vh;
+}
+
+.list-users__title {
+    font-size: 24px;
+    margin: 15px 0;
+}
+
+.list-users__create-btn {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}

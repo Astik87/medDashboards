@@ -171,7 +171,7 @@ class UnisenderApi {
         if(!title)
             throw ApiError.BadRequest('title is required')
 
-        const response = await this.host.get('/deleteList', {params: {title}})
+        const response = await this.host.get('/createList', {params: {title}})
 
         if(response.data.error)
             throw ApiError.BadRequest(response.data.error)
@@ -189,6 +189,21 @@ class UnisenderApi {
             throw ApiError.BadRequest('listId is required')
 
         const response = await this.host.get('/deleteList', {params: {list_id}})
+
+        if(response.data.error)
+            throw ApiError.BadRequest(response.data.error)
+
+        return response.data.result
+    }
+
+    /**
+     * Импортировать в unisender список контактов
+     * https://www.unisender.com/ru/support/api/contacts/importcontacts/
+     * @param {FormData} data
+     * @returns {Promise<{}>}
+     */
+    async importContacts(data) {
+        const response = await this.host.post('/importContacts', data)
 
         if(response.data.error)
             throw ApiError.BadRequest(response.data.error)

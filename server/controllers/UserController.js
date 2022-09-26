@@ -30,6 +30,19 @@ class UserController {
         }
     }
 
+    static async getMedUsers(req, res, next) {
+        try {
+            const {eventId, directionId, limit, page} = req.query
+
+            const userService = new UserService()
+            const users = await userService.getMedUsers({eventId, directionId}, limit, page)
+
+            return res.json(users)
+        } catch (error) {
+            next(error)
+        }
+    }
+
     static async create(req, res) {
         try {
             const {name, login, password, isAdmin} = req.body

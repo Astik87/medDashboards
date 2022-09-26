@@ -1,24 +1,124 @@
 const {Op} = require('sequelize')
-const jwt = require('jsonwebtoken')
+const FormData = require('form-data')
 const bcrypt = require('bcrypt')
 
-const {User, UserFields, DashboardUser, MedDirections} = require('../models')
+const {User, UserFields, DashboardUser, MedDirections, EventRegistrations} = require('../models')
 const DateService = require('./DateService')
 const DirectionsService = require('./DirectionsService')
 const CitiesService = require('./CitiesService')
 const TokenService = require('./TokenService')
+const ApiError = require('../utils/ApiError')
 
 class UserService {
+
+    /**
+     * Получить список пользователей
+     * @param {{eventId: number, directionId: number}} filter
+     * @param {number} limit
+     * @param {number} page
+     * @returns {Promise<{count: number, rows: [{id: number, email: string, name: string, direction: string}]}>}
+     */
+    async getMedUsers(filter, limit = 25, page = 1) {
+
+        limit = +limit
+        page = +page
+
+        if (!limit)
+            limit = 25
+
+        if (!page || page <= 0)
+            page = 1
+
+        const {eventId, directionId} = filter
+
+        const medDirectionsInclude = {
+            attributes: [['UF_NAME', 'name']],
+            model: MedDirections,
+            required: true,
+        }
+
+        const userFieldsInclude = {
+            attributes: ['UF_DIRECTION'],
+            model: UserFields,
+            required: true,
+            include: [
+                medDirectionsInclude
+            ]
+        }
+
+        const visitsInclude = {
+            attributes: ['ID','UF_USER'],
+            model: EventRegistrations,
+            required: true
+        }
+
+        if (directionId)
+            userFieldsInclude.where = {UF_DIRECTION: directionId}
+
+        const include = [userFieldsInclude]
+
+        if(eventId) {
+            visitsInclude.where = {UF_EVENT: eventId}
+            userFieldsInclude.include.push(visitsInclude)
+        }
+
+        const query = {
+            attributes: [['ID', 'id'], ['EMAIL', 'email'], ['NAME', 'name']],
+            include,
+            order: [['ID', 'DESC']],
+            limit,
+            offset: (page - 1) * limit
+        }
+
+        const users = await User.findAndCountAll(query)
+
+        users.rows = users.rows.map(user => {
+            user = user.toJSON()
+
+            user.direction = user.b_uts_user.med_direction.name
+            delete user.b_uts_user
+            return user
+        })
+
+        return users
+
+    }
+
+    /**
+     * Получить FormData пользователей для импорта в Unisender
+     * @param {[{email: string}]} users
+     * @param {number} listId id списка контактов из unisender
+     * @returns {FormData}
+     */
+    getUsersFormDataForUnisender(users, listId) {
+        if(!listId)
+            throw ApiError.BadRequest('listId is required')
+
+        if(!users.length)
+            throw ApiError.BadRequest('The list of users is empty')
+
+        const formData = new FormData()
+
+        formData.append('field_names[0]', 'email')
+        formData.append('field_names[1]', 'email_list_ids')
+
+        users.forEach((user, index) => {
+            formData.append(`data[${index}][0]`, user.email)
+            formData.append(`data[${index}][1]`, listId)
+        })
+
+        return formData
+    }
 
     async get(limit = 25, page = 1) {
 
         limit = +limit
         page = +page
 
-        if(!limit)
+        if (!limit)
             limit = 25
 
-        if(!page || page <= 0)
+        if (!page || page <= 0)
             page = 1
 
         return await DashboardUser.findAndCountAll({
@@ -29,7 +129,7 @@ class UserService {
                 ['UF_IS_ADMIN', 'isAdmin']
             ],
             limit,
-            offset: (page-1)*limit
+            offset: (page - 1) * limit
         })
     }
 
@@ -46,10 +146,10 @@ class UserService {
         if (!name)
             throw new Error('Имя не может быть пустым')
 
-        if(!login || login.length < 3)
+        if (!login || login.length < 3)
             throw new Error('Логин не может быть меньше 3 симвалов')
 
-        if(!password || password.length < 6)
+        if (!password || password.length < 6)
             throw new Error('Пароль не может быть меньше 6 симвалов')
 
         const candidate = await DashboardUser.findOne({
@@ -93,13 +193,13 @@ class UserService {
             }
         })
 
-        if(!user)
+        if (!user)
             throw Error(`Пользователь с логином ${login} не найден`)
 
         const jsonUser = user.toJSON()
 
         const isPasswordEquals = await bcrypt.compare(password, jsonUser.passwordHash)
-        if(!isPasswordEquals)
+        if (!isPasswordEquals)
             throw Error('Неверный пароль')
 
         const resUser = {
@@ -134,14 +234,14 @@ class UserService {
      * Перезапись токенов
      */
     async refresh(refreshToken) {
-        if(!refreshToken)
+        if (!refreshToken)
             return false
 
         const tokenService = new TokenService()
         const user = tokenService.verifyToken(refreshToken)
         const userData = await tokenService.findUserByToken(refreshToken)
 
-        if(!user || !userData)
+        if (!user || !userData)
             return false
 
         const resUser = {

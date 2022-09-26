@@ -7,6 +7,7 @@ const adminMiddleware = require('../middleware/adminMiddleware')
 
 router.get('/statistic', authMiddleware, filterMiddleware, UserController.getStatistic)
 router.get('', adminMiddleware, UserController.get)
+router.get('/med-users', adminMiddleware, UserController.getMedUsers)
 router.post('', adminMiddleware, UserController.create)
 router.delete('', adminMiddleware, UserController.delete)
 router.post('/login', UserController.login)

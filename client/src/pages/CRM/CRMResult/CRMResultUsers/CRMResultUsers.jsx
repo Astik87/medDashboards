@@ -3,17 +3,15 @@ import {DataGrid, GridToolbar} from "@mui/x-data-grid";
 import {Empty} from "@components/General";
 
 const columns = [
-    {field: 'lastUpdate', width: 150},
-    {field: 'email', width: 250},
-    {field: 'utmSource', width: 150},
-    {field: 'isDelivered', width: 150},
-    {field: 'isRead', width: 150},
-    {field: 'isVisitedLink', width: 150},
-    {field: 'isRegistered', width: 150},
-    {field: 'isViewing', width: 150},
+    {field: 'lastUpdate', headerName: 'Дата последнего обновления ', width: 225},
+    {field: 'email', headerName: 'Email', width: 250},
+    {field: 'utmSource', headerName: 'UTM Source', width: 150},
+    {field: 'isDelivered', headerName: 'Доставлено', width: 100},
+    {field: 'isRead', headerName: 'Прочитано', width: 100},
+    {field: 'isVisitedLink', headerName: 'Перешел по ссылке', width: 150},
+    {field: 'isRegistered', headerName: 'Зарегистрировался', width: 150},
+    {field: 'isViewing', headerName: 'Присутствовал',width: 150},
 ]
-
-const valueLabels = ['Нет', 'Да']
 
 const booleanFields = ['isDelivered', 'isRead', 'isVisitedLink', 'isRegistered', 'isViewing']
 

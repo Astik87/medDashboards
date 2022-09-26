@@ -3,7 +3,14 @@ import {authHost} from "@api/Main";
 class UnisenderApi {
     async getCampaigns(dateFrom, dateTo, limit, page) {
         try {
-            const response = await authHost.get('/api/unisender/getCampaigns', {params: {dateFrom: dateFrom.getTime(), dateTo: dateTo.getTime(), limit, page}})
+            const response = await authHost.get('/api/unisender/getCampaigns', {
+                params: {
+                    dateFrom: dateFrom.getTime(),
+                    dateTo: dateTo.getTime(),
+                    limit,
+                    page
+                }
+            })
 
             return {success: true, data: response.data}
         } catch (error) {
@@ -51,9 +58,29 @@ class UnisenderApi {
         }
     }
 
+    async createList(title) {
+        try {
+            const response = await authHost.post('/api/unisender/createList', {title})
+
+            return {success: true, data: response.data}
+        } catch (error) {
+            return {success: false, message: error.message}
+        }
+    }
+
     async deleteList(listId) {
         try {
             const response = await authHost.delete('/api/unisender/deleteList', {data: {listId}})
+
+            return {success: true, data: response.data}
+        } catch (error) {
+            return {success: false, message: error.message}
+        }
+    }
+
+    async importContacts(filter, limit, page, listId) {
+        try {
+            const response = await authHost.post('/api/unisender/importContacts', {...filter, limit, page, listId})
 
             return {success: true, data: response.data}
         } catch (error) {

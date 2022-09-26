@@ -61,6 +61,7 @@ const UsersTable = (props) => {
                 rows={users.rows || []}
                 loading={loading}
                 pagination
+                paginationMode="server"
                 page={page-1}
                 pageSize={limit}
                 rowCount={users.count || 0}

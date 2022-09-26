@@ -22,6 +22,22 @@ class UserApi {
         }
     }
 
+    async getMedUsers(filter, limit, page) {
+        try {
+            if(!filter.eventId)
+                delete filter.eventId
+
+            if(!filter.directionId)
+                delete filter.directionId
+
+            const response = await authHost.get('/api/user/med-users', {params: {...filter, limit, page}})
+
+            return {success: true, data: response.data}
+        } catch (error) {
+            return {success: false, message: error.message}
+        }
+    }
+
     async create(data) {
         try {
             const response = await authHost.post('/api/user', data)

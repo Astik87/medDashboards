@@ -16,7 +16,8 @@ import Auth from "@pages/Auth";
 import AdminUsers from "@/adminPages/Users";
 import CRM from "@pages/CRM";
 import AdminTabs from "@components/Layout/Sidebar/Tabs/AdminTabs";
-import UnisenderExport from "@/adminPages/UnisenderExport";
+import UnisenderContactsList from "@/adminPages/UnisenderContactsList";
+import UnisenderCreateList from "@/adminPages/UnisenderCreateList";
 
 
 const adminRoutes = [
@@ -26,7 +27,11 @@ const adminRoutes = [
     },
     {
         path: "/admin/unisender",
-        Component: <UnisenderExport />
+        Component: <UnisenderContactsList />
+    },
+    {
+        path: "/admin/unisender/create-list",
+        Component: <UnisenderCreateList />
     },
     {
         path: "/admin/*",

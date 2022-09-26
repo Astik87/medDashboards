@@ -1,4 +1,5 @@
 import {useEffect, useState} from "react"
+import {Link} from "react-router-dom"
 import {
     Alert,
     Button,
@@ -8,13 +9,14 @@ import {
     TablePagination
 } from "@mui/material"
 import DeleteIcon from '@mui/icons-material/Delete';
+import AddButton from "@components/General/AddButton";
 
 import './style.css'
 
 import UnisenderApi from "@api/UnisenderApi"
 import {Loading} from "@components/General";
 
-const UnisenderExport = () => {
+const UnisenderContactsList = () => {
 
     const [contactLists, setContactLists] = useState([])
     const [page, setPage] = useState(1)
@@ -95,6 +97,11 @@ const UnisenderExport = () => {
 
     return (
         <div className="page">
+            <div className="unisender-export__top">
+                <Link to="/admin/unisender/create-list">
+                    <AddButton>Создать новый список</AddButton>
+                </Link>
+            </div>
             <List className="contacts-list">
                 {contactListsItems}
             </List>
@@ -110,4 +117,4 @@ const UnisenderExport = () => {
     )
 }
 
-export default UnisenderExport
+export default UnisenderContactsList

@@ -1,4 +1,5 @@
 const UnisenderApi = require('../api/UnisenderApi')
+const UserService = require('../services/UserService')
 
 class UnisenderController {
     async getCampaigns(req, res, next) {
@@ -78,6 +79,23 @@ class UnisenderController {
             const {title} = req.body
 
             const result = await UnisenderApi.createList(title)
+
+            return res.json(result)
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    async importContacts(req, res, next) {
+        try {
+            const {eventId, directionId, limit, page, listId} = req.body
+
+            const userService = new UserService()
+            const users = await userService.getMedUsers({eventId, directionId}, limit, page)
+            const formData = userService.getUsersFormDataForUnisender(users.rows, listId)
+            const result = await UnisenderApi.importContacts(formData)
+
+            result.usersCount = users.count
 
             return res.json(result)
         } catch (error) {

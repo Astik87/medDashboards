@@ -57,8 +57,8 @@ IBlockSectionFields.belongsTo(IBlockSections, {foreignKey: 'ID'})
 User.hasMany(EventRegistrations, {foreignKey: 'ID'})
 EventRegistrations.belongsTo(User, {foreignKey: 'UF_USER'})
 
-UserFields.hasOne(EventRegistrations, {foreignKey: 'VALUE_ID'})
-EventRegistrations.belongsTo(UserFields, {foreignKey: 'UF_USER'})
+UserFields.hasOne(EventRegistrations, {foreignKey: 'UF_USER'})
+EventRegistrations.belongsTo(UserFields, {foreignKey: 'VALUE_ID'})
 
 IBlockElement.hasMany(IBlockElementProperty, {foreignKey: 'IBLOCK_ELEMENT_ID'})
 IBlockElementProperty.belongsTo(IBlockElement, {foreignKey: 'ID'})

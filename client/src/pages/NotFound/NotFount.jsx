@@ -4,7 +4,7 @@ import './style.css'
 
 const NotFound = () => {
     return (
-        <div className="page-not-fount">
+        <div className="page page-not-fount">
             <span>Страница в разработке</span>
         </div>
     )

@@ -10,3 +10,9 @@ li.contacts-list__item {
     display: flex;
     justify-content: space-between;
 }
+
+.unisender-export__top {
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: flex-end;
+}

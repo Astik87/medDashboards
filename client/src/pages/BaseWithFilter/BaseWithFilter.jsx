@@ -18,6 +18,10 @@ class BaseWithFilter extends Component {
         return ['date', 'directions', 'events']
     }
 
+    getFilterProps = () => {
+        return {}
+    }
+
     /**
      * Кастомная кнопка рядом с кнопкой экспорта страницы
      */
@@ -52,6 +56,7 @@ class BaseWithFilter extends Component {
                 <PageTop
                     filter={_filter}
                     filtersList={this.getFiltersList()}
+                    filterProps={this.getFilterProps()}
                     filterChange={this.setFilter}
                     customBtn={this.pageTopCustomBtn()}/>
 

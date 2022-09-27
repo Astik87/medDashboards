@@ -5,7 +5,7 @@ import {
     Button,
     LinearProgress
 } from "@mui/material";
-import {DataGrid, GridToolbar} from "@mui/x-data-grid"
+import {DataGrid} from "@mui/x-data-grid"
 
 import './style.css'
 import Filter from "@components/Layout/PageTop/Filter";
@@ -50,6 +50,7 @@ const UnisenderCreateListData = () => {
     }
 
     const changeFilter = newFilter => {
+        console.log(newFilter)
         setFilter(newFilter)
 
         if (newFilter.eventId !== filter.eventId || newFilter.directionId !== filter.directionId)
@@ -114,7 +115,7 @@ const UnisenderCreateListData = () => {
                 <div className="list-users__title">
                     Список пользователей:
                 </div>
-                <Filter filtersList={filtersList} filter={filter} change={changeFilter}/>
+                <Filter filtersList={filtersList} filterProps={{events: {isMulti: true}}} filter={filter} change={changeFilter}/>
                 <div className="list-grid">
                     <DataGrid
                         columns={columns}

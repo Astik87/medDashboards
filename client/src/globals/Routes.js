@@ -18,6 +18,8 @@ import CRM from "@pages/CRM";
 import AdminTabs from "@components/Layout/Sidebar/Tabs/AdminTabs";
 import UnisenderContactsList from "@/adminPages/UnisenderContactsList";
 import UnisenderCreateList from "@/adminPages/UnisenderCreateList";
+import EventTabs from "@components/Layout/Sidebar/Tabs/EventTabs";
+import EventPromotions from "@pages/EventPromotions";
 
 
 const adminRoutes = [
@@ -51,6 +53,10 @@ const authRoutes = [
     {
         path: '/events',
         Component: <Events/>
+    },
+    {
+        path: '/events-promotions',
+        Component: <EventPromotions />
     },
     {
         path: '/waves',
@@ -96,6 +102,8 @@ const sidebarRoutes = [
     {path: "/waves/visit-plans", Component: <WavesTabs/>},
     {path: "/waves/event-plans", Component: <WavesTabs/>},
     {path: "/waves/long-read-plans", Component: <WavesTabs/>},
+    {path: "/events", Component: <EventTabs/>},
+    {path: "/events-promotions", Component: <EventTabs/>},
     {path: "/admin/*", Component: <AdminTabs />},
     {path: '*', Component: <NotFoundTab/>}
 ]

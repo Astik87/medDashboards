@@ -31,6 +31,10 @@ button.sidebar-tab.current path {
     fill: #3361FF;
 }
 
+button.sidebar-tab path {
+    fill: #BFCBDB;
+}
+
 button.sidebar-tab .sidebar-tab-icon {
     display: inline-flex;
     justify-content: center;

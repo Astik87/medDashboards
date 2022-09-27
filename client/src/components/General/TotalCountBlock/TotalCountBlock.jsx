@@ -10,7 +10,11 @@ const TotalCountBlock = (props) => {
     const {isLoading, count, title, subtitle, icon, className} = props
 
     return (
-        <DashboardBlock className={`total-count-block ${className ? className : ''}`} title={title} icon={icon}>
+        <DashboardBlock
+            className={`total-count-block ${className ? className : ''}`}
+            title={title}
+            icon={icon}
+            hideRightContent>
             <div className="events-page-value">
                 {isLoading ? <Loading/> : count}
             </div>

@@ -35,7 +35,16 @@ class EventsApi {
         } catch (error) {
             return {success: false, status: error.status, message: error.message}
         }
+    }
 
+    async getPromotionStatistic(filter) {
+        try {
+            const response = await authHost.get('/api/events/promotions-statistic', {params: {...filter}})
+
+            return {success: true, data: response.data}
+        } catch (error) {
+            return {success: false, message: error.message}
+        }
     }
 
     /**

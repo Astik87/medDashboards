@@ -1,0 +1,49 @@
+.promotion-statistic__chart {
+    max-width: 300px;
+    margin: 0 auto 20px;
+}
+
+.promotion-statistic__chart-wrap {
+    margin-top: 20px;
+    min-height: 500px;
+}
+
+.promotion-statistic__chart-empty .dashboard-block-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.promotion-statistic__chart-details-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.promotion-statistic__chart-details-color {
+    width: 16px;
+    height: 16px;
+    margin-right: 10px;
+    border-radius: 4px;
+}
+
+.promotion-statistic__chart-details-name {
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.promotion-statistic__chart-details-value {
+    display: flex;
+    flex-direction: column;
+    text-align: right;
+    font-size: 16px;
+    font-weight: 300;
+    margin-left: auto;
+}
+
+.promotion-statistic__chart-details-value span {
+    margin-top: 5px;
+    font-weight: 300;
+    font-size: 14px;
+    color: #a0afc4;
+}

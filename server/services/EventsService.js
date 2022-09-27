@@ -282,6 +282,89 @@ class EventsService {
     }
 
     /**
+     * Статистика базы продвижения мероприятий
+     * @returns {Promise<{event: {total: number, directions: []}, promotion: {total: number, directions: [], utm: []}}>}
+     */
+    async getPromotionStatistic(dateFrom, dateTo, directionId, eventId) {
+        const attributes = {
+            eventRegistrations: [['UF_VIDTIME', 'viewingTime'], ['UF_UTM_SOURCE', 'utm']],
+            event: [['ID', 'eventId'], ['NAME', 'eventName']],
+            user: [['ID', 'userId'], ['PERSONAL_CITY', 'userCity']],
+            userFields: [['UF_DIRECTION', 'directionId']],
+            direction: [['UF_NAME', 'directionName']]
+        }
+        const where = {
+            eventRegistrations: {
+                UF_DATE_CONNECTION: {
+                    [Op.gte]: dateFrom,
+                    [Op.lte]: dateTo
+                }
+            },
+            users: {},
+            userFields: {},
+        }
+
+        if (eventId)
+            where.eventRegistrations.UF_EVENT = eventId
+
+        if (directionId)
+            where.userFields.UF_DIRECTION = directionId
+
+        const visitsList = await this.getEventRegistrations(where, attributes)
+
+        const result = {
+            total: visitsList.length,
+            event: {
+                total: 0,
+                watched: 0,
+                directions: []
+            },
+            promotion: {
+                total: 0,
+                watched: 0,
+                utm: [],
+                directions: []
+            }
+        }
+
+        const utmIndexesList = {}
+
+        const directions = DirectionsService.getDirectionsForStatistic()
+        const promotionDirections = DirectionsService.getDirectionsForStatistic()
+
+        visitsList.forEach((visit) => {
+            visit = visit.toJSON()
+
+            const directionName = visit.b_user.b_uts_user.med_direction ? visit.b_user.b_uts_user.med_direction.directionName : false
+
+            if(visit.utm) {
+                let utmIndex = utmIndexesList[visit.utm]
+                if(typeof utmIndex === 'undefined')
+                    utmIndexesList[visit.utm] = utmIndex = result.promotion.utm.push({name: visit.utm, count: 0}) - 1
+
+                result.promotion.utm[utmIndex].count++
+                promotionDirections.indexValue(directionName)
+
+                result.promotion.total++
+                if(visit.viewingTime)
+                    result.promotion.watched++
+            } else {
+                directions.indexValue(directionName)
+
+                result.event.total++
+                if(visit.viewingTime)
+                    result.event.watched++
+            }
+        })
+
+        result.event.directions = directions.getStatisticResult()
+        result.promotion.directions = promotionDirections.getStatisticResult()
+        result.promotion.utm = result.promotion.utm.sort((a, b) => b.count-a.count).slice(0, 5)
+
+        return result
+    }
+
+    /**
      * Получить количество посетителей по id мероприятия
      * @param {number} eventId
      * @return {Promise<{count: number, event: {name: string, date: string}}>}
@@ -424,7 +507,7 @@ class EventsService {
                     return false
 
                 const eventStart = new Date(event.b_uts_iblock_9_section.start)
-                if (eventStart > plan.start)
+                if (eventStart >= plan.start)
                     plan.fact += event.event_registries.length
             })
 
@@ -451,7 +534,7 @@ class EventsService {
                 },
             },
             limit,
-            offset: (page-1)*limit
+            offset: (page - 1) * limit
         }
 
         return await this.getPlans(eventPlansQuery)
@@ -538,7 +621,7 @@ class EventsService {
         visitsList.forEach(visit => {
             visit = visit.toJSON()
 
-            if(!visit.b_user || !visit.b_user.email)
+            if (!visit.b_user || !visit.b_user.email)
                 return false
 
             result[visit.b_user.email] = {viewingTime: visit.viewingTime, utm: visit.utm}

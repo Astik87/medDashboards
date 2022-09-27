@@ -18,8 +18,6 @@ const EventsSelector = observer((props) => {
     const [opened, setOpened] = useState(false)
     const [events, setEvents] = useState([])
 
-    const getEventOptions = () => eventsList.map(({id, name}) => {return {value: id, label: name}})
-
     const onSelectChange = (newValues) => {
         if(newValues.length > 10)
             return false
@@ -53,9 +51,8 @@ const EventsSelector = observer((props) => {
                                 className="events-select"
                                 classNamePrefix="events-select"
                                 placeholder="Мероприятие"
-                                options={getEventOptions()}
-                                onChange={onSelectChange}
-                            />
+                                options={eventsList}
+                                onChange={onSelectChange} />
 
                             <div className="events-selector__events-list">
                                 <EventsList deleteEvent={deleteEvent} events={events}/>

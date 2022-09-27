@@ -6,6 +6,7 @@ const router = new Router()
 
 router.get('', EventsController.getAll)
 router.get('/statistic', filtersMiddleware, EventsController.getStatistic)
+router.get('/promotions-statistic', filtersMiddleware, EventsController.getPromotionStatistic)
 router.post('/visits-count', EventsController.getVisitsCount)
 router.get('/views-gte-min', filtersMiddleware, EventsController.getViewsGteMin)
 router.get('/get-event-visits', EventsController.getEventVisits)

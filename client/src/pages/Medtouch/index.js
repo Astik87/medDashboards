@@ -1,3 +1,3 @@
-import Medtouch from "./Medtouch";
+import Medtouch from './style.css'
 
 export default Medtouch

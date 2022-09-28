@@ -45,7 +45,7 @@ const ChartContent = (props) => {
 
 const EventPromotionsChart = (props) => {
 
-    const {title, data} = props
+    const {title, data, icon} = props
 
     let chartBlockClassName = 'promotion-statistic__block promotion-statistic__chart-wrap'
 
@@ -56,6 +56,7 @@ const EventPromotionsChart = (props) => {
         <DashboardBlock
             className={chartBlockClassName}
             title={title}
+            icon={icon}
             hideRightContent>
             {
                 data && data.length

@@ -1,16 +1,18 @@
-import React from "react";
+import React from "react"
 import {
     Alert
 } from '@mui/material'
 
 import './style.css'
 
-import EventsApi from "@api/EventsApi";
-import BaseWithFilter from "@pages/BaseWithFilter";
-import {DashboardBlock, Loading, TotalCountBlock} from "@components/General";
-import Progress from "@components/General/Progress";
+import EventsApi from "@api/EventsApi"
+import BaseWithFilter from "@pages/BaseWithFilter"
+import {DashboardBlock, Loading, TotalCountBlock} from "@components/General"
+import Progress from "@components/General/Progress"
 import EventPromotionsChart from './EventPromotionsChart'
-import eye from "@images/eye.svg";
+import chartIcon from "@images/chart.svg"
+import emailIcon from "@images/email.svg"
+import nurseIcon from "@images/nurse.svg"
 
 class EventPromotions extends BaseWithFilter {
 
@@ -67,7 +69,7 @@ class EventPromotions extends BaseWithFilter {
         const eventPercent = statistic.event.total ? (statistic.event.watched/statistic.event.total*100).toFixed() : 0
 
         return (
-            <div className="page">
+            <div className="page__content">
                 <div className="promotion-statistic">
                     <div className="promotion-statistic__line">
                         <DashboardBlock className="promotion-statistic__block" hideRightContent>
@@ -80,13 +82,13 @@ class EventPromotions extends BaseWithFilter {
                             <TotalCountBlock
                                 title="Кол-во не из базы продвижения"
                                 subtitle="Пользователей"
-                                icon={eye}
+                                icon={chartIcon}
                                 isLoading={loading}
                                 count={statistic.event.total}/>
                             <TotalCountBlock
                                 title="Кол-во из базы продвижения"
                                 subtitle="Пользователей"
-                                icon={eye}
+                                icon={chartIcon}
                                 isLoading={loading}
                                 count={statistic.promotion.total}/>
                         </div>
@@ -95,18 +97,21 @@ class EventPromotions extends BaseWithFilter {
                     <div className="promotion-statistic__line">
                         <EventPromotionsChart
                             title="% из базы продвижения по каналам коммуникаций"
+                            icon={emailIcon}
                             colors={this.promotionChartColors}
                             data={statistic.promotion.utm}
                             total={statistic.promotion.total} />
 
                         <EventPromotionsChart
                             title="Кол-во из базы продвижения"
+                            icon={nurseIcon}
                             colors={this.promotionDirectionsChartColors}
                             data={statistic.promotion.directions}
                             total={statistic.promotion.total} />
 
                         <EventPromotionsChart
                             title="Кол-во не из базы продвижения"
+                            icon={nurseIcon}
                             colors={this.eventChartColors}
                             data={statistic.event.directions}
                             total={statistic.event.total} />

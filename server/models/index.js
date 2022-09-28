@@ -3,6 +3,7 @@ const {DataTypes} = require('sequelize')
 
 const b_user = require('../bx_models/b_user')
 const b_uts_user = require('../bx_models/b_uts_user')
+const b_user_group = require('../bx_models/b_user_group')
 const dashboard_users = require('../bx_models/dashboard_users')
 const med_directions = require('../bx_models/med_directions')
 const long_read = require('../bx_models/long_read')
@@ -19,6 +20,7 @@ const waves = require('../bx_models/waves')
 
 const User = b_user(sequelize, DataTypes)
 const UserFields = b_uts_user(sequelize, DataTypes)
+const UserGroup = b_user_group(sequelize, DataTypes)
 const DashboardUser = dashboard_users(sequelize, DataTypes)
 const MedDirections = med_directions(sequelize, DataTypes)
 const LongRead = long_read(sequelize, DataTypes)
@@ -57,8 +59,11 @@ IBlockSectionFields.belongsTo(IBlockSections, {foreignKey: 'ID'})
 User.hasMany(EventRegistrations, {foreignKey: 'ID'})
 EventRegistrations.belongsTo(User, {foreignKey: 'UF_USER'})
 
-UserFields.hasOne(EventRegistrations, {foreignKey: 'UF_USER'})
-EventRegistrations.belongsTo(UserFields, {foreignKey: 'VALUE_ID'})
+UserFields.hasOne(EventRegistrations, {foreignKey: 'VALUE_ID'})
+EventRegistrations.belongsTo(UserFields, {foreignKey: 'UF_USER'})
+
+UserFields.hasOne(EventRegistrations, {foreignKey: 'UF_USER', as: 'UserFieldsEventRegistrations'})
+EventRegistrations.belongsTo(UserFields, {foreignKey: 'VALUE_ID', as: 'UserFieldsEventRegistrations'})
 
 IBlockElement.hasMany(IBlockElementProperty, {foreignKey: 'IBLOCK_ELEMENT_ID'})
 IBlockElementProperty.belongsTo(IBlockElement, {foreignKey: 'ID'})
@@ -78,6 +83,7 @@ Waves.belongsTo(LongReadPlans, {foreignKey: 'UF_LONG_READ_PLAN'})
 module.exports = {
     User,
     UserFields,
+    UserGroup,
     DashboardUser,
     MedDirections,
     LongRead,

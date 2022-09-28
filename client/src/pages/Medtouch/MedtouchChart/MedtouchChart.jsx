@@ -1,5 +1,3 @@
-import React from "react"
-import {Bar} from 'react-chartjs-2'
 import {
     Chart as ChartJS,
     CategoryScale,
@@ -9,42 +7,36 @@ import {
     Tooltip,
     Legend,
 } from 'chart.js'
+import {Bar} from 'react-chartjs-2'
 
-/**
- *
- * @param {[{label: string, value: number}]} data
- * @return {{chartOptions: {}, chartData: {}}}
- */
-const initChart = (data) => {
+const initChart = () => {
     ChartJS.register(
         CategoryScale,
         LinearScale,
         BarElement,
         Title,
         Tooltip,
-        Legend)
+        Legend
+    )
+}
 
-    const props = {
-        chartOptions: {},
-        chartData: {
-            labels: [],
-            datasets: [
-                {
-                    yAxisID: 'yAxis',
-                    xAxisID: 'xAxis',
-                    label: 'Users',
-                    minBarLength: 5,
-                    borderRadius: 10,
-                    backgroundColor: ['#3361FF', '#EDEFF2', '#EDEFF2', '#EDEFF2', '#EDEFF2'],
-                    data: []
-                }
-            ]
+const getChartProps = (data, colors) => {
+    const labels = data.groups.map(({name}) => name)
+
+    const datasets = [
+        {
+            label: 'Users',
+            data: data.groups.map(({count}) => {
+                return (count / data.total * 100).toFixed(1)
+            }),
+            backgroundColor: colors,
+            borderRadius: 10
         }
-    }
+    ]
 
-    props.chartOptions = {
+    const options = {
         responsive: true,
-        // maintainAspectRatio: false,
+        maintainAspectRatio: false,
         plugins: {
             legend: {
                 display: false,
@@ -91,23 +83,18 @@ const initChart = (data) => {
         }
     }
 
-    if(!data)
-        return props
-
-    if(data && data.length) {
-        props.chartData.labels = data.map(({label}) => label)
-        props.chartData.datasets[0].data = data.map(({value}) => value)
-    }
-
-    return props
+    return {options, data: {labels, datasets}}
 }
 
-const BarChart = (props) => {
-    const {data} = props
+const MedtouchChart = (props) => {
 
-    const {chartOptions, chartData} = initChart(data)
+    const {className, data, colors} = props
 
-    return <Bar options={chartOptions} data={chartData} />
+    return (
+        <div className={className || ''}>
+            <Bar {...getChartProps(data, colors)} />
+        </div>
+    )
 }
 
-export default BarChart
+export default MedtouchChart

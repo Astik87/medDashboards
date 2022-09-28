@@ -7,6 +7,17 @@ class UserController {
         res.cookie('refreshToken', refreshToken, {maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true})
     }
 
+    static async getUsersCountByGroups(req, res, next) {
+        try {
+            const userService = new UserService()
+            const result = await userService.getUsersCountByGroups()
+
+            return res.json(result)
+        } catch (error) {
+            next(error)
+        }
+    }
+
     static async getStatistic(req, res) {
         let {dateFrom, dateTo, directionId} = req.query
 

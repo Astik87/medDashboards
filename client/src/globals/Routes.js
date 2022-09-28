@@ -5,7 +5,7 @@ import WavesTabs from "@components/Layout/Sidebar/Tabs/WavesTabs";
 import NotFoundTab from "@components/Layout/Sidebar/Tabs/NotFoundTab";
 
 import NotFound from "@pages/NotFound";
-import Medtouch from "@pages/Medtouch";
+import Home from "@pages/Home";
 import LongRead from "@pages/LongRead";
 import Events from "@pages/Events";
 import VisitPlan from "@pages/VisitPlan";
@@ -20,6 +20,7 @@ import UnisenderContactsList from "@/adminPages/UnisenderContactsList";
 import UnisenderCreateList from "@/adminPages/UnisenderCreateList";
 import EventTabs from "@components/Layout/Sidebar/Tabs/EventTabs";
 import EventPromotions from "@pages/EventPromotions";
+import Medtouch from "@pages/Medtouch/Medtouch";
 
 
 const adminRoutes = [
@@ -42,6 +43,10 @@ const adminRoutes = [
 ]
 
 const authRoutes = [
+    {
+        path: '/',
+        Component: <Home/>
+    },
     {
         path: '/medtouch',
         Component: <Medtouch/>

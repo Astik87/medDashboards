@@ -1,0 +1,42 @@
+.medtouch-block {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 15px;
+    background-color: #edeff2;
+    border-radius: 10px;
+}
+
+.medtouch-block__text {
+    margin-right: 10px;
+    max-width: 67%;
+}
+
+.medtouch-block__title {
+    font-size: 18px;
+    font-weight: 500;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.medtouch-block__subtitle {
+    color: #a0afc4;
+}
+
+.medtouch-block__value {
+    font-size: 16px;
+    color: #ffffff;
+    padding: 7px 12px;
+    background-color: #34C759;
+    border-radius: 10px;
+}
+
+@media screen and (max-width: 860px){
+    .medtouch-block__value {
+        font-size: 14px;
+    }
+
+    .medtouch-block__title {
+        font-size: 16px;
+    }
+}

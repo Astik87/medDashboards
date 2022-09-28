@@ -1,8 +1,9 @@
-const {Op} = require('sequelize')
+const Sequelize = require('sequelize')
+const {Op} = Sequelize
 const FormData = require('form-data')
 const bcrypt = require('bcrypt')
 
-const {User, UserFields, DashboardUser, MedDirections, EventRegistrations} = require('../models')
+const {User, UserFields, UserGroup, DashboardUser, MedDirections, EventRegistrations} = require('../models')
 const DateService = require('./DateService')
 const DirectionsService = require('./DirectionsService')
 const CitiesService = require('./CitiesService')
@@ -10,6 +11,39 @@ const TokenService = require('./TokenService')
 const ApiError = require('../utils/ApiError')
 
 class UserService {
+
+    async getUsersCountByGroups() {
+        const userVerifyStatusGroups = [
+            {name: 'Верифицированные', groupIds: [11, 12], excludeGroupIds: []},
+            {name: 'Полуверифицированные', groupIds: [13, 16], excludeGroupIds: []},
+            {name: 'Прошли тест', groupIds: [12], excludeGroupIds: []},
+        ]
+
+        const result = {
+            total: 0,
+            groups: []
+        }
+
+        for (let group of userVerifyStatusGroups) {
+            const count = await UserGroup.count({
+                distinct: 'USER_ID',
+                where: {
+                    GROUP_ID: {
+                        [Op.in]: group.groupIds,
+                        [Op.ne]: group.excludeGroupIds
+                    }
+                }
+            })
+
+            result.groups.push({name: group.name, count: count})
+        }
+
+        result.groups.push({name: 'Не прошли тест', count: result.groups[1].count - result.groups[2].count})
+
+        result.total = await User.count()
+
+        return result
+    }
 
     /**
      * Получить список пользователей
@@ -49,6 +83,7 @@ class UserService {
         const visitsInclude = {
             attributes: ['ID','UF_USER'],
             model: EventRegistrations,
+            as: 'UserFieldsEventRegistrations',
             required: true
         }
 

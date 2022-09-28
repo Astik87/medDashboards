@@ -3,7 +3,8 @@ module.exports = function(sequelize, DataTypes) {
   return sequelize.define('b_user_group', {
     USER_ID: {
       type: DataTypes.INTEGER,
-      allowNull: false
+      allowNull: false,
+      primaryKey: true
     },
     GROUP_ID: {
       type: DataTypes.INTEGER,

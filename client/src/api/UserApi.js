@@ -38,6 +38,16 @@ class UserApi {
         }
     }
 
+    async getUsersCountByGroups() {
+        try {
+            const response = await authHost.get('/api/user/usersCountByGroups')
+
+            return {success: true, data: response.data}
+        } catch (error) {
+            return {success: false, message: error.message}
+        }
+    }
+
     async create(data) {
         try {
             const response = await authHost.post('/api/user', data)

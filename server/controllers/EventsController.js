@@ -5,13 +5,17 @@ class EventsController {
         return res.json(await EventService.getAll())
     }
 
-    async getStatistic(req, res) {
-        let {dateFrom, dateTo, eventId, directionId} = req.query
-        const eventsService = new EventService()
-        dateFrom = new Date(dateFrom)
-        dateTo = new Date(dateTo)
+    async getStatistic(req, res, next) {
+        try {
+            let {dateFrom, dateTo, eventId, directionId} = req.query
+            const eventsService = new EventService()
+            dateFrom = new Date(dateFrom)
+            dateTo = new Date(dateTo)
 
-        return res.json(await eventsService.getStatistic(dateFrom, dateTo, directionId, eventId))
+            return res.json(await eventsService.getStatistic(dateFrom, dateTo, directionId, eventId))
+        } catch (error) {
+            next(error)
+        }
     }
 
     async getPromotionStatistic(req, res, next) {

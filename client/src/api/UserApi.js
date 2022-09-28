@@ -1,5 +1,4 @@
 import {authHost, host} from './Main'
-import {getDateForFilter} from "@utils/DateUtils";
 
 class UserApi {
     async getStatistic(filter) {
@@ -37,6 +36,17 @@ class UserApi {
             return {success: false, message: error.message}
         }
     }
+
+    async getGroups() {
+        try {
+            const response = await authHost.get('/api/user/groups')
+
+            return response.data
+        } catch (error) {
+            return false
+        }
+    }
+
 
     async create(data) {
         try {

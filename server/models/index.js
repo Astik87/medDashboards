@@ -3,6 +3,7 @@ const {DataTypes} = require('sequelize')
 
 const b_user = require('../bx_models/b_user')
 const b_uts_user = require('../bx_models/b_uts_user')
+const b_group = require('../bx_models/b_group')
 const dashboard_users = require('../bx_models/dashboard_users')
 const med_directions = require('../bx_models/med_directions')
 const long_read = require('../bx_models/long_read')
@@ -19,6 +20,7 @@ const waves = require('../bx_models/waves')
 
 const User = b_user(sequelize, DataTypes)
 const UserFields = b_uts_user(sequelize, DataTypes)
+const UserGroups = b_group(sequelize, DataTypes)
 const DashboardUser = dashboard_users(sequelize, DataTypes)
 const MedDirections = med_directions(sequelize, DataTypes)
 const LongRead = long_read(sequelize, DataTypes)
@@ -41,6 +43,9 @@ UserFields.belongsTo(MedDirections, {foreignKey: 'UF_DIRECTION'});
 
 User.hasOne(LongRead, {foreignKey: 'ID'})
 LongRead.belongsTo(User, {foreignKey: 'UF_USER'})
+
+User.hasMany(UserGroups, {foreignKey: 'ID'})
+UserGroups.belongsTo(User, {foreignKey: 'USER_ID'})
 
 IBlockSections.hasOne(LongRead, {foreignKey: 'ID'})
 LongRead.belongsTo(IBlockSections, {foreignKey: 'UF_EVENT'})
@@ -78,6 +83,7 @@ Waves.belongsTo(LongReadPlans, {foreignKey: 'UF_LONG_READ_PLAN'})
 module.exports = {
     User,
     UserFields,
+    UserGroups,
     DashboardUser,
     MedDirections,
     LongRead,

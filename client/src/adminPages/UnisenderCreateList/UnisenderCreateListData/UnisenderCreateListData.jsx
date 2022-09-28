@@ -12,7 +12,7 @@ import Filter from "@components/Layout/PageTop/Filter";
 import UserApi from "@api/UserApi";
 import UnisenderCreateListContext from "../UnisenderCreateListCondext";
 
-const filtersList = ['date', 'events', 'directions']
+const filtersList = ['date', 'events', 'directions', 'userGroup']
 const nowYear = (new Date()).getFullYear()
 
 const columns = [
@@ -24,7 +24,14 @@ const columns = [
 
 const UnisenderCreateListData = () => {
 
-    const [filter, setFilter] = useState({year: nowYear, month: false, day: false, eventId: false, directionId: false})
+    const [filter, setFilter] = useState({
+        year: nowYear,
+        month: false,
+        day: false,
+        eventId: false,
+        directionId: false,
+        userGroup: false
+    })
     const [name, setName] = useState('')
     const [users, setUsers] = useState({count: 0, rows: []})
     const [limit, setLimit] = useState(25)
@@ -36,8 +43,8 @@ const UnisenderCreateListData = () => {
 
     const getUsers = async (filter, limit, page) => {
         setLoading(true)
-        const {eventId, directionId} = filter
-        const response = await UserApi.getMedUsers({eventId, directionId}, limit, page)
+        const {eventId, directionId, userGroup} = filter
+        const response = await UserApi.getMedUsers({eventId, directionId, userGroup}, limit, page)
 
         if (!response.success)
             setError(response.message)
@@ -50,10 +57,12 @@ const UnisenderCreateListData = () => {
     }
 
     const changeFilter = newFilter => {
-        console.log(newFilter)
         setFilter(newFilter)
 
-        if (newFilter.eventId !== filter.eventId || newFilter.directionId !== filter.directionId)
+        if (
+            newFilter.eventId !== filter.eventId
+            || newFilter.directionId !== filter.directionId
+            || newFilter.userGroup !== filter.userGroup)
             getUsers(newFilter, limit, page)
     }
 
@@ -67,7 +76,7 @@ const UnisenderCreateListData = () => {
     }, [])
 
     const changePage = (newPage) => {
-        getUsers(filter, limit, newPage+1)
+        getUsers(filter, limit, newPage + 1)
     }
 
     const changeLimit = (newLimit) => {
@@ -80,7 +89,7 @@ const UnisenderCreateListData = () => {
             usersList: true
         }
 
-        if(name.length < 3)
+        if (name.length < 3)
             res.name = false
 
         res.usersList = Boolean(users.rows.length)
@@ -115,7 +124,11 @@ const UnisenderCreateListData = () => {
                 <div className="list-users__title">
                     Список пользователей:
                 </div>
-                <Filter filtersList={filtersList} filterProps={{events: {isMulti: true}}} filter={filter} change={changeFilter}/>
+                <Filter
+                    filtersList={filtersList}
+                    filterProps={{events: {isMulti: true}, userGroup: {isMulti: true}}}
+                    filter={filter}
+                    change={changeFilter}/>
                 <div className="list-grid">
                     <DataGrid
                         columns={columns}
@@ -123,7 +136,7 @@ const UnisenderCreateListData = () => {
                         loading={loading}
                         pagination
                         paginationMode="server"
-                        page={page-1}
+                        page={page - 1}
                         pageSize={limit}
                         rowCount={users.count}
                         onPageChange={changePage}

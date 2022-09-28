@@ -2,7 +2,7 @@ const {Op} = require('sequelize')
 const FormData = require('form-data')
 const bcrypt = require('bcrypt')
 
-const {User, UserFields, DashboardUser, MedDirections, EventRegistrations} = require('../models')
+const {User, UserFields, UserGroups, DashboardUser, MedDirections, EventRegistrations} = require('../models')
 const DateService = require('./DateService')
 const DirectionsService = require('./DirectionsService')
 const CitiesService = require('./CitiesService')
@@ -29,7 +29,7 @@ class UserService {
         if (!page || page <= 0)
             page = 1
 
-        const {eventId, directionId} = filter
+        const {eventId, directionId, userGroup} = filter
 
         const medDirectionsInclude = {
             attributes: [['UF_NAME', 'name']],
@@ -52,6 +52,12 @@ class UserService {
             required: true
         }
 
+        const userGroupInclude = {
+            attributes: ['GROUP_ID'],
+            model: UserGroups,
+            required: true
+        }
+
         if (directionId)
             userFieldsInclude.where = {UF_DIRECTION: directionId}
 
@@ -60,6 +66,11 @@ class UserService {
         if(eventId) {
             visitsInclude.where = {UF_EVENT: eventId}
             userFieldsInclude.include.push(visitsInclude)
+        }
+
+        if(userGroup) {
+            userGroupInclude.where = {GROUP_ID: userGroup}
+            include.push(userGroupInclude)
         }
 
         const query = {
@@ -130,6 +141,12 @@ class UserService {
             ],
             limit,
             offset: (page - 1) * limit
+        })
+    }
+
+    async getGroups() {
+        return await UserGroups.findAll({
+            attributes: [['ID', 'value'], ['NAME', 'label']]
         })
     }
 

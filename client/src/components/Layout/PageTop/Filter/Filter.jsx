@@ -16,7 +16,7 @@ const Filter = observer((props) => {
     if(typeof change !== 'function')
         change = () => {}
 
-    const {directionsList, eventsList} = useContext(Context).filter
+    const {directionsList, eventsList, userGroups} = useContext(Context).filter
 
     if(!filtersList || !filtersList.length)
         return 'Not elements'
@@ -31,6 +31,13 @@ const Filter = observer((props) => {
     const setDirection = (option) =>
         change({...filter, directionId: !option ? false : option.value})
 
+    const setUserGroup = (newValue) => {
+        if(Array.isArray(newValue))
+            return  change({...filter, userGroup: !newValue ? false : newValue.map(({value}) => value)})
+
+        change({...filter, userGroup: !newValue ? false : newValue.value})
+    }
+
     const getEventOptions = () => {
         let {dateFrom, dateTo} = getDateForFilter(filter)
         dateTo = new Date(dateTo)
@@ -44,6 +51,8 @@ const Filter = observer((props) => {
     const getDirectionOptions = () => directionsList.map(({id, name}) => {return {value: id, label: name}})
 
     const getEventProps = () => filterProps && filterProps.events ? filterProps.events : {}
+
+    const getUserGroupProps = () => filterProps && filterProps.userGroup ? filterProps.userGroup : {}
 
     return (
         <div className="filter">
@@ -73,6 +82,17 @@ const Filter = observer((props) => {
                                 className="filter-select"
                                 isClearable={true}
                             />
+                    case 'userGroup':
+                        return directionsList &&
+                            <Select
+                                key="userGroup"
+                                placeholder="Группы пользователей"
+                                onChange={setUserGroup}
+                                options={userGroups}
+                                classNamePrefix="filter"
+                                className="filter-select"
+                                isClearable={true}
+                                {...getUserGroupProps()}/>
                     default:
                         return `Filter ${filterName} is not-defined`
                 }

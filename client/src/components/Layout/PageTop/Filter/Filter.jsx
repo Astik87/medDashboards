@@ -2,6 +2,7 @@ import React from "react"
 import Select from 'react-select'
 
 import './style.css'
+
 import DateFilter from "./DateFilter";
 import {useContext} from "react";
 import {Context} from "@/index";
@@ -9,22 +10,33 @@ import {observer} from "mobx-react";
 import {getDateForFilter} from "@utils/DateUtils";
 
 const Filter = observer((props) => {
-    const {filtersList, filter} = props
+    const {filtersList, filterProps, filter} = props
     let {change} = props
 
     if(typeof change !== 'function')
         change = () => {}
 
-    const {directionsList, eventsList} = useContext(Context).filter
+    const {directionsList, eventsList, userGroups} = useContext(Context).filter
 
     if(!filtersList || !filtersList.length)
         return 'Not elements'
 
-    const setEvent = (option) =>
-        change({...filter, eventId: !option ? false : option.value})
+    const setEvent = (newValue) => {
+        if(Array.isArray(newValue))
+            return  change({...filter, eventId: !newValue ? false : newValue.map(({value}) => value)})
+
+        change({...filter, eventId: !newValue ? false : newValue.value})
+    }
 
     const setDirection = (option) =>
         change({...filter, directionId: !option ? false : option.value})
+
+    const setUserGroup = (newValue) => {
+        if(Array.isArray(newValue))
+            return  change({...filter, userGroup: !newValue ? false : newValue.map(({value}) => value)})
+
+        change({...filter, userGroup: !newValue ? false : newValue.value})
+    }
 
     const getEventOptions = () => {
         let {dateFrom, dateTo} = getDateForFilter(filter)
@@ -37,6 +49,10 @@ const Filter = observer((props) => {
     }
 
     const getDirectionOptions = () => directionsList.map(({id, name}) => {return {value: id, label: name}})
+
+    const getEventProps = () => filterProps && filterProps.events ? filterProps.events : {}
+
+    const getUserGroupProps = () => filterProps && filterProps.userGroup ? filterProps.userGroup : {}
 
     return (
         <div className="filter">
@@ -54,7 +70,7 @@ const Filter = observer((props) => {
                                 classNamePrefix="filter"
                                 className="filter-select"
                                 isClearable={true}
-                            />
+                                {...getEventProps()}/>
                     case 'directions':
                         return directionsList &&
                             <Select
@@ -66,6 +82,17 @@ const Filter = observer((props) => {
                                 className="filter-select"
                                 isClearable={true}
                             />
+                    case 'userGroup':
+                        return directionsList &&
+                            <Select
+                                key="userGroup"
+                                placeholder="Группы пользователей"
+                                onChange={setUserGroup}
+                                options={userGroups}
+                                classNamePrefix="filter"
+                                className="filter-select"
+                                isClearable={true}
+                                {...getUserGroupProps()}/>
                     default:
                         return `Filter ${filterName} is not-defined`
                 }

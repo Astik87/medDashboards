@@ -3,7 +3,7 @@ const {Op} = Sequelize
 const FormData = require('form-data')
 const bcrypt = require('bcrypt')
 
-const {User, UserFields, UserGroup, DashboardUser, MedDirections, EventRegistrations} = require('../models')
+const {User, UserFields, UserGroup, Groups, DashboardUser, MedDirections, EventRegistrations} = require('../models')
 const DateService = require('./DateService')
 const DirectionsService = require('./DirectionsService')
 const CitiesService = require('./CitiesService')
@@ -63,12 +63,12 @@ class UserService {
         if (!page || page <= 0)
             page = 1
 
-        const {eventId, directionId} = filter
+        const {eventId, directionId, userGroup} = filter
 
         const medDirectionsInclude = {
             attributes: [['UF_NAME', 'name']],
             model: MedDirections,
-            required: true,
+            // required: true,
         }
 
         const userFieldsInclude = {
@@ -81,26 +81,35 @@ class UserService {
         }
 
         const visitsInclude = {
-            attributes: ['ID','UF_USER'],
+            attributes: ['UF_USER'],
             model: EventRegistrations,
             as: 'UserFieldsEventRegistrations',
+            required: true
+        }
+
+        const userGroupInclude = {
+            attributes: ['GROUP_ID'],
+            model: UserGroup,
             required: true
         }
 
         if (directionId)
             userFieldsInclude.where = {UF_DIRECTION: directionId}
 
-        const include = [userFieldsInclude]
-
         if(eventId) {
             visitsInclude.where = {UF_EVENT: eventId}
             userFieldsInclude.include.push(visitsInclude)
         }
 
+        if(userGroup) {
+            userGroupInclude.where = {GROUP_ID: userGroup}
+            userFieldsInclude.include.push(userGroupInclude)
+        }
+
         const query = {
-            attributes: [['ID', 'id'], ['EMAIL', 'email'], ['NAME', 'name']],
-            include,
-            order: [['ID', 'DESC']],
+            attributes: [['ID', 'userId'], ['EMAIL', 'email'], ['NAME', 'name']],
+            include: userFieldsInclude,
+            order: [['ID', 'ASC']],
             limit,
             offset: (page - 1) * limit
         }
@@ -110,8 +119,10 @@ class UserService {
         users.rows = users.rows.map(user => {
             user = user.toJSON()
 
-            user.direction = user.b_uts_user.med_direction.name
+            user.direction = user.b_uts_user && user.b_uts_user.med_direction ? user.b_uts_user.med_direction.name : 'Не указан'
+            user.id = user.userId
             delete user.b_uts_user
+            delete user.userId
             return user
         })
 
@@ -165,6 +176,12 @@ class UserService {
             ],
             limit,
             offset: (page - 1) * limit
+        })
+    }
+
+    async getGroups() {
+        return await Groups.findAll({
+            attributes: [['ID', 'value'], ['NAME', 'label']]
         })
     }
 

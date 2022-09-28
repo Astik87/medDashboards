@@ -6,14 +6,14 @@ import Filter from "./Filter";
 import ExportPage from "./ExportPage";
 
 const PageTop = (props) => {
-    const {filter, filtersList, filterChange, customBtn} = props
+    const {filter, filtersList, filterProps, filterChange, customBtn} = props
 
     return (
         <div className="page-top">
             {
                 filtersList !== false
                     ?
-                    <Filter filter={filter} filtersList={filtersList} change={filterChange}/>
+                    <Filter filter={filter} filtersList={filtersList} filterProps={filterProps} change={filterChange}/>
                     :
                     <div></div>
             }

@@ -71,6 +71,9 @@ const UnisenderCreatingListProgress = () => {
         if (usersFilter.directionId)
             apiFilter.directionId = usersFilter.directionId
 
+        if (usersFilter.userGroup)
+            apiFilter.userGroup = usersFilter.userGroup
+
         const response = await UnisenderApi.importContacts(apiFilter, limit, importedUsersPage + 1, newListId)
 
         if (!response.success)

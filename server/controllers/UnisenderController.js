@@ -88,10 +88,10 @@ class UnisenderController {
 
     async importContacts(req, res, next) {
         try {
-            const {eventId, directionId, limit, page, listId} = req.body
+            const {eventId, directionId, userGroup, limit, page, listId} = req.body
 
             const userService = new UserService()
-            const users = await userService.getMedUsers({eventId, directionId}, limit, page)
+            const users = await userService.getMedUsers({eventId, directionId, userGroup}, limit, page)
             const formData = userService.getUsersFormDataForUnisender(users.rows, listId)
             const result = await UnisenderApi.importContacts(formData)
 

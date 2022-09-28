@@ -1,6 +1,4 @@
-const {User} = require('../models')
 const UserService = require('../services/UserService')
-const jwt = require('jsonwebtoken')
 
 class UserController {
     static setCookieToken(res, refreshToken) {
@@ -43,12 +41,23 @@ class UserController {
 
     static async getMedUsers(req, res, next) {
         try {
-            const {eventId, directionId, limit, page} = req.query
+            const {eventId, directionId, userGroup, limit, page} = req.query
 
             const userService = new UserService()
-            const users = await userService.getMedUsers({eventId, directionId}, limit, page)
+            const users = await userService.getMedUsers({eventId, directionId, userGroup}, limit, page)
 
             return res.json(users)
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    static async getGroups(req, res, next) {
+        try {
+            const userService = new UserService()
+            const groups = await userService.getGroups()
+
+            return res.json(groups)
         } catch (error) {
             next(error)
         }

@@ -1,5 +1,6 @@
 const Sequelize = require('sequelize')
 const {Op} = Sequelize
+const DB = require('../db')
 const FormData = require('form-data')
 const bcrypt = require('bcrypt')
 
@@ -47,7 +48,7 @@ class UserService {
 
     /**
      * Получить список пользователей
-     * @param {{eventId: number, directionId: number}} filter
+     * @param {{eventId: [number], directionId: number}} filter
      * @param {number} limit
      * @param {number} page
      * @returns {Promise<{count: number, rows: [{id: number, email: string, name: string, direction: string}]}>}
@@ -65,68 +66,89 @@ class UserService {
 
         const {eventId, directionId, userGroup} = filter
 
-        const medDirectionsInclude = {
-            attributes: [['UF_NAME', 'name']],
-            model: MedDirections,
-            // required: true,
+        const tableNames = {
+            user: User.getTableName(),
+            userFields: UserFields.getTableName(),
+            medDirections: MedDirections.getTableName(),
+            eventVisits: EventRegistrations.getTableName(),
+            userGroup: UserGroup.getTableName()
         }
 
-        const userFieldsInclude = {
-            attributes: ['UF_DIRECTION'],
-            model: UserFields,
-            required: true,
-            include: [
-                medDirectionsInclude
+        const attributes = [
+            ['DISTINCT(`b_user`.`ID`)', '`id`'],
+            ['`b_user`.`NAME`', '`name`'],
+            ['`b_user`.`EMAIL`', '`email`'],
+            ['`med_directions`.`UF_NAME`', '`directionName`']
+        ]
+
+        const includes = [
+            [
+                tableNames.userFields,
+                [tableNames.user, 'ID'],
+                [tableNames.userFields, 'VALUE_ID']
+            ],
+            [
+                tableNames.medDirections,
+                [tableNames.medDirections, 'ID'],
+                [tableNames.userFields, 'UF_DIRECTION']
             ]
-        }
+        ]
 
-        const visitsInclude = {
-            attributes: ['UF_USER'],
-            model: EventRegistrations,
-            as: 'UserFieldsEventRegistrations',
-            required: true
-        }
+        const where = []
 
-        const userGroupInclude = {
-            attributes: ['GROUP_ID'],
-            model: UserGroup,
-            required: true
+        if (eventId && eventId.length) {
+            includes.push([
+                tableNames.eventVisits,
+                [tableNames.user, 'ID'],
+                [tableNames.eventVisits, 'UF_USER']
+            ])
+
+            where.push([[tableNames.eventVisits, 'UF_EVENT'], 'IN', '(' + eventId.join(',') + ')'])
         }
 
         if (directionId)
-            userFieldsInclude.where = {UF_DIRECTION: directionId}
+            where.push([[tableNames.medDirections, 'ID'], '=', directionId])
 
-        if(eventId) {
-            visitsInclude.where = {UF_EVENT: eventId}
-            userFieldsInclude.include.push(visitsInclude)
+        if (userGroup && userGroup.length) {
+            includes.push([
+                tableNames.userGroup,
+                [tableNames.user, 'ID'],
+                [tableNames.userGroup, 'USER_ID']
+            ])
+
+            where.push([
+                [tableNames.userGroup, 'GROUP_ID'],
+                'IN',
+                '(' + userGroup.join(',') + ')'
+            ])
         }
 
-        if(userGroup) {
-            userGroupInclude.where = {GROUP_ID: userGroup}
-            userFieldsInclude.include.push(userGroupInclude)
-        }
+        let select = 'SELECT '
+        let query = ''
 
-        const query = {
-            attributes: [['ID', 'userId'], ['EMAIL', 'email'], ['NAME', 'name']],
-            include: userFieldsInclude,
-            order: [['ID', 'ASC']],
-            limit,
-            offset: (page - 1) * limit
-        }
+        const attributesQueryArray = attributes.map((attribute) => `${attribute[0]} AS ${attribute[1]}`)
 
-        const users = await User.findAndCountAll(query)
+        select += attributesQueryArray.join(',') + ' FROM `' + tableNames.user + '` '
 
-        users.rows = users.rows.map(user => {
-            user = user.toJSON()
-
-            user.direction = user.b_uts_user && user.b_uts_user.med_direction ? user.b_uts_user.med_direction.name : 'Не указан'
-            user.id = user.userId
-            delete user.b_uts_user
-            delete user.userId
-            return user
+        includes.forEach(([table, associated1, associated2]) => {
+            return query += `INNER JOIN \`${table}\` ` +
+                `ON \`${associated1[0]}\`.\`${associated1[1]}\` = \`${associated2[0]}\`.\`${associated2[1]}\` `
         })
 
-        return users
+        const whereQueryArray = where.map(([field, condition, value]) => (
+            ` \`${field[0]}\`.\`${field[1]}\` ${condition} ${value} `
+        ))
+
+        if (whereQueryArray.length)
+            query += 'WHERE ' + whereQueryArray.join('AND')
+
+        query += `ORDER BY \`${tableNames.user}\`.\`ID\` ASC `
+        query += `LIMIT ${(page - 1) * limit}, ${limit}`
+
+        const users = await DB.query(select+query)
+        const count = await DB.query(`SELECT COUNT(\`${tableNames.user}\`.\`ID\`) AS count FROM \`${tableNames.user}\` `+query)
+
+        return {rows: users[0], ...count[0][0]}
 
     }
 
@@ -137,10 +159,10 @@ class UserService {
      * @returns {FormData}
      */
     getUsersFormDataForUnisender(users, listId) {
-        if(!listId)
+        if (!listId)
             throw ApiError.BadRequest('listId is required')
 
-        if(!users.length)
+        if (!users.length)
             throw ApiError.BadRequest('The list of users is empty')
 
         const formData = new FormData()

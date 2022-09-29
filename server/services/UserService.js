@@ -13,10 +13,10 @@ const ApiError = require('../utils/ApiError')
 
 class UserService {
 
-    async getUsersCountByGroups() {
+    async getUsersCountByGroups(dateFrom, dateTo, directionId, eventId) {
         const userVerifyStatusGroups = [
             {name: 'Верифицированные', groupIds: [11, 12], excludeGroupIds: []},
-            {name: 'Полуверифицированные', groupIds: [13, 16], excludeGroupIds: []},
+            {name: 'Полуверифицированные', groupIds: [13, 14, 15, 16], excludeGroupIds: []},
             {name: 'Прошли тест', groupIds: [12], excludeGroupIds: []},
         ]
 
@@ -25,21 +25,66 @@ class UserService {
             groups: []
         }
 
+        const userInclude = {
+            attributes: ['ID'],
+            model: User,
+            where: {},
+            required: true,
+            include: []
+        }
+
+        const directionInclude = {
+            attributes: ['UF_DIRECTION'],
+            model: UserFields,
+            required: true,
+            where: {
+                UF_DIRECTION: directionId
+            }
+        }
+
+        const visitsInclude = {
+            attributes: ['UF_USER', 'UF_EVENT'],
+            model: EventRegistrations,
+            required: true,
+            as: 'UserVisits',
+            where: {
+                UF_EVENT: eventId
+            }
+        }
+
+        if (directionId)
+            userInclude.include.push(directionInclude)
+
+        if (eventId)
+            userInclude.include.push(visitsInclude)
+        else
+            userInclude.where.DATE_REGISTER = {
+                [Op.gte]: dateFrom,
+                [Op.lte]: dateTo
+            }
+
+        const baseQuery = {
+            distinct: 'USER_ID',
+            where: {},
+            include: userInclude
+        }
+
         for (let group of userVerifyStatusGroups) {
-            const count = await UserGroup.count({
-                distinct: 'USER_ID',
-                where: {
-                    GROUP_ID: {
-                        [Op.in]: group.groupIds,
-                        [Op.ne]: group.excludeGroupIds
-                    }
+            baseQuery.where = {
+                GROUP_ID: {
+                    [Op.in]: group.groupIds,
+                    [Op.ne]: group.excludeGroupIds
                 }
-            })
+            }
+
+            const count = await UserGroup.count(baseQuery)
 
             result.groups.push({name: group.name, count: count})
         }
 
-        result.groups.push({name: 'Не прошли тест', count: result.groups[1].count - result.groups[2].count})
+        const filedTestCount = result.groups[1].count - result.groups[2].count
+
+        result.groups.push({name: 'Не прошли тест', count: filedTestCount < 0 ? 0 : filedTestCount })
 
         result.total = await User.count()
 
@@ -142,11 +187,12 @@ class UserService {
         if (whereQueryArray.length)
             query += 'WHERE ' + whereQueryArray.join('AND')
 
+        const count = await DB.query(`SELECT COUNT(\`${tableNames.user}\`.\`ID\`) AS count FROM \`${tableNames.user}\` ` + query)
+
         query += `ORDER BY \`${tableNames.user}\`.\`ID\` ASC `
         query += `LIMIT ${(page - 1) * limit}, ${limit}`
 
-        const users = await DB.query(select+query)
-        const count = await DB.query(`SELECT COUNT(\`${tableNames.user}\`.\`ID\`) AS count FROM \`${tableNames.user}\` `+query)
+        const users = await DB.query(select + query)
 
         return {rows: users[0], ...count[0][0]}
 

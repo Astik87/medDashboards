@@ -16,10 +16,10 @@ const filtersList = ['date', 'events', 'directions', 'userGroup']
 const nowYear = (new Date()).getFullYear()
 
 const columns = [
-    {field: 'userId', headerName: 'userId', width: 100},
+    {field: 'id', headerName: 'ID пользователя', width: 100},
     {field: 'email', headerName: 'Email', width: 450},
     {field: 'name', headerName: 'Имя', width: 250},
-    {field: 'direction', headerName: 'Направление', width: 450},
+    {field: 'directionName', headerName: 'Направление', width: 450},
 ]
 
 const UnisenderCreateListData = () => {

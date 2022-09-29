@@ -1,4 +1,5 @@
 import React from "react"
+import {Link} from "react-router-dom"
 
 import Menu from "./Menu"
 
@@ -13,7 +14,11 @@ const Header = () => {
     return (
         <header className="header">
             <div className="container d-flex jcsb">
-                <div className="logo"><img src={logo} alt="logo"/></div>
+                <div className="logo">
+                    <Link to="/">
+                        <img src={logo} alt="logo"/>
+                    </Link>
+                </div>
                 <div className="container--content header-content">
                     <Menu menuItems={menuItems}/>
                     <SearchInput/>

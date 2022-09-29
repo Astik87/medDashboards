@@ -35,8 +35,15 @@ const EventTabs = () => {
 
     const currentPath = useLocation().pathname
 
+    let currentTabIndex = 0
+
+    routes.forEach(({path}, index) => {
+        if(path === currentPath)
+            currentTabIndex = index
+    })
+
     return (
-        <SidebarTabs>
+        <SidebarTabs initValue={currentTabIndex}>
             {
                 routes.map(({path, icon}) => {
                     return (

@@ -69,8 +69,15 @@ const routes = [
 const WavesTabs = () => {
     const currentPath = useLocation().pathname
 
+    let currentTabIndex = 0
+
+    routes.forEach(({path}, index) => {
+        if(path === currentPath)
+            currentTabIndex = index
+    })
+
     return (
-        <SidebarTabs className="wave-tabs">
+        <SidebarTabs initValue={currentTabIndex} className="wave-tabs">
             {
                 routes.map(({path, icon}) => {
                     const isCurrent = currentPath === path

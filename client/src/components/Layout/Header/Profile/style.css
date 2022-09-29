@@ -1,6 +1,7 @@
 .header-profile {
     display: flex;
     align-items: center;
+    margin-left: 10px;
 }
 
 .ava {
@@ -58,7 +59,7 @@ div.profile-list {
 
     .mobile-header .header-profile {
         width: 90%;
-        justify-content: space-between;
+        justify-content: center;
         margin-bottom: 30px;
     }
 }

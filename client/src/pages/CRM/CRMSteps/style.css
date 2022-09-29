@@ -39,3 +39,13 @@ button.next-btn {
 .get-unisender-statistic__progress {
     margin-bottom: 20px;
 }
+
+@media screen and (max-width: 450px){
+    div.crm-stepper {
+        display: none;
+    }
+
+    .step {
+        margin-top: 0;
+    }
+}

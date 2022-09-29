@@ -1,5 +1,5 @@
 import {useContext} from "react";
-import {Alert, Button, Step, StepLabel, Stepper} from "@mui/material";
+import {Alert, Button, Step, StepLabel, Stepper, useMediaQuery} from "@mui/material";
 
 import './style.css'
 
@@ -19,10 +19,11 @@ const steps = [
 const CRMSteps = () => {
 
     const {restart, error, currentStep} = useContext(CRMContext)
+    const isMobile = useMediaQuery('(max-width: 620px)')
 
     return (
         <>
-            <Stepper activeStep={currentStep}>
+            <Stepper className="crm-stepper" activeStep={currentStep} alternativeLabel={isMobile}>
                 {
                     steps.map(({label}, index) => (
                         <Step key={label}>

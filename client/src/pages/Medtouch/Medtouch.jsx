@@ -25,12 +25,21 @@ class Medtouch extends BaseWithFilter {
     }
 
     componentDidMount() {
-        this.getUsersCountByGroups()
+        const {filter} = this.state
+        this.getUsersCountByGroups(filter)
     }
 
-    getUsersCountByGroups = async () => {
+    getFiltersList = () => {
+        return ['date', 'events', 'directions']
+    }
+
+    onChangeFilter = (newFilter) => {
+        this.getUsersCountByGroups(newFilter)
+    }
+
+    getUsersCountByGroups = async (filter) => {
         this.setState({loading: true})
-        const response = await UserApi.getUsersCountByGroups()
+        const response = await UserApi.getUsersCountByGroups(filter)
 
         if (!response.success)
             return this.setState({error: response.message, loading: false})

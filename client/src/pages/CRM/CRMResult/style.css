@@ -82,3 +82,32 @@
     height: 70vh;
     width: 80vw;
 }
+
+@media screen and (max-width: 550px){
+    .current-filter {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .current-filter .separator {
+        transform: rotate(90deg);
+    }
+}
+
+@media screen and (max-width: 420px){
+    .crm-result__chart {
+        width: 100%;
+    }
+
+    .crm-result__table-title {
+        font-size: 12px;
+    }
+
+    .crm-result__chart {
+        min-height: 200px;
+    }
+
+    .crm-result__chart canvas {
+        width: 100%;
+    }
+}

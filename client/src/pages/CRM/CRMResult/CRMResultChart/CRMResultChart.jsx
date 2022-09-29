@@ -11,6 +11,7 @@ import { Bar } from 'react-chartjs-2';
 
 import nurse from "@images/nurse.svg";
 import DashboardBlock from "@components/General/DashboardBlock";
+import {useMediaQuery} from "@mui/material";
 
 ChartJS.register(
     CategoryScale,
@@ -36,6 +37,13 @@ const chartOptions = {
 }
 
 const CRMResultChart = ({datasets}) => {
+
+    const isMobile = useMediaQuery('(max-width: 420px)')
+
+    if(isMobile) {
+        chartOptions.maintainAspectRatio = false
+        chartOptions.indexAxis = 'y'
+    }
 
     const data = {
         labels,

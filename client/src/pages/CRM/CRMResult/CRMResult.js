@@ -13,6 +13,7 @@ import {Button} from "@mui/material";
 import {CRMContext} from "@pages/CRM/CRMContext"
 import {modalBoxStyle} from "@styles/Modal";
 import CRMResultUsers from "@pages/CRM/CRMResult/CRMResultUsers";
+import {PageTop} from "@components/Layout";
 
 const CRMResult = (props) => {
 
@@ -22,10 +23,11 @@ const CRMResult = (props) => {
     const [usersListIsShow, setUsersListIsShow] = useState(false)
 
     return (
-        <div className="page">
+        <>
+            <PageTop filtersList={false}/>
             <div className="current-filter">
                 <span>{campaign.label}</span>
-                <span className="separator">---></span>
+                <span className="separator">-></span>
                 <span>{event.label}</span>
             </div>
 
@@ -34,20 +36,20 @@ const CRMResult = (props) => {
                     onClick={restart}
                     variant="contained"
                     className="edit"
-                    startIcon={<BorderColorOutlinedIcon />}>
+                    startIcon={<BorderColorOutlinedIcon/>}>
                     Edit
                 </Button>
                 <Button
                     onClick={() => setUsersListIsShow(true)}
                     variant="contained"
                     className="edit"
-                    startIcon={<BorderColorOutlinedIcon />}>
+                    startIcon={<BorderColorOutlinedIcon/>}>
                     Users List
                 </Button>
             </div>
 
-            <CRMResultChart datasets={funnelAttraction} />
-            <CRMResultChart datasets={bounceFunnel} />
+            <CRMResultChart datasets={funnelAttraction}/>
+            <CRMResultChart datasets={bounceFunnel}/>
 
             <Modal
                 onClose={() => setUsersListIsShow(false)}
@@ -56,11 +58,11 @@ const CRMResult = (props) => {
                     in={usersListIsShow}>
                     <Box
                         sx={modalBoxStyle}>
-                        <CRMResultUsers usersList={usersList} />
+                        <CRMResultUsers usersList={usersList}/>
                     </Box>
                 </Fade>
             </Modal>
-        </div>
+        </>
     )
 }
 

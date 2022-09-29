@@ -21,7 +21,7 @@ const NotFoundTab = () => {
     return (
         <SidebarTabs>
             <Tab
-                className="sidebar-tab"
+                className="sidebar-tab current"
                 icon={<Icon/>}>
             </Tab>
         </SidebarTabs>

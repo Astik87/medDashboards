@@ -31,6 +31,7 @@
 
 .dashboard-block__top-content {
     width: 50%;
+    margin-left: 15px;
 }
 
 @media screen and (max-width: 568px){

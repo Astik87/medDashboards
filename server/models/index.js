@@ -49,8 +49,8 @@ LongRead.belongsTo(User, {foreignKey: 'UF_USER'})
 // UserFields.belongsToMany(Groups, {through: UserGroup, foreignKey: 'USER_ID'})
 // Groups.belongsToMany(UserFields, {through: UserGroup, foreignKey: 'GROUP_ID'})
 
-UserFields.hasMany(UserGroup, {foreignKey: 'USER_ID'})
-UserGroup.belongsTo(UserFields, {foreignKey: 'VALUE_ID'})
+User.hasMany(UserGroup, {foreignKey: 'ID'})
+UserGroup.belongsTo(User, {foreignKey: 'USER_ID'})
 
 IBlockSections.hasOne(LongRead, {foreignKey: 'ID'})
 LongRead.belongsTo(IBlockSections, {foreignKey: 'UF_EVENT'})
@@ -66,6 +66,9 @@ IBlockSectionFields.belongsTo(IBlockSections, {foreignKey: 'ID'})
 
 User.hasMany(EventRegistrations, {foreignKey: 'ID'})
 EventRegistrations.belongsTo(User, {foreignKey: 'UF_USER'})
+
+User.hasMany(EventRegistrations, {foreignKey: 'UF_USER', as: 'UserVisits'})
+EventRegistrations.belongsTo(User, {foreignKey: 'ID', as: 'UserVisits'})
 
 UserFields.hasOne(EventRegistrations, {foreignKey: 'VALUE_ID'})
 EventRegistrations.belongsTo(UserFields, {foreignKey: 'UF_USER'})

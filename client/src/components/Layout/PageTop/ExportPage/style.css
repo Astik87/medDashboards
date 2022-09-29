@@ -14,7 +14,7 @@ div.export-page__control {
     font-size: 12px;
     font-weight: 600;
     display: flex;
-
+    max-width: 92.5%;
 }
 
 .export-page__icon {

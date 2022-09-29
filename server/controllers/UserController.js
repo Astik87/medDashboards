@@ -7,8 +7,9 @@ class UserController {
 
     static async getUsersCountByGroups(req, res, next) {
         try {
+            const {dateFrom, dateTo, eventId, directionId} = req.query
             const userService = new UserService()
-            const result = await userService.getUsersCountByGroups()
+            const result = await userService.getUsersCountByGroups(dateFrom, dateTo, directionId, eventId)
 
             return res.json(result)
         } catch (error) {

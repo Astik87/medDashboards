@@ -3,8 +3,12 @@ import {Tabs, useMediaQuery} from "@mui/material"
 
 const SidebarTabs = (props) => {
     const {children, className} = props
+    let {initValue} = props
 
-    const [value, setValue] = useState(0)
+    if(typeof initValue !== 'number')
+        initValue = 0
+
+    const [value, setValue] = useState(initValue)
 
     const isMobile = useMediaQuery('(max-width: 768px)')
 
@@ -14,8 +18,10 @@ const SidebarTabs = (props) => {
             onChange={(event, value) => setValue(value)}
             orientation={isMobile ? 'horizontal' : 'vertical'}
             centered={isMobile}
-            variant="fullWidth"
+            variant="scrollable"
             selectionFollowsFocus={false}
+            scrollButtons
+            allowScrollButtonsMobile
             className={`sidebar-tabs-wrapper ${className ? className : ''}`}>
             {children}
         </Tabs>

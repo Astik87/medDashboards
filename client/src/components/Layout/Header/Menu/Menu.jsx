@@ -12,7 +12,18 @@ const Menu = (props) => {
     return (
         <ul className="menu" onClick={() => {onClick && onClick()}}>
             {menuItems.map((item, key) => {
-                return <li key={key} className={`menu-item ${currentPage.pathname.includes(item.link) ? 'current' : ''}`}><Link to={item.link}>{item.text}</Link></li>
+                let isCurrentPath = currentPage.pathname === item.link
+                if(item.tabsList && !isCurrentPath)
+                    item.tabsList.forEach((tabPath) => {
+                        if(!isCurrentPath)
+                            isCurrentPath = currentPage.pathname === tabPath
+                    })
+
+                return (
+                    <li key={key} className={`menu-item ${isCurrentPath ? 'current' : ''}`}>
+                        <Link to={item.link}>{item.text}</Link>
+                    </li>
+                )
             })}
         </ul>
     )

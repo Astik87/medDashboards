@@ -40,9 +40,9 @@ class UserApi {
         }
     }
 
-    async getUsersCountByGroups() {
+    async getUsersCountByGroups(filter) {
         try {
-            const response = await authHost.get('/api/user/usersCountByGroups')
+            const response = await authHost.get('/api/user/usersCountByGroups', {params: filter})
 
             return {success: true, data: response.data}
         } catch (error) {

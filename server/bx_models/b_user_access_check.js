@@ -15,7 +15,8 @@ module.exports = function(sequelize, DataTypes) {
     timestamps: false,
     indexes: [
       {
-        name: "ix_uac_user_provider",
+        name: "ux_uac_user_provider",
+        unique: true,
         using: "BTREE",
         fields: [
           { name: "USER_ID" },

@@ -78,6 +78,21 @@ module.exports = function(sequelize, DataTypes) {
           { name: "TIMESTAMP_X" },
         ]
       },
+      {
+        name: "ix_b_rest_event_offline3",
+        using: "BTREE",
+        fields: [
+          { name: "APP_ID" },
+          { name: "CONNECTOR_ID" },
+        ]
+      },
+      {
+        name: "ix_b_rest_event_offline4",
+        using: "BTREE",
+        fields: [
+          { name: "PROCESS_ID" },
+        ]
+      },
     ]
   });
 };

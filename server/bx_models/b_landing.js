@@ -182,6 +182,13 @@ module.exports = function(sequelize, DataTypes) {
         ]
       },
       {
+        name: "IX_B_LAND_SITE_ID",
+        using: "BTREE",
+        fields: [
+          { name: "SITE_ID" },
+        ]
+      },
+      {
         name: "IX_B_LANDING_SEARCH",
         type: "FULLTEXT",
         fields: [

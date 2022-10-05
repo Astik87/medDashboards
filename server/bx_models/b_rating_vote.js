@@ -86,13 +86,6 @@ module.exports = function(sequelize, DataTypes) {
         ]
       },
       {
-        name: "IX_RAT_VOTE_ID_4",
-        using: "BTREE",
-        fields: [
-          { name: "USER_ID" },
-        ]
-      },
-      {
         name: "IX_RAT_VOTE_ID_5",
         using: "BTREE",
         fields: [
@@ -129,6 +122,14 @@ module.exports = function(sequelize, DataTypes) {
         fields: [
           { name: "CREATED" },
           { name: "USER_ID" },
+        ]
+      },
+      {
+        name: "IX_RAT_VOTE_ID_10",
+        using: "BTREE",
+        fields: [
+          { name: "USER_ID" },
+          { name: "OWNER_ID" },
         ]
       },
     ]

@@ -4,6 +4,7 @@ class UserState {
     constructor() {
         this._isAuth = false
         this._user = false
+        this._notifications = false
 
         makeAutoObservable(this)
     }
@@ -17,6 +18,10 @@ class UserState {
         this._user = user
     }
 
+    setNotifications(notifications) {
+        this._notifications = notifications
+    }
+
     get isAuth() {
         return this._isAuth
     }
@@ -25,8 +30,8 @@ class UserState {
         return this._user
     }
 
-    async check() {
-        return false
+    get notifications() {
+        return this._notifications
     }
 
 

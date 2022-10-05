@@ -49,6 +49,11 @@ module.exports = function(sequelize, DataTypes) {
     OPTIONS: {
       type: DataTypes.STRING(2048),
       allowNull: true
+    },
+    USER_ID: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      defaultValue: 0
     }
   }, {
     sequelize,
@@ -79,6 +84,14 @@ module.exports = function(sequelize, DataTypes) {
         fields: [
           { name: "PLACEMENT", length: 100 },
           { name: "ADDITIONAL", length: 100 },
+        ]
+      },
+      {
+        name: "ix_b_rest_placement4",
+        using: "BTREE",
+        fields: [
+          { name: "PLACEMENT" },
+          { name: "USER_ID" },
         ]
       },
     ]

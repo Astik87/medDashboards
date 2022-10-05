@@ -1,0 +1,14 @@
+.parser-progress {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 80vh;
+}
+
+.parser-progress__status {
+    margin-top: 20px;
+    min-width: 290px;
+    max-width: 500px;
+    width: 90%;
+}

@@ -58,6 +58,15 @@ module.exports = function(sequelize, DataTypes) {
           { name: "VALUE_ID" },
         ]
       },
+      {
+        name: "ix_utm_USER_4",
+        using: "BTREE",
+        fields: [
+          { name: "FIELD_ID" },
+          { name: "VALUE_ID" },
+          { name: "VALUE_INT" },
+        ]
+      },
     ]
   });
 };

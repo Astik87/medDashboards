@@ -1,12 +1,12 @@
 import {useContext, useEffect, useState} from "react";
+import {Alert, Button, LinearProgress} from "@mui/material"
 import {
     DataGrid, GridToolbar
 } from '@mui/x-data-grid'
 
 import './style.css'
 
-import {UsersTableContext} from "@/adminPages/Users/Users";
-import {Alert, Button, LinearProgress} from "@mui/material";
+import {UsersTableContext} from "@/adminPages/Users/Users"
 
 const columns = [
     {field: 'id', width: 50},

@@ -43,6 +43,9 @@ class BaseWithFilter extends Component {
         if(filter.directionId)
             resultFilter.directionId = filter.directionId
 
+        if(filter.longReadType)
+            resultFilter.longReadType = filter.longReadType
+
         this.onChangeFilter(resultFilter)
 
         this.setState({filter: resultFilter, _filter: filter})

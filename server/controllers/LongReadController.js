@@ -2,18 +2,27 @@ const LongReadService = require('../services/LongReadService')
 
 class LongReadController {
     async getStatistic(req, res) {
-        let {dateFrom, dateTo, eventId, directionId} = req.query
+        let {dateFrom, dateTo, eventId, directionId, longReadType} = req.query
 
         const longRead = new LongReadService()
 
         let longReadItems = []
 
         if(eventId)
-            longReadItems = await longRead.getLongReadItemsByEventId(eventId, directionId)
+            longReadItems = await longRead.getLongReadItemsByEventId(eventId, directionId, longReadType)
         else
-            longReadItems = await longRead.getLongReadItemsByDate(dateFrom, dateTo, directionId)
+            longReadItems = await longRead.getLongReadItemsByDate(dateFrom, dateTo, directionId, longReadType)
 
         return res.json(longRead.collectStatistic(longReadItems))
+    }
+
+    async getLongReadTypes(req, res, next) {
+        try {
+            const longReadService = new LongReadService()
+            return res.json(await longReadService.getLongReadTypes())
+        } catch (error) {
+            next(error)
+        }
     }
 
     async getPlans(req, res) {

@@ -18,6 +18,8 @@ const b_uts_iblock_9_section = require('../bx_models/b_uts_iblock_9_section')
 const visit_plans = require('../bx_models/dashboard_plans')
 const visit_statistic = require('../bx_models/visits_log')
 const waves = require('../bx_models/waves')
+const parce_prodoctorov = require('../bx_models/parce_prodoctorov')
+const dashboard_notifications = require('../bx_models/dashboard_notifications')
 
 const User = b_user(sequelize, DataTypes)
 const UserFields = b_uts_user(sequelize, DataTypes)
@@ -36,6 +38,8 @@ const IBlockSectionFields = b_uts_iblock_9_section(sequelize, DataTypes)
 const VisitPlans = visit_plans(sequelize, DataTypes)
 const VisitStatistic = visit_statistic(sequelize, DataTypes)
 const Waves = waves(sequelize, DataTypes)
+const ProdoctorovParser = parce_prodoctorov(sequelize, DataTypes)
+const DashboardNotifications = dashboard_notifications(sequelize, DataTypes)
 
 User.hasOne(UserFields, {foreignKey: 'VALUE_ID'});
 UserFields.belongsTo(User, {foreignKey: 'ID'});
@@ -91,6 +95,9 @@ Waves.belongsTo(EventPlans, {foreignKey: 'UF_EVENT_PLAN'})
 LongReadPlans.hasOne(Waves, {foreignKey: 'ID'})
 Waves.belongsTo(LongReadPlans, {foreignKey: 'UF_LONG_READ_PLAN'})
 
+DashboardUser.hasMany(DashboardNotifications, {foreignKey: 'UF_USER'})
+DashboardNotifications.belongsTo(DashboardUser, {foreignKey: 'ID'})
+
 module.exports = {
     User,
     UserFields,
@@ -108,5 +115,7 @@ module.exports = {
     IBlockSectionFields,
     VisitPlans,
     VisitStatistic,
-    Waves
+    Waves,
+    ProdoctorovParser,
+    DashboardNotifications
 }

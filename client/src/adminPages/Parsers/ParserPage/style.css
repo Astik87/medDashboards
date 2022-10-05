@@ -1,0 +1,10 @@
+.parser__top {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.parser__data {
+    min-height: 200px;
+    height: 70vh;
+}

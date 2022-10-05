@@ -3,13 +3,11 @@ module.exports = function(sequelize, DataTypes) {
   return sequelize.define('b_clouds_file_hash', {
     BUCKET_ID: {
       type: DataTypes.INTEGER,
-      allowNull: false,
-      primaryKey: true
+      allowNull: false
     },
     FILE_PATH: {
-      type: DataTypes.STRING(600),
-      allowNull: false,
-      primaryKey: true
+      type: DataTypes.STRING(760),
+      allowNull: false
     },
     FILE_SIZE: {
       type: DataTypes.BIGINT,
@@ -22,6 +20,12 @@ module.exports = function(sequelize, DataTypes) {
     FILE_HASH: {
       type: DataTypes.STRING(50),
       allowNull: true
+    },
+    ID: {
+      autoIncrement: true,
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      primaryKey: true
     }
   }, {
     sequelize,
@@ -33,8 +37,15 @@ module.exports = function(sequelize, DataTypes) {
         unique: true,
         using: "BTREE",
         fields: [
+          { name: "ID" },
+        ]
+      },
+      {
+        name: "ix_b_clouds_file_hash",
+        using: "BTREE",
+        fields: [
           { name: "BUCKET_ID" },
-          { name: "FILE_PATH", length: 100 },
+          { name: "FILE_PATH", length: 190 },
         ]
       },
     ]

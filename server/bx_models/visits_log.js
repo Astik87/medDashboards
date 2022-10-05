@@ -42,6 +42,18 @@ module.exports = function(sequelize, DataTypes) {
     UF_NUMBER: {
       type: DataTypes.DOUBLE,
       allowNull: true
+    },
+    UF_TELE: {
+      type: DataTypes.INTEGER,
+      allowNull: true
+    },
+    UF_NOT_IN: {
+      type: DataTypes.TEXT,
+      allowNull: true
+    },
+    UF_ROOMID: {
+      type: DataTypes.TEXT,
+      allowNull: true
     }
   }, {
     sequelize,

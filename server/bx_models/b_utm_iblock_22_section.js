@@ -52,12 +52,12 @@ module.exports = function(sequelize, DataTypes) {
         ]
       },
       {
-        name: "ix_utm_IBLOCK_22_SECTION_3",
+        name: "ix_utm_IBLOCK_22_SECTION_4",
         using: "BTREE",
         fields: [
           { name: "FIELD_ID" },
-          { name: "VALUE_INT" },
           { name: "VALUE_ID" },
+          { name: "VALUE_INT" },
         ]
       },
     ]

@@ -7,16 +7,16 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: false,
       primaryKey: true
     },
-    UF_PLAN: {
-      type: DataTypes.INTEGER,
-      allowNull: true
-    },
     UF_START_DATE: {
       type: DataTypes.DATE,
       allowNull: true
     },
     UF_END_DATE: {
       type: DataTypes.DATE,
+      allowNull: true
+    },
+    UF_PLAN: {
+      type: DataTypes.INTEGER,
       allowNull: true
     },
     UF_NAME: {

@@ -18,6 +18,11 @@ module.exports = function(sequelize, DataTypes) {
     FILE_ID: {
       type: DataTypes.INTEGER,
       allowNull: false
+    },
+    TEMP: {
+      type: DataTypes.CHAR(1),
+      allowNull: false,
+      defaultValue: "N"
     }
   }, {
     sequelize,
@@ -45,6 +50,13 @@ module.exports = function(sequelize, DataTypes) {
         using: "BTREE",
         fields: [
           { name: "FILE_ID" },
+        ]
+      },
+      {
+        name: "IX_TEMP",
+        using: "BTREE",
+        fields: [
+          { name: "TEMP" },
         ]
       },
     ]

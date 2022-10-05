@@ -93,6 +93,18 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.CHAR(1),
       allowNull: false,
       defaultValue: "N"
+    },
+    CODE_ORIGINAL: {
+      type: DataTypes.STRING(255),
+      allowNull: true
+    },
+    TPL_CODE: {
+      type: DataTypes.STRING(255),
+      allowNull: true
+    },
+    FAVORITE_META: {
+      type: DataTypes.TEXT,
+      allowNull: true
     }
   }, {
     sequelize,
@@ -141,6 +153,14 @@ module.exports = function(sequelize, DataTypes) {
         fields: [
           { name: "PUBLIC" },
           { name: "DATE_CREATE" },
+        ]
+      },
+      {
+        name: "IX_B_BLOCK_LID_PUBLIC",
+        using: "BTREE",
+        fields: [
+          { name: "LID" },
+          { name: "PUBLIC" },
         ]
       },
       {

@@ -1,6 +1,7 @@
 import SidebarTabs from "@components/Layout/Sidebar/Tabs";
 import MailOutlineIcon from '@mui/icons-material/MailOutline';
 import PeopleOutlineIcon from '@mui/icons-material/PeopleOutline';
+import ContentPasteSearchIcon from '@mui/icons-material/ContentPasteSearch';
 import {Tab} from "@mui/material";
 import {useLocation} from "react-router-dom";
 import {Link} from 'react-router-dom'
@@ -21,9 +22,18 @@ const UnisenderTab = () => {
     )
 }
 
+const ParsersTab = () => {
+    return (
+        <Link to="/admin/parsers">
+            <ContentPasteSearchIcon />
+        </Link>
+    )
+}
+
 const routes = [
     {path: '/admin', icon: <UsersTab />},
-    {path: '/admin/unisender', icon: <UnisenderTab />}
+    {path: '/admin/unisender', icon: <UnisenderTab />},
+    {path: '/admin/parsers', icon: <ParsersTab />},
 ]
 
 const AdminTabs = () => {

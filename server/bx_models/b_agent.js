@@ -95,6 +95,15 @@ module.exports = function(sequelize, DataTypes) {
           { name: "NAME", length: 100 },
         ]
       },
+      {
+        name: "ix_agent_act_period_next_exec",
+        using: "BTREE",
+        fields: [
+          { name: "ACTIVE" },
+          { name: "IS_PERIOD" },
+          { name: "NEXT_EXEC" },
+        ]
+      },
     ]
   });
 };

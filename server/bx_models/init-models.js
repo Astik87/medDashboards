@@ -44,6 +44,7 @@ var _b_file_search = require("./b_file_search");
 var _b_filters = require("./b_filters");
 var _b_finder_dest = require("./b_finder_dest");
 var _b_geoip_handlers = require("./b_geoip_handlers");
+var _b_geoname = require("./b_geoname");
 var _b_group = require("./b_group");
 var _b_group_collection_task = require("./b_group_collection_task");
 var _b_group_subordinate = require("./b_group_subordinate");
@@ -101,6 +102,7 @@ var _b_iblock_type_lang = require("./b_iblock_type_lang");
 var _b_landing = require("./b_landing");
 var _b_landing_binding = require("./b_landing_binding");
 var _b_landing_block = require("./b_landing_block");
+var _b_landing_block_last_used = require("./b_landing_block_last_used");
 var _b_landing_chat = require("./b_landing_chat");
 var _b_landing_chat_binding = require("./b_landing_chat_binding");
 var _b_landing_cookies_agreement = require("./b_landing_cookies_agreement");
@@ -112,6 +114,7 @@ var _b_landing_entity_rights = require("./b_landing_entity_rights");
 var _b_landing_file = require("./b_landing_file");
 var _b_landing_filter_block = require("./b_landing_filter_block");
 var _b_landing_filter_entity = require("./b_landing_filter_entity");
+var _b_landing_folder = require("./b_landing_folder");
 var _b_landing_hook_data = require("./b_landing_hook_data");
 var _b_landing_placement = require("./b_landing_placement");
 var _b_landing_repo = require("./b_landing_repo");
@@ -133,10 +136,12 @@ var _b_log_notification = require("./b_log_notification");
 var _b_log_notification_action = require("./b_log_notification_action");
 var _b_main_mail_blacklist = require("./b_main_mail_blacklist");
 var _b_main_mail_sender = require("./b_main_mail_sender");
+var _b_main_mail_sender_send_counter = require("./b_main_mail_sender_send_counter");
 var _b_medialib_collection = require("./b_medialib_collection");
 var _b_medialib_collection_item = require("./b_medialib_collection_item");
 var _b_medialib_item = require("./b_medialib_item");
 var _b_medialib_type = require("./b_medialib_type");
+var _b_messageservice_incoming_message = require("./b_messageservice_incoming_message");
 var _b_messageservice_message = require("./b_messageservice_message");
 var _b_messageservice_rest_app = require("./b_messageservice_rest_app");
 var _b_messageservice_rest_app_lang = require("./b_messageservice_rest_app_lang");
@@ -203,6 +208,7 @@ var _b_rest_stat_method = require("./b_rest_stat_method");
 var _b_rest_usage_entity = require("./b_rest_usage_entity");
 var _b_rest_usage_stat = require("./b_rest_usage_stat");
 var _b_sale_exchange_log = require("./b_sale_exchange_log");
+var _b_sale_facebook_conversion_params = require("./b_sale_facebook_conversion_params");
 var _b_sale_order_payment_item = require("./b_sale_order_payment_item");
 var _b_sale_order_round = require("./b_sale_order_round");
 var _b_sale_ruspost_reliability = require("./b_sale_ruspost_reliability");
@@ -282,6 +288,7 @@ var _b_translate_path_tree = require("./b_translate_path_tree");
 var _b_translate_phrase = require("./b_translate_phrase");
 var _b_ui_entity_editor_config = require("./b_ui_entity_editor_config");
 var _b_ui_entity_editor_config_ac = require("./b_ui_entity_editor_config_ac");
+var _b_ui_file_uploader_temp_file = require("./b_ui_file_uploader_temp_file");
 var _b_undo = require("./b_undo");
 var _b_urlpreview_metadata = require("./b_urlpreview_metadata");
 var _b_urlpreview_route = require("./b_urlpreview_route");
@@ -291,6 +298,8 @@ var _b_user_access_check = require("./b_user_access_check");
 var _b_user_auth_action = require("./b_user_auth_action");
 var _b_user_auth_code = require("./b_user_auth_code");
 var _b_user_counter = require("./b_user_counter");
+var _b_user_device = require("./b_user_device");
+var _b_user_device_login = require("./b_user_device_login");
 var _b_user_digest = require("./b_user_digest");
 var _b_user_field = require("./b_user_field");
 var _b_user_field_confirm = require("./b_user_field_confirm");
@@ -318,6 +327,7 @@ var _b_xml_tree = require("./b_xml_tree");
 var _bx_db_migrations = require("./bx_db_migrations");
 var _course_registry = require("./course_registry");
 var _course_registry_stat = require("./course_registry_stat");
+var _dashboard_notifications = require("./dashboard_notifications");
 var _dashboard_plans = require("./dashboard_plans");
 var _dashboard_users = require("./dashboard_users");
 var _event_plans = require("./event_plans");
@@ -333,7 +343,6 @@ var _long_read_plans = require("./long_read_plans");
 var _long_read_uf_estimation = require("./long_read_uf_estimation");
 var _long_read_uf_test = require("./long_read_uf_test");
 var _med_directions = require("./med_directions");
-var _medpred_statis = require("./medpred_statis");
 var _module_options = require("./module_options");
 var _nmo_entity = require("./nmo_entity");
 var _oauth_access_tokens = require("./oauth_access_tokens");
@@ -346,6 +355,7 @@ var _oauth_scopes = require("./oauth_scopes");
 var _parce_prodoctorov = require("./parce_prodoctorov");
 var _parcedocdoc = require("./parcedocdoc");
 var _reg_region = require("./reg_region");
+var _speakers_subs = require("./speakers_subs");
 var _streamopros = require("./streamopros");
 var _streamopros_uf_answer = require("./streamopros_uf_answer");
 var _test_answer_variants = require("./test_answer_variants");
@@ -405,6 +415,7 @@ function initModels(sequelize) {
   var b_filters = _b_filters(sequelize, DataTypes);
   var b_finder_dest = _b_finder_dest(sequelize, DataTypes);
   var b_geoip_handlers = _b_geoip_handlers(sequelize, DataTypes);
+  var b_geoname = _b_geoname(sequelize, DataTypes);
   var b_group = _b_group(sequelize, DataTypes);
   var b_group_collection_task = _b_group_collection_task(sequelize, DataTypes);
   var b_group_subordinate = _b_group_subordinate(sequelize, DataTypes);
@@ -462,6 +473,7 @@ function initModels(sequelize) {
   var b_landing = _b_landing(sequelize, DataTypes);
   var b_landing_binding = _b_landing_binding(sequelize, DataTypes);
   var b_landing_block = _b_landing_block(sequelize, DataTypes);
+  var b_landing_block_last_used = _b_landing_block_last_used(sequelize, DataTypes);
   var b_landing_chat = _b_landing_chat(sequelize, DataTypes);
   var b_landing_chat_binding = _b_landing_chat_binding(sequelize, DataTypes);
   var b_landing_cookies_agreement = _b_landing_cookies_agreement(sequelize, DataTypes);
@@ -473,6 +485,7 @@ function initModels(sequelize) {
   var b_landing_file = _b_landing_file(sequelize, DataTypes);
   var b_landing_filter_block = _b_landing_filter_block(sequelize, DataTypes);
   var b_landing_filter_entity = _b_landing_filter_entity(sequelize, DataTypes);
+  var b_landing_folder = _b_landing_folder(sequelize, DataTypes);
   var b_landing_hook_data = _b_landing_hook_data(sequelize, DataTypes);
   var b_landing_placement = _b_landing_placement(sequelize, DataTypes);
   var b_landing_repo = _b_landing_repo(sequelize, DataTypes);
@@ -494,10 +507,12 @@ function initModels(sequelize) {
   var b_log_notification_action = _b_log_notification_action(sequelize, DataTypes);
   var b_main_mail_blacklist = _b_main_mail_blacklist(sequelize, DataTypes);
   var b_main_mail_sender = _b_main_mail_sender(sequelize, DataTypes);
+  var b_main_mail_sender_send_counter = _b_main_mail_sender_send_counter(sequelize, DataTypes);
   var b_medialib_collection = _b_medialib_collection(sequelize, DataTypes);
   var b_medialib_collection_item = _b_medialib_collection_item(sequelize, DataTypes);
   var b_medialib_item = _b_medialib_item(sequelize, DataTypes);
   var b_medialib_type = _b_medialib_type(sequelize, DataTypes);
+  var b_messageservice_incoming_message = _b_messageservice_incoming_message(sequelize, DataTypes);
   var b_messageservice_message = _b_messageservice_message(sequelize, DataTypes);
   var b_messageservice_rest_app = _b_messageservice_rest_app(sequelize, DataTypes);
   var b_messageservice_rest_app_lang = _b_messageservice_rest_app_lang(sequelize, DataTypes);
@@ -564,6 +579,7 @@ function initModels(sequelize) {
   var b_rest_usage_entity = _b_rest_usage_entity(sequelize, DataTypes);
   var b_rest_usage_stat = _b_rest_usage_stat(sequelize, DataTypes);
   var b_sale_exchange_log = _b_sale_exchange_log(sequelize, DataTypes);
+  var b_sale_facebook_conversion_params = _b_sale_facebook_conversion_params(sequelize, DataTypes);
   var b_sale_order_payment_item = _b_sale_order_payment_item(sequelize, DataTypes);
   var b_sale_order_round = _b_sale_order_round(sequelize, DataTypes);
   var b_sale_ruspost_reliability = _b_sale_ruspost_reliability(sequelize, DataTypes);
@@ -643,6 +659,7 @@ function initModels(sequelize) {
   var b_translate_phrase = _b_translate_phrase(sequelize, DataTypes);
   var b_ui_entity_editor_config = _b_ui_entity_editor_config(sequelize, DataTypes);
   var b_ui_entity_editor_config_ac = _b_ui_entity_editor_config_ac(sequelize, DataTypes);
+  var b_ui_file_uploader_temp_file = _b_ui_file_uploader_temp_file(sequelize, DataTypes);
   var b_undo = _b_undo(sequelize, DataTypes);
   var b_urlpreview_metadata = _b_urlpreview_metadata(sequelize, DataTypes);
   var b_urlpreview_route = _b_urlpreview_route(sequelize, DataTypes);
@@ -652,6 +669,8 @@ function initModels(sequelize) {
   var b_user_auth_action = _b_user_auth_action(sequelize, DataTypes);
   var b_user_auth_code = _b_user_auth_code(sequelize, DataTypes);
   var b_user_counter = _b_user_counter(sequelize, DataTypes);
+  var b_user_device = _b_user_device(sequelize, DataTypes);
+  var b_user_device_login = _b_user_device_login(sequelize, DataTypes);
   var b_user_digest = _b_user_digest(sequelize, DataTypes);
   var b_user_field = _b_user_field(sequelize, DataTypes);
   var b_user_field_confirm = _b_user_field_confirm(sequelize, DataTypes);
@@ -679,6 +698,7 @@ function initModels(sequelize) {
   var bx_db_migrations = _bx_db_migrations(sequelize, DataTypes);
   var course_registry = _course_registry(sequelize, DataTypes);
   var course_registry_stat = _course_registry_stat(sequelize, DataTypes);
+  var dashboard_notifications = _dashboard_notifications(sequelize, DataTypes);
   var dashboard_plans = _dashboard_plans(sequelize, DataTypes);
   var dashboard_users = _dashboard_users(sequelize, DataTypes);
   var event_plans = _event_plans(sequelize, DataTypes);
@@ -694,7 +714,6 @@ function initModels(sequelize) {
   var long_read_uf_estimation = _long_read_uf_estimation(sequelize, DataTypes);
   var long_read_uf_test = _long_read_uf_test(sequelize, DataTypes);
   var med_directions = _med_directions(sequelize, DataTypes);
-  var medpred_statis = _medpred_statis(sequelize, DataTypes);
   var module_options = _module_options(sequelize, DataTypes);
   var nmo_entity = _nmo_entity(sequelize, DataTypes);
   var oauth_access_tokens = _oauth_access_tokens(sequelize, DataTypes);
@@ -707,6 +726,7 @@ function initModels(sequelize) {
   var parce_prodoctorov = _parce_prodoctorov(sequelize, DataTypes);
   var parcedocdoc = _parcedocdoc(sequelize, DataTypes);
   var reg_region = _reg_region(sequelize, DataTypes);
+  var speakers_subs = _speakers_subs(sequelize, DataTypes);
   var streamopros = _streamopros(sequelize, DataTypes);
   var streamopros_uf_answer = _streamopros_uf_answer(sequelize, DataTypes);
   var test_answer_variants = _test_answer_variants(sequelize, DataTypes);
@@ -817,6 +837,7 @@ function initModels(sequelize) {
     b_filters,
     b_finder_dest,
     b_geoip_handlers,
+    b_geoname,
     b_group,
     b_group_collection_task,
     b_group_subordinate,
@@ -874,6 +895,7 @@ function initModels(sequelize) {
     b_landing,
     b_landing_binding,
     b_landing_block,
+    b_landing_block_last_used,
     b_landing_chat,
     b_landing_chat_binding,
     b_landing_cookies_agreement,
@@ -885,6 +907,7 @@ function initModels(sequelize) {
     b_landing_file,
     b_landing_filter_block,
     b_landing_filter_entity,
+    b_landing_folder,
     b_landing_hook_data,
     b_landing_placement,
     b_landing_repo,
@@ -906,10 +929,12 @@ function initModels(sequelize) {
     b_log_notification_action,
     b_main_mail_blacklist,
     b_main_mail_sender,
+    b_main_mail_sender_send_counter,
     b_medialib_collection,
     b_medialib_collection_item,
     b_medialib_item,
     b_medialib_type,
+    b_messageservice_incoming_message,
     b_messageservice_message,
     b_messageservice_rest_app,
     b_messageservice_rest_app_lang,
@@ -976,6 +1001,7 @@ function initModels(sequelize) {
     b_rest_usage_entity,
     b_rest_usage_stat,
     b_sale_exchange_log,
+    b_sale_facebook_conversion_params,
     b_sale_order_payment_item,
     b_sale_order_round,
     b_sale_ruspost_reliability,
@@ -1055,6 +1081,7 @@ function initModels(sequelize) {
     b_translate_phrase,
     b_ui_entity_editor_config,
     b_ui_entity_editor_config_ac,
+    b_ui_file_uploader_temp_file,
     b_undo,
     b_urlpreview_metadata,
     b_urlpreview_route,
@@ -1064,6 +1091,8 @@ function initModels(sequelize) {
     b_user_auth_action,
     b_user_auth_code,
     b_user_counter,
+    b_user_device,
+    b_user_device_login,
     b_user_digest,
     b_user_field,
     b_user_field_confirm,
@@ -1091,6 +1120,7 @@ function initModels(sequelize) {
     bx_db_migrations,
     course_registry,
     course_registry_stat,
+    dashboard_notifications,
     dashboard_plans,
     dashboard_users,
     event_plans,
@@ -1106,7 +1136,6 @@ function initModels(sequelize) {
     long_read_uf_estimation,
     long_read_uf_test,
     med_directions,
-    medpred_statis,
     module_options,
     nmo_entity,
     oauth_access_tokens,
@@ -1119,6 +1148,7 @@ function initModels(sequelize) {
     parce_prodoctorov,
     parcedocdoc,
     reg_region,
+    speakers_subs,
     streamopros,
     streamopros_uf_answer,
     test_answer_variants,

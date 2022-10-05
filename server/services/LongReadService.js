@@ -1,4 +1,5 @@
 const {Op} = require('sequelize')
+const sequelize = require('../db')
 
 const {
     LongRead,
@@ -50,9 +51,10 @@ class LongReadService {
      * Получить статистику по id меропричтия
      * @param {number} eventId id меропричтия
      * @param {number} directionId id мед. напрвления
+     * @param {string} longReadType
      * @returns {Promise<LongRead[]>}
      */
-    async getLongReadItemsByEventId(eventId, directionId) {
+    async getLongReadItemsByEventId(eventId, directionId, longReadType) {
         this.request.where = {
             UF_USER: {[Op.ne]: 0},
             UF_EVENT: eventId
@@ -63,6 +65,9 @@ class LongReadService {
             this.request.include.include.required = true
         }
 
+        if(longReadType)
+            this.request.where.UF_PAGE = longReadType
+
         return await LongRead.findAll(this.request)
     }
 
@@ -71,9 +76,10 @@ class LongReadService {
      * @param {string|Date} dateFrom "2020-12-31 00:00:00+00:00"
      * @param {string|Date} dateTo "2020-12-31 23:59:00+00:00"
      * @param {number} directionId id мед. направления
+     * @param {string} longReadType
      * @returns {Promise<LongRead[]>}
      */
-    async getLongReadItemsByDate(dateFrom, dateTo, directionId) {
+    async getLongReadItemsByDate(dateFrom, dateTo, directionId, longReadType) {
         this.request.where = {
             UF_USER: {[Op.ne]: 0},
             UF_CONNECT_TIME: {
@@ -86,6 +92,9 @@ class LongReadService {
             this.request.include.include.where = {UF_DIRECTION: directionId}
             this.request.include.include.required = true
         }
+
+        if(longReadType)
+            this.request.where.UF_PAGE = longReadType
 
         return await LongRead.findAll(this.request)
     }
@@ -171,6 +180,14 @@ class LongReadService {
         result.cities = citiesForStatistic.getStatisticResult()
 
         return result
+    }
+
+    async getLongReadTypes() {
+        return await LongRead.findAll({
+            attributes: [
+                [sequelize.fn('DISTINCT', sequelize.col('UF_PAGE')), 'type']
+            ]
+        })
     }
 
     /**

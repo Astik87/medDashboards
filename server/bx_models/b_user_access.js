@@ -12,12 +12,26 @@ module.exports = function(sequelize, DataTypes) {
     ACCESS_CODE: {
       type: DataTypes.STRING(100),
       allowNull: true
+    },
+    ID: {
+      autoIncrement: true,
+      type: DataTypes.BIGINT.UNSIGNED,
+      allowNull: false,
+      primaryKey: true
     }
   }, {
     sequelize,
     tableName: 'b_user_access',
     timestamps: false,
     indexes: [
+      {
+        name: "PRIMARY",
+        unique: true,
+        using: "BTREE",
+        fields: [
+          { name: "ID" },
+        ]
+      },
       {
         name: "ix_ua_user_provider",
         using: "BTREE",

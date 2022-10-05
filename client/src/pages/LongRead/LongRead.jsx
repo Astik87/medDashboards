@@ -21,7 +21,38 @@ class LongRead extends BaseWithFilter {
     constructor(props) {
         super(props);
 
-        this.state = {data: false, error: false, ...this.state}
+        this.state = {
+            data: false,
+            longReadTypes: [],
+            longReadTypesLoading: false,
+            error: false,
+            ...this.state
+        }
+    }
+
+    getFiltersList = () => {
+        return ['date', 'directions', 'longRead']
+    }
+
+    getFilterProps = () => {
+        return {
+            longRead: {
+                options: this.state.longReadTypes
+            }
+        }
+    }
+
+    getLongReadTypes = async () => {
+        this.setState({longReadTypesLoading: true})
+        const response = await LongReadApi.getLongReadTypes()
+        if(!response.success)
+            return this.setState({error: response.message, longReadTypesLoading: false})
+
+        this.setState({
+            longReadTypes: response.data.filter(({type}) => type).map(({type}) => ({label: type, value: type})),
+            longReadTypesLoading: false
+        })
+
     }
 
     getStatistic = (filter) => {
@@ -39,6 +70,7 @@ class LongRead extends BaseWithFilter {
 
     componentDidMount() {
         this.getStatistic(this.state.filter)
+        this.getLongReadTypes()
     }
 
     content = () => {

@@ -48,6 +48,10 @@ module.exports = function(sequelize, DataTypes) {
     FAIL_COUNT: {
       type: DataTypes.INTEGER,
       allowNull: true
+    },
+    PREV_DOMAIN: {
+      type: DataTypes.STRING(255),
+      allowNull: true
     }
   }, {
     sequelize,

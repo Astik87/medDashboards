@@ -145,29 +145,27 @@ module.exports = function(sequelize, DataTypes) {
         ]
       },
       {
-        name: "ix_iblock_section_left_margin",
-        using: "BTREE",
-        fields: [
-          { name: "IBLOCK_ID" },
-          { name: "LEFT_MARGIN" },
-          { name: "RIGHT_MARGIN" },
-        ]
-      },
-      {
-        name: "ix_iblock_section_right_margin",
-        using: "BTREE",
-        fields: [
-          { name: "IBLOCK_ID" },
-          { name: "RIGHT_MARGIN" },
-          { name: "LEFT_MARGIN" },
-        ]
-      },
-      {
         name: "ix_iblock_section_code",
         using: "BTREE",
         fields: [
           { name: "IBLOCK_ID" },
           { name: "CODE" },
+        ]
+      },
+      {
+        name: "ix_iblock_section_left_margin2",
+        using: "BTREE",
+        fields: [
+          { name: "IBLOCK_ID" },
+          { name: "LEFT_MARGIN" },
+        ]
+      },
+      {
+        name: "ix_iblock_section_right_margin2",
+        using: "BTREE",
+        fields: [
+          { name: "IBLOCK_ID" },
+          { name: "RIGHT_MARGIN" },
         ]
       },
     ]

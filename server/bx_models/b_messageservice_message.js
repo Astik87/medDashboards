@@ -65,6 +65,10 @@ module.exports = function(sequelize, DataTypes) {
     EXTERNAL_ID: {
       type: DataTypes.STRING(128),
       allowNull: true
+    },
+    EXTERNAL_STATUS: {
+      type: DataTypes.STRING(128),
+      allowNull: true
     }
   }, {
     sequelize,

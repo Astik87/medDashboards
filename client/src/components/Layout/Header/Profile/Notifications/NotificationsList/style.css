@@ -1,0 +1,17 @@
+.notification-item {
+    width: 250px;
+    display: flex;
+    flex-direction: column;
+}
+
+.notification-item__message {
+    margin-bottom: 15px;
+}
+
+.notification-item__date {
+    align-self: flex-end;
+}
+
+.notifications-list {
+    min-width: 250px;
+}

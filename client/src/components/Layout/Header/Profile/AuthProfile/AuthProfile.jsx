@@ -32,38 +32,40 @@ const AuthProfile = (props) => {
     }
 
     return (
-        <List>
-            <ListItem
-                className="profile-list"
-                button
-                onClick={openMenu}>
-                <div className="ava">
-                    <Avatar className="ava-image">
-                        {user.name[0]}
-                    </Avatar>
-                </div>
-                <div className="user-name">
-                    {user.name}
-                </div>
-                <Notifications/>
-            </ListItem>
-            <Menu
-                onClose={closeMenu}
-                open={menuIsOpen}
-                anchorEl={anchorEl}>
-                <MenuItem
-                    onClick={closeMenu}>
-                    <Link
-                        to="/admin">
-                        Админ панель
-                    </Link>
-                </MenuItem>
-                <MenuItem
-                    onClick={logout}>
-                    Выйти
-                </MenuItem>
-            </Menu>
-        </List>
+        <>
+            <List>
+                <ListItem
+                    className="profile-list"
+                    button
+                    onClick={openMenu}>
+                    <div className="ava">
+                        <Avatar className="ava-image">
+                            {user.name[0]}
+                        </Avatar>
+                    </div>
+                    <div className="user-name">
+                        {user.name}
+                    </div>
+                </ListItem>
+                <Menu
+                    onClose={closeMenu}
+                    open={menuIsOpen}
+                    anchorEl={anchorEl}>
+                    <MenuItem
+                        onClick={closeMenu}>
+                        <Link
+                            to="/admin">
+                            Админ панель
+                        </Link>
+                    </MenuItem>
+                    <MenuItem
+                        onClick={logout}>
+                        Выйти
+                    </MenuItem>
+                </Menu>
+            </List>
+            <Notifications/>
+        </>
     )
 }
 

@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from "react"
 import {BrowserRouter} from "react-router-dom";
+import {SnackbarProvider} from "notistack";
 
 import AppRouter from "@components/AppRouter";
 import Header from "@components/Layout/Header";
@@ -7,6 +8,8 @@ import Sidebar from "@components/Layout/Sidebar";
 
 import userState from "@/state/UserState";
 import FilterState from "@/state/FilterState";
+
+import WebSocket from '@components/WebSocket'
 
 import './App.css';
 import './fonts/stylesheet.css'
@@ -43,17 +46,20 @@ function App() {
             <div className="app">
                 <Context.Provider value={{
                     userState: userState,
-                    filter: new FilterState()
+                    filter: new FilterState(),
                 }}>
-                    <Header/>
-                    <div className="content-wrapper">
-                        <Sidebar/>
-                        <div className="content">
-                            <div className="export-page-container">
-                                <AppRouter/>
+                    <SnackbarProvider>
+                        <WebSocket/>
+                        <Header/>
+                        <div className="content-wrapper">
+                            <Sidebar/>
+                            <div className="content">
+                                <div className="export-page-container">
+                                    <AppRouter/>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    </SnackbarProvider>
                 </Context.Provider>
             </div>
         </BrowserRouter>

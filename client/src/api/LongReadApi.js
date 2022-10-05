@@ -19,6 +19,16 @@ class LongReadApi {
         }
     }
 
+    async getLongReadTypes() {
+        try {
+             const response = await authHost.get('/api/long-read/types')
+
+            return {success: true, data: response.data}
+        } catch (error) {
+            return {success: false, message: error.message}
+        }
+    }
+
     /**
      *
      * @param {{year: number, month: number, day: number}} filter

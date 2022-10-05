@@ -53,6 +53,14 @@ module.exports = function(sequelize, DataTypes) {
           { name: "ENTITY_TYPE" },
         ]
       },
+      {
+        name: "K_HOOK_CODE",
+        using: "BTREE",
+        fields: [
+          { name: "HOOK" },
+          { name: "CODE" },
+        ]
+      },
     ]
   });
 };

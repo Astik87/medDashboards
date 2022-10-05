@@ -13,17 +13,18 @@ const Filter = observer((props) => {
     const {filtersList, filterProps, filter} = props
     let {change} = props
 
-    if(typeof change !== 'function')
-        change = () => {}
+    if (typeof change !== 'function')
+        change = () => {
+        }
 
     const {directionsList, eventsList, userGroups} = useContext(Context).filter
 
-    if(!filtersList || !filtersList.length)
+    if (!filtersList || !filtersList.length)
         return 'Not elements'
 
     const setEvent = (newValue) => {
-        if(Array.isArray(newValue))
-            return  change({...filter, eventId: !newValue ? false : newValue.map(({value}) => value)})
+        if (Array.isArray(newValue))
+            return change({...filter, eventId: !newValue ? false : newValue.map(({value}) => value)})
 
         change({...filter, eventId: !newValue ? false : newValue.value})
     }
@@ -32,10 +33,14 @@ const Filter = observer((props) => {
         change({...filter, directionId: !option ? false : option.value})
 
     const setUserGroup = (newValue) => {
-        if(Array.isArray(newValue))
-            return  change({...filter, userGroup: !newValue ? false : newValue.map(({value}) => value)})
+        if (Array.isArray(newValue))
+            return change({...filter, userGroup: !newValue ? false : newValue.map(({value}) => value)})
 
         change({...filter, userGroup: !newValue ? false : newValue.value})
+    }
+
+    const setLongRead = (option) => {
+        change({...filter, longReadType: !option ? false : option.value})
     }
 
     const getEventOptions = () => {
@@ -48,18 +53,22 @@ const Filter = observer((props) => {
         })
     }
 
-    const getDirectionOptions = () => directionsList.map(({id, name}) => {return {value: id, label: name}})
+    const getDirectionOptions = () => directionsList.map(({id, name}) => {
+        return {value: id, label: name}
+    })
 
     const getEventProps = () => filterProps && filterProps.events ? filterProps.events : {}
 
     const getUserGroupProps = () => filterProps && filterProps.userGroup ? filterProps.userGroup : {}
+
+    const getLongReadProps = () => filterProps && filterProps.longRead ? filterProps.longRead : {}
 
     return (
         <div className="filter">
             {filtersList.map((filterName) => {
                 switch (filterName) {
                     case 'date':
-                        return <DateFilter key="date" filter={filter} change={(date) => change({...filter, ...date})} />
+                        return <DateFilter key="date" filter={filter} change={(date) => change({...filter, ...date})}/>
                     case 'events':
                         return eventsList &&
                             <Select
@@ -93,6 +102,15 @@ const Filter = observer((props) => {
                                 className="filter-select"
                                 isClearable={true}
                                 {...getUserGroupProps()}/>
+                    case 'longRead':
+                        return <Select
+                                    key="longReadType"
+                                    placeholder="LongRead"
+                                    onChange={setLongRead}
+                                    classNamePrefix="filter"
+                                    className="filter-select"
+                                    isClearable={true}
+                                    {...getLongReadProps()}/>
                     default:
                         return `Filter ${filterName} is not-defined`
                 }

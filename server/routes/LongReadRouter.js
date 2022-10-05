@@ -10,5 +10,6 @@ router.get('/plans/for-selector', LongReadController.getPlansForSelector)
 router.post('/plans', LongReadController.createPlan)
 
 router.get('/statistic', filtersMiddleware, LongReadController.getStatistic)
+router.get('/types', LongReadController.getLongReadTypes)
 
 module.exports = router

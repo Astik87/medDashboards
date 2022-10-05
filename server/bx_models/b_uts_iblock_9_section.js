@@ -277,6 +277,94 @@ module.exports = function(sequelize, DataTypes) {
     UF_BACK_PROMO: {
       type: DataTypes.INTEGER,
       allowNull: true
+    },
+    UF_SCIORG_FILES: {
+      type: DataTypes.TEXT,
+      allowNull: true
+    },
+    UF_THESES: {
+      type: DataTypes.INTEGER,
+      allowNull: true
+    },
+    UF_THESES_TITLE: {
+      type: DataTypes.TEXT,
+      allowNull: true
+    },
+    UF_THESES_TEXT1: {
+      type: DataTypes.TEXT,
+      allowNull: true
+    },
+    UF_THESES_TIME: {
+      type: DataTypes.TEXT,
+      allowNull: true
+    },
+    UF_THESES_DATE: {
+      type: DataTypes.DATEONLY,
+      allowNull: true
+    },
+    UF_THESES_DATE_TEXT: {
+      type: DataTypes.TEXT,
+      allowNull: true
+    },
+    UF_THESES_TITLE_PROVIDE: {
+      type: DataTypes.TEXT,
+      allowNull: true
+    },
+    UF_THESES_TAB1: {
+      type: DataTypes.INTEGER,
+      allowNull: true
+    },
+    UF_THESES_UPLOAD: {
+      type: DataTypes.INTEGER,
+      allowNull: true
+    },
+    UF_THESES_UPLOAD_FILE: {
+      type: DataTypes.INTEGER,
+      allowNull: true
+    },
+    UF_THESES_TAB2: {
+      type: DataTypes.INTEGER,
+      allowNull: true
+    },
+    UF_THESES_TEXT2: {
+      type: DataTypes.TEXT,
+      allowNull: true
+    },
+    UF_THESES_TITLE2: {
+      type: DataTypes.TEXT,
+      allowNull: true
+    },
+    UF_THESES_TAB2_TITLE2: {
+      type: DataTypes.TEXT,
+      allowNull: true
+    },
+    UF_THESES_ADDITIONAL_INFORMATION: {
+      type: DataTypes.TEXT,
+      allowNull: true
+    },
+    UF_THESES_ADDITIONAL_INFORMATION_EMAIL: {
+      type: DataTypes.TEXT,
+      allowNull: true
+    },
+    UF_THESES_ADDITIONAL_INFORMATION_TEL: {
+      type: DataTypes.TEXT,
+      allowNull: true
+    },
+    UF_USERS: {
+      type: DataTypes.TEXT,
+      allowNull: true
+    },
+    UF_THESES_TEXT_PROVIDE: {
+      type: DataTypes.TEXT,
+      allowNull: true
+    },
+    UF_THESES_TAB2_TEXT2: {
+      type: DataTypes.TEXT,
+      allowNull: true
+    },
+    UF_BACK_PROMO_POS: {
+      type: DataTypes.INTEGER,
+      allowNull: true
     }
   }, {
     sequelize,

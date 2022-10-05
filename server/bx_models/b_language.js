@@ -52,6 +52,10 @@ module.exports = function(sequelize, DataTypes) {
     CULTURE_ID: {
       type: DataTypes.INTEGER,
       allowNull: true
+    },
+    CODE: {
+      type: DataTypes.STRING(35),
+      allowNull: true
     }
   }, {
     sequelize,

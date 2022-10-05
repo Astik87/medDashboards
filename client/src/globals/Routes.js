@@ -21,7 +21,7 @@ import UnisenderCreateList from "@/adminPages/UnisenderCreateList";
 import EventTabs from "@components/Layout/Sidebar/Tabs/EventTabs";
 import EventPromotions from "@pages/EventPromotions";
 import Medtouch from "@pages/Medtouch/Medtouch";
-
+import Parsers from "@/adminPages/Parsers"
 
 const adminRoutes = [
     {
@@ -35,6 +35,14 @@ const adminRoutes = [
     {
         path: "/admin/unisender/create-list",
         Component: <UnisenderCreateList />
+    },
+    {
+        path: "/admin/parsers",
+        Component: <Parsers />
+    },
+    {
+        path: "/admin/parsers/prodoctorov",
+        Component: <Parsers />
     },
     {
         path: "/admin/*",

@@ -52,7 +52,7 @@ const PlanCard = (props) => {
     const result = data.plan - data.fact
 
     if (status !== 'Preparing')
-        groupBlacksList.push({title: result < 0 ? 'Result' : 'Target', value: Math.abs(result)})
+        groupBlacksList.push({title: result < 0 ? 'Over the target' : 'Target', value: Math.abs(result)})
 
     return (
         <div className={`plans-list__item ${groupColorClasses[status]}`}>

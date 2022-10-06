@@ -61,9 +61,15 @@ class ProdoctorovParserService extends BaseService {
     }
 
     async torNewSession() {
-        await this.host.torNewSession()
+        this.host = torAxios.torSetup({
+            ip: '127.0.0.1',
+            port: '9050'
+        })
         this.currentTorIp = await this.getCurrentIp()
+        const storage = Storage.getStorage(ProdoctorovParserService.storeName)
+        storage.set('currentTorIp', this.currentTorIp)
         this.sendStatus(ProdoctorovParserService.statusCodes.TOR_NEW_SESSION, `New Tor ip: ${this.currentTorIp}`)
+        console.log(`Tor new session: ${this.currentTorIp}`)
     }
 
     /**
@@ -204,7 +210,7 @@ class ProdoctorovParserService extends BaseService {
                 let pageContent = await this.host.get(pageUrl)
 
                 if(this.ipIsBlocked(pageContent.data)) {
-                    this.torNewSession()
+                    await this.torNewSession()
                     continue
                 }
 
@@ -216,7 +222,7 @@ class ProdoctorovParserService extends BaseService {
                 nextPage++
                 pageUrl = `${directionUrl}?page=${nextPage}`
 
-                await this.delay(500)
+                // await this.delay(500)
             } while (nextPage)
         } catch (e) {
             if (!e.response || e.response.status !== 404)

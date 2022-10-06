@@ -36,17 +36,17 @@ const ExportPage = () => {
     const pageToPDF = (pageInPNG) => {
         const pdfPageHeight = 297
 
-        const pdf = new jsPDF()
+        const pdf = new jsPDF('p', 'pt', 'a4', true)
         const {clientWidth, clientHeight} = pageElement
         const width = pdf.internal.pageSize.getWidth()
         const height = (clientHeight * width) / clientWidth
 
         const imageChunks = (height / pdfPageHeight).toFixed()
 
-        pdf.addImage(pageInPNG, 'PNG', 0, 0, width, height)
+        pdf.addImage(pageInPNG, 'PNG', 0, 0, width, height, '', 'FAST')
         for (let pdfPageIndex = 1; pdfPageIndex <= imageChunks; pdfPageIndex++) {
             pdf.addPage()
-            pdf.addImage(pageInPNG, 'PNG', 0, -pdfPageHeight*pdfPageIndex, width, height)
+            pdf.addImage(pageInPNG, 'PNG', 0, -pdfPageHeight*pdfPageIndex, width, height, '', 'FAST')
         }
 
         return pdf

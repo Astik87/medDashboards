@@ -33,17 +33,16 @@ const WebSocket = observer(() => {
         WSClient.addOnClose(() => {
             enqueueSnackbar('Разорвано соединение с сервером', {variant: 'error'})
         })
-        WSClient.addOnClose(() => {
-            enqueueSnackbar('Разорвано соединение с сервером', {variant: 'error'})
-        })
-        WSClient.addOnClose(() => {
-            enqueueSnackbar('Разорвано соединение с сервером', {variant: 'error'})
-        })
-        WSClient.addOnClose(() => {
-            enqueueSnackbar('Разорвано соединение с сервером', {variant: 'error'})
-        })
         WSClient.addOnMessage('User', 'login', data => {
             WSClient.send('User', 'getNotifications')
+        })
+        WSClient.addOnMessage('User', 'notification', ({message}) => {
+            enqueueSnackbar(message, {variant: 'info'})
+        })
+        WSClient.addOnOpen(() => {
+            setInterval(() => {
+                WSClient.send('User', 'pingPong')
+            }, 60000)
         })
         WSClient.send('User', 'login', userState.user)
     }

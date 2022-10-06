@@ -9,11 +9,11 @@ class UserController extends BaseController {
         return {success: await userService.login(connection, data)}
     }
 
-    getStorage = async () => {
-        return Storage.getStorage('userStore')
+    pingPong = async () => {
+        return {}
     }
 
-    logout(connection) {
+    logout = async (connection) => {
         const {user} = connection
         if(!user || !user.id)
             return {}

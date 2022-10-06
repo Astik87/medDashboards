@@ -16,6 +16,7 @@ class ProdoctorovParserService extends BaseService {
     baseDomain = 'prodoctorov.ru'
     dbUsersLimit = 1000
     currentTorIp = false
+    errorCounts = 0
     static storeName = 'prodoctorovParser'
     static statusCodes = {
         START: 'startParser',
@@ -36,8 +37,8 @@ class ProdoctorovParserService extends BaseService {
         super();
 
         this.host = torAxios.torSetup({
-                ip: '127.0.0.1',
-                port: '9050'
+            ip: '127.0.0.1',
+            port: '9050'
         })
         this.tempDirPath = path.resolve(__dirname, '..', '..', 'temp', 'prodoctorov')
         if(sendStatus !== false)
@@ -66,10 +67,8 @@ class ProdoctorovParserService extends BaseService {
             port: '9050'
         })
         this.currentTorIp = await this.getCurrentIp()
-        const storage = Storage.getStorage(ProdoctorovParserService.storeName)
-        storage.set('currentTorIp', this.currentTorIp)
         this.sendStatus(ProdoctorovParserService.statusCodes.TOR_NEW_SESSION, `New Tor ip: ${this.currentTorIp}`)
-        console.log(`Tor new session: ${this.currentTorIp}`)
+        console.log(`New Tor ip: ${this.currentTorIp}`);
     }
 
     /**
@@ -196,7 +195,7 @@ class ProdoctorovParserService extends BaseService {
     }
 
     ipIsBlocked(content) {
-        return content.includes('Ограничение доступа')
+        return content.includes('Ограничение доступа') && content.includes(this.currentTorIp)
     }
 
     async parseDirectionPageDoctors(cityTitle, directionTitle, directionUrl) {
@@ -209,10 +208,8 @@ class ProdoctorovParserService extends BaseService {
                 this.sendStatus(ProdoctorovParserService.statusCodes.PROGRESS, `Город: ${cityTitle}; Направление: ${directionTitle}; Страница: ${nextPage} -> ${pageUrl}`)
                 let pageContent = await this.host.get(pageUrl)
 
-                if(this.ipIsBlocked(pageContent.data)) {
-                    await this.torNewSession()
-                    continue
-                }
+                if(this.ipIsBlocked(pageContent.data))
+                    throw WSError(`Prodoctorov заблокировал ip ${this.currentTorIp}`)
 
                 const $ = cheerio.load(pageContent.data)
 
@@ -222,11 +219,17 @@ class ProdoctorovParserService extends BaseService {
                 nextPage++
                 pageUrl = `${directionUrl}?page=${nextPage}`
 
-                // await this.delay(500)
+                await this.delay(500)
             } while (nextPage)
         } catch (e) {
             if (!e.response || e.response.status !== 404)
                 this.logError(e)
+            if(this.errorCounts <= 5) {
+                await this.delay(1000)
+                this.errorCounts++
+                return this.parseDirectionPageDoctors(cityTitle, directionTitle, directionUrl)
+            }
+
 
             return doctors
         }
@@ -241,19 +244,24 @@ class ProdoctorovParserService extends BaseService {
      * @returns {Promise<[{name: string, directions: [string]}]>}
      */
     async parseCityDoctors({code, title}) {
-        let doctors = []
-        const cityPageUrl = `https://${this.baseDomain}/${code}/vrach/`
+        try {
+            let doctors = []
+            const cityPageUrl = `https://${this.baseDomain}/${code}/vrach/`
 
-        const directions = await this.getCityDirectionsList(cityPageUrl)
+            const directions = await this.getCityDirectionsList(cityPageUrl)
 
-        for (const direction of directions) {
-            const directionPageUrl = `https://${this.baseDomain}${direction.link}`
-            const pageDoctors = await this.parseDirectionPageDoctors(title, direction.title, directionPageUrl)
-            doctors = [...doctors, ...pageDoctors]
+            for (const direction of directions) {
+                this.errorCounts = 0
+                const directionPageUrl = `https://${this.baseDomain}${direction.link}`
+                const pageDoctors = await this.parseDirectionPageDoctors(title, direction.title, directionPageUrl)
+                doctors = [...doctors, ...pageDoctors]
+            }
+
+            this.saveResultInFile({code, title}, doctors)
+            return doctors
+        } catch (error) {
+            return []
         }
-
-        this.saveResultInFile({code, title}, doctors)
-        return doctors
     }
 
     /**

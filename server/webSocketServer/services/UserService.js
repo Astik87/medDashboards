@@ -122,12 +122,18 @@ class UserService extends BaseService {
         const now = new Date()
         const res = {onlineUsers: 0, offlineUsers: 0}
 
+        const onlineUsersMassage = JSON.stringify({
+            controller: 'User',
+            action: 'notification',
+            data: {message: text}
+        })
+
         users.forEach((user) => {
             const {id} = user.toJSON()
             const onlineUser = onlineUsers.get(id)
 
             if(onlineUser && onlineUser.connection) {
-                onlineUser.connection.send(text)
+                onlineUser.connection.send(onlineUsersMassage)
                 res.onlineUsers++
             } else {
                 saveNotifications.push({UF_USER: id, UF_TEXT: text, UF_DATE: now})

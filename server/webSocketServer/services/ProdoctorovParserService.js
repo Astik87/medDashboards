@@ -1,4 +1,4 @@
-const axios = require('axios')
+const torAxios = require('tor-axios')
 const path = require('path')
 const cheerio = require('cheerio')
 const fs = require('fs')
@@ -15,6 +15,7 @@ class ProdoctorovParserService extends BaseService {
     host
     baseDomain = 'prodoctorov.ru'
     dbUsersLimit = 1000
+    currentTorIp = false
     static storeName = 'prodoctorovParser'
     static statusCodes = {
         START: 'startParser',
@@ -22,7 +23,8 @@ class ProdoctorovParserService extends BaseService {
         PROGRESS: 'parserProgress',
         UPLOAD: 'uploadInDb',
         END: 'endParser',
-        ERROR: 'error'
+        ERROR: 'error',
+        TOR_NEW_SESSION: 'torNewSession'
     }
 
     sendStatus = () => {}
@@ -33,7 +35,10 @@ class ProdoctorovParserService extends BaseService {
     constructor(sendStatus = false) {
         super();
 
-        this.host = axios.default
+        this.host = torAxios.torSetup({
+                ip: '127.0.0.1',
+                port: '9050'
+        })
         this.tempDirPath = path.resolve(__dirname, '..', '..', 'temp', 'prodoctorov')
         if(sendStatus !== false)
             this.sendStatus = sendStatus
@@ -50,11 +55,24 @@ class ProdoctorovParserService extends BaseService {
         console.log('---- WS Server Error ----')
     }
 
+    async getCurrentIp() {
+        const ipRes = await this.host.get('https://api.ipify.org')
+        return ipRes.data
+    }
+
+    async torNewSession() {
+        await this.host.torNewSession()
+        this.currentTorIp = await this.getCurrentIp()
+        this.sendStatus(ProdoctorovParserService.statusCodes.TOR_NEW_SESSION, `New Tor ip: ${this.currentTorIp}`)
+    }
+
     /**
      * Запустить парсер
      * @returns {Promise<void>}
      */
     startParser = async () => {
+        this.currentTorIp = await this.getCurrentIp()
+        this.sendStatus(ProdoctorovParserService.statusCodes.TOR_NEW_SESSION, `New Tor ip: ${this.currentTorIp}`)
 
         const cities = []
         const prodoctorovParserStorage = Storage.getStorage(ProdoctorovParserService.storeName)
@@ -83,7 +101,7 @@ class ProdoctorovParserService extends BaseService {
                 await this.parseCityDoctors(city)
             }
         } catch (error) {
-            this.sendStatus(ProdoctorovParserService.statusCodes.ERROR, `Prodoctorov: Ошибка при загрузке данных в базу: ${error.message}`)
+            this.sendStatus(ProdoctorovParserService.statusCodes.ERROR, `Prodoctorov: Ошибка парсера: ${error.message}`)
             this.logError(error)
             prodoctorovParserStorage.set('started', false)
             return false
@@ -171,6 +189,10 @@ class ProdoctorovParserService extends BaseService {
         return directions
     }
 
+    ipIsBlocked(content) {
+        return content.includes('Ограничение доступа')
+    }
+
     async parseDirectionPageDoctors(cityTitle, directionTitle, directionUrl) {
         let doctors = []
         let nextPage = 1
@@ -180,6 +202,12 @@ class ProdoctorovParserService extends BaseService {
             do {
                 this.sendStatus(ProdoctorovParserService.statusCodes.PROGRESS, `Город: ${cityTitle}; Направление: ${directionTitle}; Страница: ${nextPage} -> ${pageUrl}`)
                 let pageContent = await this.host.get(pageUrl)
+
+                if(this.ipIsBlocked(pageContent.data)) {
+                    this.torNewSession()
+                    continue
+                }
+
                 const $ = cheerio.load(pageContent.data)
 
                 const pageResult = this.parsePageDoctors($)

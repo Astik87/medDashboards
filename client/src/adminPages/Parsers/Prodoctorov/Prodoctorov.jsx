@@ -14,7 +14,8 @@ const statusCodes = {
     PROGRESS: 'parserProgress',
     UPLOAD: 'uploadInDb',
     END: 'endParser',
-    ERROR: 'error'
+    ERROR: 'error',
+    TOR_NEW_SESSION: 'torNewSession'
 }
 
 const Prodoctorov = ({selectParser}) => {
@@ -24,13 +25,14 @@ const Prodoctorov = ({selectParser}) => {
     const [data, setData] = useState(false)
     const [started, setStarted] = useState(false)
     const [parserProgress, setParserProgress] = useState(0)
+    const [torStatus, setTorStatus] = useState(false)
     const [parserHasError, setParserHasError] = useState(false)
     const [isEnd, setIsEnd] = useState(0)
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState(false)
 
     const getData = async (limit, page) => {
-        if(started)
+        if (started)
             return false
         setLoading(true)
         const response = await ProdoctorovParserApi.getData(limit, page)
@@ -45,7 +47,7 @@ const Prodoctorov = ({selectParser}) => {
 
     const getParserStatus = () => {
         WebSocketClient.addOnMessage('ProdoctorovParser', 'getParserStatus', ({status}) => {
-             setStarted(status)
+            setStarted(status)
         })
         WebSocketClient.send('ProdoctorovParser', 'getParserStatus')
     }
@@ -66,6 +68,9 @@ const Prodoctorov = ({selectParser}) => {
                     setParserProgress(message)
                     setParserHasError(true)
                     break
+                case statusCodes.TOR_NEW_SESSION:
+                    setTorStatus(message)
+                    break
             }
         })
         WSClient.addOnClose(() => {
@@ -79,7 +84,7 @@ const Prodoctorov = ({selectParser}) => {
     }
 
     const changePage = (newPage) => {
-        getData(limit, newPage+1)
+        getData(limit, newPage + 1)
     }
 
     const changeLimit = (newLimit) => {
@@ -94,7 +99,7 @@ const Prodoctorov = ({selectParser}) => {
     }
 
     const startParser = () => {
-        if(!WSClient.isOpen)
+        if (!WSClient.isOpen)
             return setError('Соединение с сервером разорвано. Пожалуйста попробуйте перезагрузить страницу')
         setStarted(true)
         startWatchingParserStatus()
@@ -109,12 +114,12 @@ const Prodoctorov = ({selectParser}) => {
     }, [])
 
     useEffect(() => {
-        if(started) {
+        if (started) {
             startWatchingParserStatus()
         }
     }, [started])
 
-    if(error)
+    if (error)
         return (
             <div className="page">
                 <div className="page__content">
@@ -126,12 +131,37 @@ const Prodoctorov = ({selectParser}) => {
     if (loading)
         return <Loading/>
 
+    let severity = 'info'
+
+    if (isEnd)
+        severity = 'success'
+
+    if (parserHasError)
+        severity = 'error'
+
     return (
         <div>
             {
                 started
-                    ? <ParserProgress progress={parserProgress} hasError={parserHasError} isEnd={isEnd}/>
-                    : <ParserPage
+                    ?
+                    <ParserProgress>
+                        {
+                            torStatus
+                            &&
+                            <Alert className="parser-progress__status" severity="info">
+                                {torStatus}
+                            </Alert>
+                        }
+                        {
+                            parserProgress
+                            &&
+                            <Alert className="parser-progress__status" severity={severity}>
+                                {parserProgress.split(/->|;/g).map((text, index) => <div key={index}>{text}</div>)}
+                            </Alert>
+                        }
+                    </ParserProgress>
+                    :
+                    <ParserPage
                         name="DocDoc"
                         back={() => selectParser(false)}
                         start={startParser}

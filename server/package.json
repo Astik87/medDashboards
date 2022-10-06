@@ -27,6 +27,7 @@
     "nodemon": "^2.0.19",
     "sequelize": "^6.21.3",
     "sequelize-auto": "^0.8.8",
+    "tor-axios": "^1.0.11",
     "useragent": "^2.3.0",
     "utf-8-validate": "^5.0.9",
     "uuid": "^9.0.0",

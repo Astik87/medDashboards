@@ -3,7 +3,7 @@ import React, {useState} from "react"
 import './style.css'
 import Menu from "@components/Layout/Header/Menu";
 
-import {menuItems} from "@globals/Menu";
+import menuItems from "@globals/Menu";
 import Profile from "@components/Layout/Header/Profile";
 import SearchInput from "@components/Layout/Header/SearchInput";
 

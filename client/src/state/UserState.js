@@ -34,6 +34,11 @@ class UserState {
         return this._notifications
     }
 
+    logout() {
+        this.setUser(false)
+        this.setIsAuth(false)
+        this.setNotifications(false)
+    }
 
 }
 

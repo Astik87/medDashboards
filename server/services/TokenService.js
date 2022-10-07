@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken')
 
-const {DashboardUser} = require('../models')
+const {DashboardUser, DashboardUserAccesses} = require('../models')
 
 class TokenService {
     /**
@@ -41,15 +41,12 @@ class TokenService {
      * @return {boolean}
      */
     async removeToken(refreshToken) {
-        console.log(refreshToken)
-
         const user = await DashboardUser.findOne({
             where: {
                 UF_REFRESH_TOKEN: refreshToken
             }
         })
 
-        console.log(user)
         if(!user)
             return false
 
@@ -81,6 +78,11 @@ class TokenService {
         return DashboardUser.findOne({
             where: {
                 UF_REFRESH_TOKEN: refreshToken
+            },
+            include: {
+                attributes: [['UF_PAGE_CODE', 'code']],
+                model: DashboardUserAccesses,
+                as: 'accesses'
             }
         })
     }

@@ -25,26 +25,37 @@ import Parsers from "@/adminPages/Parsers"
 
 const adminRoutes = [
     {
+        title: 'Пользователи',
+        code: 'AdminUsers',
         path: '/admin',
         Component: <AdminUsers/>
     },
     {
+        title: "Unisender",
+        code: "Unisender",
         path: "/admin/unisender",
         Component: <UnisenderContactsList />
     },
     {
+        title: "Unisender Create List",
+        code: "UnisenderCreateList",
         path: "/admin/unisender/create-list",
         Component: <UnisenderCreateList />
     },
     {
+        title: "Парсеры",
+        code: "Parsers",
         path: "/admin/parsers",
         Component: <Parsers />
     },
     {
+        title: "Парсер prodoctorov.ru",
+        code: "ParserProdoctorov",
         path: "/admin/parsers/prodoctorov",
         Component: <Parsers />
     },
     {
+        title: "Страница не найдена",
         path: "/admin/*",
         Component: <NotFound/>
     }
@@ -52,46 +63,62 @@ const adminRoutes = [
 
 const authRoutes = [
     {
+        title: "Главная",
+        code: "MainPage",
         path: '/',
         Component: <Home/>
     },
     {
+        title: 'MedTouch',
+        code: 'MedTouch',
         path: '/medtouch',
         Component: <Medtouch/>
     },
     {
+        title: 'LongRead',
+        code: 'LongRead',
         path: '/long-read',
         Component: <LongRead/>
     },
     {
+        title: 'Мероприятия',
+        code: 'Events',
         path: '/events',
         Component: <Events/>
     },
     {
+        title: 'Мероприятия: База продвижения',
+        code: 'EventsPromotions',
         path: '/events-promotions',
         Component: <EventPromotions />
     },
     {
+        title: 'Омниканальный проект',
+        code: 'Waves',
         path: '/waves',
         Component: <Waves/>
     },
     {
+        title: 'Планы визитов',
+        code: 'VisitPlans',
         path: '/waves/visit-plans',
         Component: <VisitPlan baseUri="/visits"/>
     },
     {
-        path: '/visits/:page',
-        Component: <VisitPlan baseUri="/visits"/>
-    },
-    {
+        title: 'Планы мероприятий',
+        code: 'EventPlans',
         path: '/waves/event-plans',
         Component: <EventPlans/>
     },
     {
+        title: "Планы LongRead'а",
+        code: 'LongReadPlans',
         path: '/waves/long-read-plans',
         Component: <LongReadPlans/>
     },
     {
+        title: 'CRM',
+        code: "CRM",
         path: '/crm',
         Component: <CRM/>
     }
@@ -121,10 +148,9 @@ const sidebarRoutes = [
     {path: '*', Component: <NotFoundTab/>}
 ]
 
-
 export {
     adminRoutes,
     publicRoutes,
     authRoutes,
-    sidebarRoutes
+    sidebarRoutes,
 }

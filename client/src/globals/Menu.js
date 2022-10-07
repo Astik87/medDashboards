@@ -1,4 +1,4 @@
-const menuItems = [
+export default [
     {
         link: '/',
         text: 'Главная'
@@ -31,7 +31,3 @@ const menuItems = [
         ]
     },
 ]
-
-export {
-    menuItems
-}

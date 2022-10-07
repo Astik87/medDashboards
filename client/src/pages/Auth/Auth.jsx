@@ -1,16 +1,19 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react"
 import {Link} from 'react-router-dom'
 import {Button, Stack, TextField, Alert, Backdrop, CircularProgress, styled} from '@mui/material'
 
 import './style.css'
 
 import {sendBtnStyle} from '@styles/Button'
-import UserApi from "@api/UserApi";
-import {Context} from "@/index";
+import UserApi from "@api/UserApi"
 import userState from "@/state/UserState"
-import {observer} from "mobx-react";
+import {observer} from "mobx-react"
 
 const SendButton = styled(Button)(sendBtnStyle)
+
+const validate = (login, password) => {
+    return login.length && password.length >= 6
+}
 
 const Auth = observer(() => {
     const [login, setLogin] = useState('')
@@ -19,10 +22,6 @@ const Auth = observer(() => {
     const [error, setError] = useState(false)
     const [success, setSuccess] = useState(false)
     const [loading, setLoading] = useState(false)
-
-    const validate = () => {
-        return login.length && password.length >= 6
-    }
 
     const auth = async () => {
         if (!isValid)
@@ -39,6 +38,7 @@ const Auth = observer(() => {
             setTimeout(() => {
                 userState.setIsAuth(true)
                 userState.setUser(response.data)
+                setSuccess(false)
             }, 500)
         }
         setLoading(false)
@@ -51,7 +51,7 @@ const Auth = observer(() => {
     }
 
     useEffect(() => {
-        setIsValid(validate())
+        setIsValid(validate(login, password))
     }, [login, password])
 
     return (

@@ -8,28 +8,34 @@ import {
     TextField,
     Checkbox,
     FormControlLabel,
-    Stack, Alert
-} from "@mui/material";
+    Stack,
+    Alert,
+    FormControl,
+    InputLabel,
+    Select,
+    MenuItem
+} from "@mui/material"
 
-import {modalBoxStyle} from "@styles/Modal";
-import {useContext, useState} from "react";
-import UserApi from "@api/UserApi";
-import {UsersTableContext} from "@/adminPages/Users/Users";
-
-const formFields = [
-    {fieldName: 'name', label: 'Имя', inputType: 'text', type: 'string'},
-    {fieldName: 'login', label: 'Логин', inputType: 'text', type: 'string'},
-    {fieldName: 'password', label: 'Пароль', inputType: 'password', type: 'string'},
-    {fieldName: 'isAdmin', label: 'Администратор', inputType: 'text', type: 'boolean'}
-]
+import {modalBoxStyle} from "@styles/Modal"
+import {useContext, useState} from "react"
+import UserApi from "@api/UserApi"
+import {UsersTableContext} from "@/adminPages/Users/Users"
+import {authRoutes} from "@globals/Routes"
 
 const CreateUser = (props) => {
-
+    const routeOptions = authRoutes.filter(({code}) => code).map(({title, code}) => ({label: title, value: code}))
+    const formFields = [
+        {fieldName: 'name', label: 'Имя', inputType: 'text', type: 'string'},
+        {fieldName: 'login', label: 'Логин', inputType: 'text', type: 'string'},
+        {fieldName: 'password', label: 'Пароль', inputType: 'password', type: 'string'},
+        {fieldName: 'accesses', label: 'Доступные страницы', inputType: 'select', type: 'select', options: routeOptions},
+        {fieldName: 'isAdmin', label: 'Администратор', inputType: 'text', type: 'boolean'}
+    ]
     const {open, onClose} = props
 
     const {loadUsers} = useContext(UsersTableContext)
 
-    const [formData, setFormData] = useState({name: '', login: '', password: '', isAdmin: false})
+    const [formData, setFormData] = useState({name: '', login: '', password: '', accesses: [], isAdmin: false})
     const [loading, setLoading] = useState(false)
     const [success, setSuccess] = useState(false)
     const [error, setError] = useState(false)
@@ -92,7 +98,7 @@ const CreateUser = (props) => {
                         sx={modalBoxStyle}>
                         <Stack spacing={2}>
                             {
-                                formFields.map(({fieldName, label, inputType, type}) => {
+                                formFields.map(({fieldName, label, inputType, type, options}) => {
                                     switch (type) {
 
                                         case 'string': {
@@ -119,6 +125,31 @@ const CreateUser = (props) => {
                                                     }
                                                     label={label}
                                                 />
+                                            )
+                                        }
+                                        case 'select': {
+                                            return (
+                                                <FormControl
+                                                    sx={{maxWidth: 290}}
+                                                    key={fieldName}>
+                                                    <InputLabel>{label}</InputLabel>
+                                                    <Select
+                                                        type={inputType}
+                                                        name={fieldName}
+                                                        onChange={changeField}
+                                                        value={formData[fieldName]}
+                                                        multiple>
+                                                        {
+                                                            options.map(({label, value}) => (
+                                                                <MenuItem
+                                                                    key={value}
+                                                                    value={value}>
+                                                                    {label}
+                                                                </MenuItem>
+                                                            ))
+                                                        }
+                                                    </Select>
+                                                </FormControl>
                                             )
                                         }
                                     }

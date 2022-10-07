@@ -1,11 +1,10 @@
 import {useEffect, useState} from "react"
 import {Alert} from '@mui/material'
-
+//
 import ProdoctorovParserApi from "@api/ProdoctorovParserApi"
 import ParserPage from "@/adminPages/Parsers/ParserPage"
 import ParserProgress from "@/adminPages/Parsers/ParserProgress"
 import {Loading} from "@components/General"
-import WebSocketClient from "@/webSocket/WebSocketClient";
 import WSClient from "@/webSocket/WebSocketClient";
 
 const statusCodes = {
@@ -16,6 +15,14 @@ const statusCodes = {
     END: 'endParser',
     ERROR: 'error',
     TOR_NEW_SESSION: 'torNewSession'
+}
+
+const startWatchingParserStatus = (changeStatus, setError) => {
+    WSClient.addOnMessage('ProdoctorovParser', 'progress', changeStatus)
+    WSClient.addOnClose(() => {
+        setError('Соединение с сервером разорвано')
+    })
+    WSClient.send('ProdoctorovParser', 'addUserInWatchingList')
 }
 
 const Prodoctorov = ({selectParser}) => {
@@ -46,41 +53,37 @@ const Prodoctorov = ({selectParser}) => {
     }
 
     const getParserStatus = () => {
-        WebSocketClient.addOnMessage('ProdoctorovParser', 'getParserStatus', ({status}) => {
+        WSClient.addOnMessage('ProdoctorovParser', 'getParserStatus', ({status}) => {
             setStarted(status)
+            if(status)
+                startWatchingParserStatus(changeStatus, setError)
         })
-        WebSocketClient.send('ProdoctorovParser', 'getParserStatus')
+        WSClient.send('ProdoctorovParser', 'getParserStatus')
     }
 
-    const startWatchingParserStatus = () => {
-        WebSocketClient.addOnMessage('ProdoctorovParser', 'progress', ({status, message}) => {
-            switch (status) {
-                case statusCodes.PROGRESS:
-                    setParserProgress(message)
-                    break
-                case statusCodes.UPLOAD:
-                    setParserProgress(message)
-                    break
-                case statusCodes.END:
-                    endParser()
-                    break
-                case statusCodes.ERROR:
-                    setParserProgress(message)
-                    setParserHasError(true)
-                    break
-                case statusCodes.TOR_NEW_SESSION:
-                    setTorStatus(message)
-                    break
-            }
-        })
-        WSClient.addOnClose(() => {
-            setError('Соединение с сервером разорвано')
-        })
-        WebSocketClient.send('ProdoctorovParser', 'addUserInWatchingList')
+    const changeStatus = (status, message) => {
+        switch (status) {
+            case statusCodes.PROGRESS:
+                setParserProgress(message)
+                break
+            case statusCodes.UPLOAD:
+                setParserProgress(message)
+                break
+            case statusCodes.END:
+                endParser()
+                break
+            case statusCodes.ERROR:
+                setParserProgress(message)
+                setParserHasError(true)
+                break
+            case statusCodes.TOR_NEW_SESSION:
+                setTorStatus(message)
+                break
+        }
     }
 
     const endWatchingParserStatus = () => {
-        WebSocketClient.send('ProdoctorovParser', 'removeUserInWatchingList')
+        WSClient.send('ProdoctorovParser', 'removeUserInWatchingList')
     }
 
     const changePage = (newPage) => {
@@ -102,8 +105,8 @@ const Prodoctorov = ({selectParser}) => {
         if (!WSClient.isOpen)
             return setError('Соединение с сервером разорвано. Пожалуйста попробуйте перезагрузить страницу')
         setStarted(true)
-        startWatchingParserStatus()
-        WebSocketClient.send('ProdoctorovParser', 'startParser')
+        startWatchingParserStatus(changeStatus, setError)
+        WSClient.send('ProdoctorovParser', 'startParser')
     }
 
     useEffect(() => {
@@ -112,12 +115,6 @@ const Prodoctorov = ({selectParser}) => {
 
         return endWatchingParserStatus
     }, [])
-
-    useEffect(() => {
-        if (started) {
-            startWatchingParserStatus()
-        }
-    }, [started])
 
     if (error)
         return (

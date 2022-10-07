@@ -4,7 +4,16 @@ const DB = require('../db')
 const FormData = require('form-data')
 const bcrypt = require('bcrypt')
 
-const {User, UserFields, UserGroup, Groups, DashboardUser, MedDirections, EventRegistrations} = require('../models')
+const {
+    User,
+    UserFields,
+    UserGroup,
+    Groups,
+    DashboardUser,
+    MedDirections,
+    EventRegistrations,
+    DashboardUserAccesses
+} = require('../models')
 const DateService = require('./DateService')
 const DirectionsService = require('./DirectionsService')
 const CitiesService = require('./CitiesService')
@@ -258,10 +267,11 @@ class UserService {
      * @param {string} name
      * @param {string} login
      * @param {string} password
+     * @param {[string]} accesses
      * @param {boolean} isAdmin
      * @returns {Promise<{}>} - Об
      */
-    async create(name, login, password, isAdmin = false) {
+    async create(name, login, password, accesses,  isAdmin = false) {
 
         if (!name)
             throw new Error('Имя не может быть пустым')
@@ -271,6 +281,9 @@ class UserService {
 
         if (!password || password.length < 6)
             throw new Error('Пароль не может быть меньше 6 симвалов')
+
+        if (!accesses || !accesses.length)
+            throw new Error('Выберите страницы к которым пользователь будет иметь доступ')
 
         const candidate = await DashboardUser.findOne({
             where: {
@@ -282,17 +295,25 @@ class UserService {
             throw new Error('Пользователь с таки логином уже зарегистрирован')
 
         const hashPassword = await bcrypt.hash(password, 3)
-        const user = await DashboardUser.create({
+        let user = await DashboardUser.create({
             UF_NAME: name,
             UF_LOGIN: login,
             UF_PASSWORD_HASH: hashPassword,
             UF_IS_ADMIN: Boolean(isAdmin)
         })
 
+        user = user.toJSON()
+
+        DashboardUserAccesses.bulkCreate(accesses.map((code) => ({
+            UF_USER: user.ID,
+            UF_PAGE_CODE: code
+        })))
+
         return {
-            id: user.id,
+            id: user.ID,
             name,
-            login
+            login,
+            accesses
         }
     }
 
@@ -302,7 +323,7 @@ class UserService {
     async login(login, password) {
         const user = await DashboardUser.findOne({
             attributes: [
-                ['ID', 'id'],
+                ['ID', 'userId'],
                 ['UF_LOGIN', 'login'],
                 ['UF_NAME', 'name'],
                 ['UF_PASSWORD_HASH', 'passwordHash'],
@@ -310,6 +331,11 @@ class UserService {
             ],
             where: {
                 UF_LOGIN: login
+            },
+            include: {
+                attributes: ['ID',['UF_PAGE_CODE', 'code']],
+                model: DashboardUserAccesses,
+                as: 'accesses'
             }
         })
 
@@ -323,10 +349,11 @@ class UserService {
             throw Error('Неверный пароль')
 
         const resUser = {
-            id: jsonUser.id,
+            id: jsonUser.userId,
             name: jsonUser.name,
             login: jsonUser.login,
-            isAdmin: jsonUser.isAdmin
+            isAdmin: jsonUser.isAdmin,
+            accesses: jsonUser.accesses ? jsonUser.accesses.map(({code}) => code) : []
         }
 
         const tokenService = new TokenService()
@@ -367,7 +394,9 @@ class UserService {
         const resUser = {
             id: userData.ID,
             name: userData.UF_NAME,
-            login: userData.UF_LOGIN
+            login: userData.UF_LOGIN,
+            isAdmin: userData.UF_IS_ADMIN,
+            accesses: userData.accesses ? userData.accesses.map((access) => access.toJSON().code) : []
         }
         const tokens = tokenService.generateTokens(resUser)
         await tokenService.saveToken(resUser.id, tokens.refreshToken)
@@ -483,6 +512,9 @@ class UserService {
     }
 
     async delete(userIds) {
+
+        DashboardUserAccesses.destroy({where: {UF_USER: userIds}})
+
         return await DashboardUser.destroy({
             where: {
                 ID: {

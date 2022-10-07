@@ -44,8 +44,7 @@ const UnisenderContactsList = () => {
     }
 
     useEffect(() => {
-        if(!contactLists.length)
-            getContactLists()
+        getContactLists()
     }, [])
 
     const changePage = (event, newPage) => {

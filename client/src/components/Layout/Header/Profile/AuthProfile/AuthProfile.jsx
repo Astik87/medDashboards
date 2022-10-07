@@ -51,13 +51,17 @@ const AuthProfile = (props) => {
                     onClose={closeMenu}
                     open={menuIsOpen}
                     anchorEl={anchorEl}>
-                    <MenuItem
-                        onClick={closeMenu}>
-                        <Link
-                            to="/admin">
-                            Админ панель
-                        </Link>
-                    </MenuItem>
+                    {
+                        Boolean(user.isAdmin)
+                        &&
+                        <MenuItem
+                            onClick={closeMenu}>
+                            <Link
+                                to="/admin">
+                                Админ панель
+                            </Link>
+                        </MenuItem>
+                    }
                     <MenuItem
                         onClick={logout}>
                         Выйти

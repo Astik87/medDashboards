@@ -329,6 +329,7 @@ var _course_registry = require("./course_registry");
 var _course_registry_stat = require("./course_registry_stat");
 var _dashboard_notifications = require("./dashboard_notifications");
 var _dashboard_plans = require("./dashboard_plans");
+var _dashboard_user_accesses = require("./dashboard_user_accesses");
 var _dashboard_users = require("./dashboard_users");
 var _event_plans = require("./event_plans");
 var _event_program = require("./event_program");
@@ -700,6 +701,7 @@ function initModels(sequelize) {
   var course_registry_stat = _course_registry_stat(sequelize, DataTypes);
   var dashboard_notifications = _dashboard_notifications(sequelize, DataTypes);
   var dashboard_plans = _dashboard_plans(sequelize, DataTypes);
+  var dashboard_user_accesses = _dashboard_user_accesses(sequelize, DataTypes);
   var dashboard_users = _dashboard_users(sequelize, DataTypes);
   var event_plans = _event_plans(sequelize, DataTypes);
   var event_program = _event_program(sequelize, DataTypes);
@@ -1122,6 +1124,7 @@ function initModels(sequelize) {
     course_registry_stat,
     dashboard_notifications,
     dashboard_plans,
+    dashboard_user_accesses,
     dashboard_users,
     event_plans,
     event_program,

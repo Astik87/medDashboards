@@ -1,4 +1,5 @@
 import {authHost, host} from './Main'
+import UserState from "@/state/UserState";
 
 class UserApi {
     async getStatistic(filter) {
@@ -89,8 +90,8 @@ class UserApi {
 
     async logout() {
         try {
-            const response = await authHost.get('/api/user/logout')
-
+            await authHost.get('/api/user/logout')
+            UserState.logout()
             return {success: true}
         } catch (error) {
             return  {success: false, message: error.message}

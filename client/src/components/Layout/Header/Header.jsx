@@ -5,7 +5,7 @@ import Menu from "./Menu"
 
 import './style.css'
 import logo from './img/logo.svg'
-import {menuItems} from "@globals/Menu"
+import menuItems from "@globals/Menu"
 import SearchInput from "./SearchInput"
 import Profile from "./Profile"
 import MobileHeader from "@components/Layout/MobileHeader"

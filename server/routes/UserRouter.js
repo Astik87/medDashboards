@@ -6,7 +6,7 @@ const UserController = require('../controllers/UserController')
 const adminMiddleware = require('../middleware/adminMiddleware')
 
 router.get('', adminMiddleware, UserController.get)
-router.get('/usersCountByGroups', adminMiddleware, filterMiddleware, UserController.getUsersCountByGroups)
+router.get('/usersCountByGroups', authMiddleware, filterMiddleware, UserController.getUsersCountByGroups)
 router.get('/statistic', authMiddleware, filterMiddleware, UserController.getStatistic)
 router.get('/med-users', adminMiddleware, UserController.getMedUsers)
 router.get('/logout', UserController.logout)

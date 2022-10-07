@@ -66,10 +66,10 @@ class UserController {
 
     static async create(req, res) {
         try {
-            const {name, login, password, isAdmin} = req.body
+            const {name, login, password, accesses, isAdmin} = req.body
 
             const userService = new UserService()
-            const user = await userService.create(name, login, password, isAdmin)
+            const user = await userService.create(name, login, password, accesses, isAdmin)
             return res.json(user)
         } catch (error) {
             return res.status(400).json({message: error.message})

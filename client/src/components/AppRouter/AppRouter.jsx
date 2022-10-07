@@ -5,6 +5,14 @@ import {adminRoutes, authRoutes, publicRoutes} from "@globals/Routes";
 import {Context} from "@/index";
 import Auth from "@pages/Auth";
 import {observer} from "mobx-react";
+import Forbidden from "@pages/Forbidden";
+
+const checkUserAccesses = (pageCode, needAdminRole, user) => {
+    if(needAdminRole || user.isAdmin)
+        return user.isAdmin
+
+    return user.accesses.indexOf(pageCode) !== -1
+}
 
 const AppRouter = observer(() => {
 
@@ -16,16 +24,18 @@ const AppRouter = observer(() => {
             {publicRoutes.map(({path, Component}) => {
                 return <Route key={path} path={path} element={Component}/>
             })}
-            {authRoutes.map(({path, Component}) => {
-                return <Route key={path} path={path} element={isAuth ? Component : <Auth/>}/>
-            })}
+            {authRoutes.map(({path, code, Component}) => {
+                let component = Component
+                if(!isAuth)
+                    component = <Auth/>
+                else if(!checkUserAccesses(code, false, user))
+                    component = <Forbidden />
 
-            {
-                isAuth &&
-                adminRoutes.map(({path, Component}) => {
-                    return <Route key={path} path={path} element={Component}/>
-                })
-            }
+                return <Route key={path} path={path} element={component}/>
+            })}
+            {adminRoutes.map(({path, Component}) => {
+                return <Route key={path} path={path} element={checkUserAccesses(false, true, user) ? Component : <Forbidden/>}/>
+            })}
         </Routes>
     )
 })

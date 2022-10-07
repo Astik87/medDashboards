@@ -222,14 +222,14 @@ class ProdoctorovParserService extends BaseService {
                 await this.delay(500)
             } while (nextPage)
         } catch (e) {
-            if (!e.response || e.response.status !== 404)
+            if (!e.response || e.response.status !== 404) {
                 this.logError(e)
-            if(this.errorCounts <= 5) {
-                await this.delay(1000)
-                this.errorCounts++
-                return this.parseDirectionPageDoctors(cityTitle, directionTitle, directionUrl)
+                if(this.errorCounts <= 5) {
+                    await this.delay(1000)
+                    this.errorCounts++
+                    return this.parseDirectionPageDoctors(cityTitle, directionTitle, directionUrl)
+                }
             }
-
 
             return doctors
         }

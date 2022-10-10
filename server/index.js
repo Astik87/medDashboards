@@ -26,7 +26,7 @@ let corsOptions = {
 }
 
 const app = express()
-app.use(cors(corsOptions));
+app.use(cors(process.env.IS_DEV ? corsOptions : {}));
 app.use(express.json())
 app.use(cookieParser())
 app.use('/static', express.static(path.resolve(__dirname, 'static')))

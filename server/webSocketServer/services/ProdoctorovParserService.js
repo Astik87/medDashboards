@@ -510,6 +510,13 @@ class ProdoctorovParserService extends BaseService {
             }
         }
 
+        if(dbUsers.length) {
+            await ProdoctorovParser.bulkCreate([...dbUsers])
+            dbUsers = []
+            i = 0
+            await this.delay(500)
+        }
+
         page++
 
         await this.delay(500)

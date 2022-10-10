@@ -14,7 +14,7 @@ class ProdoctorovParserService extends BaseService {
     tempDirPath
     host
     baseDomain = 'prodoctorov.ru'
-    dbUsersLimit = 1000
+    uploadUsersLimit = 5000
     currentTorIp = false
     errorCounts = 0
     static storeName = 'prodoctorovParser'
@@ -112,8 +112,7 @@ class ProdoctorovParserService extends BaseService {
             return false
         }
         try {
-            await this.upload(cities)
-            this.sendStatus(ProdoctorovParserService.statusCodes.END, `Prodoctorov: Парсинг завершился успешно`)
+            await this.upload()
         } catch (error) {
             this.sendStatus(ProdoctorovParserService.statusCodes.ERROR, `Prodoctorov: Ошибка при загрузке данных в базу: ${error.message}`)
             this.logError(error)
@@ -349,9 +348,7 @@ class ProdoctorovParserService extends BaseService {
                     attributes: [['UF_NAME', 'name']],
                     model: MedDirections,
                 }
-            },
-            limit,
-            offset: (page-1) * limit
+            }
         })
 
         const serializedUsers = {}
@@ -443,10 +440,9 @@ class ProdoctorovParserService extends BaseService {
 
     /**
      * Загрузить пользователей в базу
-     * @param {[{code: string, title: string}]} cities
      * @returns {Promise<void>}
      */
-    async upload(cities) {
+    async upload() {
         this.sendStatus(ProdoctorovParserService.statusCodes.UPLOAD, 'Загружаем данные в базу')
         await ProdoctorovParser.destroy({
             where: {
@@ -456,51 +452,69 @@ class ProdoctorovParserService extends BaseService {
             }
         })
 
-        let resUserCounts = 0
-        let totalUserCounts = 0
+        const addedDoctors = []
+
         let page = 1
 
-        do {
-            const {count, users} = await this.getMedTouchUsers(this.dbUsersLimit, page)
-            totalUserCounts = count
-            resUserCounts = this.dbUsersLimit * page
+        const cities = fs.readdirSync(this.tempDirPath)
 
-            let dbUsers = []
+        const {users} = await this.getMedTouchUsers()
 
-            cities.forEach(({code}) => {
-                const fileName = path.resolve(this.tempDirPath, `${code}.json`)
-                const {city, doctors} = JSON.parse(fs.readFileSync(fileName, 'utf8'))
-                doctors.forEach((doctor) => {
-                    doctor.city = city
-                    const doctorKey = this.getDoctorKey(doctor.name)
-                    const user = users[doctorKey]
-                    const prodoctorovParseItem = this.getProdoctorovParseItem(doctor, user)
-                    delete users[doctorKey]
-                    dbUsers.push(prodoctorovParseItem)
-                })
+        let dbUsers = []
 
-                ProdoctorovParser.bulkCreate([...dbUsers])
-                dbUsers = []
-            })
-
-            const lastUsers = Object.entries(users)
+        const prodoctorovParserStorage = Storage.getStorage(ProdoctorovParserService.storeName)
+        prodoctorovParserStorage.set('started', true)
+        for(const cityFileName of cities) {
+            const fileName = path.resolve(this.tempDirPath, cityFileName)
+            const {city, doctors} = JSON.parse(fs.readFileSync(fileName, 'utf8'))
+            this.sendStatus(ProdoctorovParserService.statusCodes.UPLOAD, `Загружаем данные в базу; Город: ${city}; FilePath: ${fileName}`)
             let i = 0
-            for (let lastUserItem of lastUsers) {
-                const [key, user] = lastUserItem
-                dbUsers.push(this.getProdoctorovParseItem(false, user))
-                delete users[key]
+            for(const doctor of doctors) {
+                doctor.city = city
+                const doctorKey = this.getDoctorKey(doctor.name)
+                if(addedDoctors.includes(doctorKey))
+                    continue
+                const user = users[doctorKey]
+                const prodoctorovParseItem = this.getProdoctorovParseItem(doctor, user)
+                delete users[doctorKey]
+                addedDoctors.push(doctorKey)
+                dbUsers.push(prodoctorovParseItem)
                 i++
-                if(i >= 1000) {
+                if(i >= this.uploadUsersLimit) {
                     await ProdoctorovParser.bulkCreate([...dbUsers])
-                    i = 0
+                    dbUsers = []
                     await this.delay(500)
+                    i = 0
                 }
             }
+            if(dbUsers.length) {
+                await ProdoctorovParser.bulkCreate([...dbUsers])
+                dbUsers = []
+                await this.delay(500)
+            }
+        }
 
-            page++
+        const lastUsers = Object.entries(users)
+        let i = 0
+        dbUsers = []
+        for (let lastUserItem of lastUsers) {
+            const [key, user] = lastUserItem
+            dbUsers.push(this.getProdoctorovParseItem(false, user))
+            delete users[key]
+            i++
+            if(i >= this.uploadUsersLimit) {
+                await ProdoctorovParser.bulkCreate([...dbUsers])
+                dbUsers = []
+                i = 0
+                await this.delay(500)
+            }
+        }
 
-            await this.delay(500)
-        } while (resUserCounts < totalUserCounts)
+        page++
+
+        await this.delay(500)
+        this.sendStatus(ProdoctorovParserService.statusCodes.END, `Prodoctorov: Парсинг завершился успешно`)
+        prodoctorovParserStorage.set('started', false)
     }
 
     /**

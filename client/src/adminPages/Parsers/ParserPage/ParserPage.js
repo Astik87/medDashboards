@@ -14,14 +14,17 @@ const columns = [
     {field: 'differences', headerName: 'Различие', width: 500},
 ]
 
-const ParserPage = ({name, start, back, parserData, page, limit, changePage, changeLimit}) => {
+const ParserPage = ({name, start, upload, back, parserData, page, limit, changePage, changeLimit}) => {
 
     return (
         <div className="page">
             <div className="parser">
                 <div className="parser__top">
                     <Button onClick={back}>{'< Back'}</Button>
-                    <Button onClick={start} variant="contained">Запустить парсер</Button>
+                    <div className="parser__top__right">
+                        <Button onClick={upload} variant="contained">Загрузить в базу</Button>
+                        <Button onClick={start} variant="contained">Запустить парсер</Button>
+                    </div>
                 </div>
 
                 <div className="parser__data">

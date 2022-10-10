@@ -61,7 +61,7 @@ const Prodoctorov = ({selectParser}) => {
         WSClient.send('ProdoctorovParser', 'getParserStatus')
     }
 
-    const changeStatus = (status, message) => {
+    const changeStatus = ({status, message}) => {
         switch (status) {
             case statusCodes.PROGRESS:
                 setParserProgress(message)
@@ -107,6 +107,14 @@ const Prodoctorov = ({selectParser}) => {
         setStarted(true)
         startWatchingParserStatus(changeStatus, setError)
         WSClient.send('ProdoctorovParser', 'startParser')
+    }
+
+    const upload = () => {
+        if (!WSClient.isOpen)
+            return setError('Соединение с сервером разорвано. Пожалуйста попробуйте перезагрузить страницу')
+        setStarted(true)
+        startWatchingParserStatus(changeStatus, setError)
+        WSClient.send('ProdoctorovParser', 'upload')
     }
 
     useEffect(() => {
@@ -161,6 +169,7 @@ const Prodoctorov = ({selectParser}) => {
                     <ParserPage
                         name="DocDoc"
                         back={() => selectParser(false)}
+                        upload={upload}
                         start={startParser}
                         parserData={data}
                         page={page}

@@ -15,6 +15,15 @@ class ProdoctorovParserController extends BaseController {
         return {}
     }
 
+    upload = async (connection) => {
+        if(!connection.user || !connection.user.isAdmin)
+            throw WSError.Forbidden()
+
+        const prodoctorovParserService = new ProdoctorovParserService(this.changeParserStatus)
+        prodoctorovParserService.upload()
+        return {}
+    }
+
     getParserStatus = async (connection) => {
         const prodoctorovParserService = new ProdoctorovParserService()
         return {status: prodoctorovParserService.isStarted()}

@@ -4,6 +4,18 @@
     margin-bottom: 20px;
 }
 
+.parser__top__right {
+    display: flex;
+}
+
+.parser__top__right button {
+    margin-right: 15px;
+}
+
+.parser__top__right button:last-child {
+    margin-right: 0;
+}
+
 .parser__data {
     min-height: 200px;
     height: 70vh;

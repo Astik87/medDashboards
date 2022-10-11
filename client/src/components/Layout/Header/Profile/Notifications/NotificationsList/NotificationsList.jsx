@@ -1,9 +1,7 @@
 import {
     Divider,
-    Box,
     List,
-    ListItem,
-    Button
+    ListItem
 } from '@mui/material'
 import './style.css'
 
@@ -32,7 +30,7 @@ const NotificationsList = ({notifications}) => {
             {
                 notifications
                 &&
-                notifications.map((item) => <NotificationItem {...item} />)
+                notifications.map((item, index) => <NotificationItem key={index} {...item} />)
             }
         </List>
     )

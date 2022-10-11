@@ -1,7 +1,5 @@
 import React from "react"
 import {DataGrid} from "@mui/x-data-grid"
-import ClearIcon from '@mui/icons-material/Clear';
-import DoneIcon from '@mui/icons-material/Done'
 import {Modal, Fade, Box} from "@mui/material"
 
 import './style.css'
@@ -26,6 +24,7 @@ const cols = [
     {field: 'doctor', headerName: 'Доктор', width: 150},
     {field: 'doctorDirection', headerName: 'Специальность', width: 150},
     {field: 'status', headerName: 'Проведен', width: 150},
+    {field: 'videoUrl', headerName: 'URL', width: 400},
 ]
 
 
@@ -37,7 +36,7 @@ const PlanDetailModal = (props) => {
     if(plan) {
         plan.telemarketers.forEach((telemarketer, telemarketerIndex) => {
 
-            telemarketer.visits.forEach(({time, name, doctor, doctorDirection, status}, visitIndex) => {
+            telemarketer.visits.forEach(({time, name, doctor, doctorDirection, status, videoUrl}, visitIndex) => {
                 rows.push({
                     id: `${telemarketerIndex}${visitIndex}`,
                     date: formatDate(new Date(time)),
@@ -45,12 +44,11 @@ const PlanDetailModal = (props) => {
                     medicalRepresentative: name,
                     doctor,
                     doctorDirection,
+                    videoUrl,
                     status: status ? '+' : '-'
                 })
             })
         })
-
-        console.log(rows)
     }
     return (
         <Modal

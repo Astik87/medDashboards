@@ -87,7 +87,7 @@ const getChartProps = (data, colors) => {
 }
 
 const MedtouchChart = (props) => {
-
+    initChart()
     const {className, data, colors} = props
 
     return (

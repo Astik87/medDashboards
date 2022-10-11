@@ -17,6 +17,7 @@
 
 .filter .filter__value-container {
     padding: 5px 9px;
+    padding-right: 15px;
     max-width: 95%;
 }
 

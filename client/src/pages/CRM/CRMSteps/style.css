@@ -40,6 +40,14 @@ button.next-btn {
     margin-bottom: 20px;
 }
 
+.events-selector {
+    display: flex;
+}
+
+.events-select {
+    width: 100%;
+}
+
 @media screen and (max-width: 450px){
     div.crm-stepper {
         display: none;

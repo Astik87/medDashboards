@@ -26,17 +26,17 @@ const WavesList = (props) => {
                             {
                                 wave.visitPlan
                                 &&
-                                <PlanCard data={wave.visitPlan}/>
+                                <PlanCard title="Визит" data={wave.visitPlan}/>
                             }
                             {
                                 wave.eventPlan
                                 &&
-                                <PlanCard data={wave.eventPlan}/>
+                                <PlanCard title="Мероприятие" data={wave.eventPlan}/>
                             }
                             {
                                 wave.longReadPlan
                                 &&
-                                <PlanCard data={wave.longReadPlan}/>
+                                <PlanCard title="LongRead" data={wave.longReadPlan}/>
                             }
                         </div>
                     )

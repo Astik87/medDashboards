@@ -22,11 +22,11 @@ const statusIcons = {
     Done: <img src={done} alt=""/>,
     Ongoing: <img src={ongoing} alt=""/>,
     Preparing: <img src={preparing} alt=""/>,
-    Failed: <Clear fontSize="small" />
+    Failed: <Clear fontSize="small"/>
 }
 
 const PlanCard = (props) => {
-    const {data, open, deletePlan} = props
+    const {data, open, deletePlan, title} = props
 
     const now = new Date()
 
@@ -40,7 +40,7 @@ const PlanCard = (props) => {
     if (start < now && end > now)
         status = 'Ongoing'
 
-    if(end < now && data.plan > data.fact)
+    if (end < now && data.plan > data.fact)
         status = 'Failed'
 
     const groupBlacksList = [
@@ -56,6 +56,10 @@ const PlanCard = (props) => {
 
     return (
         <div className={`plans-list__item ${groupColorClasses[status]}`}>
+            <span className="plans-list__item-title">
+                {title}
+            </span>
+
             {
                 (deletePlan || open)
                 &&

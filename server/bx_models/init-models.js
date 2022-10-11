@@ -309,7 +309,6 @@ var _b_user_field_permission = require("./b_user_field_permission");
 var _b_user_group = require("./b_user_group");
 var _b_user_hit_auth = require("./b_user_hit_auth");
 var _b_user_index = require("./b_user_index");
-var _b_user_index_selector = require("./b_user_index_selector");
 var _b_user_option = require("./b_user_option");
 var _b_user_password = require("./b_user_password");
 var _b_user_phone_auth = require("./b_user_phone_auth");
@@ -681,7 +680,6 @@ function initModels(sequelize) {
   var b_user_group = _b_user_group(sequelize, DataTypes);
   var b_user_hit_auth = _b_user_hit_auth(sequelize, DataTypes);
   var b_user_index = _b_user_index(sequelize, DataTypes);
-  var b_user_index_selector = _b_user_index_selector(sequelize, DataTypes);
   var b_user_option = _b_user_option(sequelize, DataTypes);
   var b_user_password = _b_user_password(sequelize, DataTypes);
   var b_user_phone_auth = _b_user_phone_auth(sequelize, DataTypes);
@@ -1104,7 +1102,6 @@ function initModels(sequelize) {
     b_user_group,
     b_user_hit_auth,
     b_user_index,
-    b_user_index_selector,
     b_user_option,
     b_user_password,
     b_user_phone_auth,

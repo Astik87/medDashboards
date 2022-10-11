@@ -1,5 +1,6 @@
 const {Op} = require('sequelize')
 
+const EdgeApi = require('../api/EdgeApi')
 const {
     VisitPlans,
     VisitStatistic,
@@ -108,7 +109,7 @@ class VisitsService {
                     required: true
                 },
                 {
-                    attributes: [['UF_NUMBER', 'status']],
+                    attributes: [['UF_NUMBER', 'status'], ['UF_VIDEO_URLS', 'videoUrls']],
                     model: VisitStatistic,
                 },
             ]
@@ -204,6 +205,7 @@ class VisitsService {
             plan.telemarketers = [{name: 'Не указан', visits: [], conducted: 0, total: 0}]
             const telemarketerIndexes = {}
             visitsList.forEach((visit) => {
+
                 if (visit.time > plan.end || visit.time < plan.start)
                     return false
 
@@ -225,7 +227,13 @@ class VisitsService {
                             name: visit.telemarketer.name,
                             total: 1,
                             conducted: visit.status,
-                            visits: [{name: visit.medicalRepresentative.name, status: visit.status, time: visit.time, doctor: doctorName, doctorDirection}]
+                            visits: [{
+                                name: visit.medicalRepresentative.name,
+                                status: visit.status,
+                                time: visit.time,
+                                doctor: doctorName,
+                                doctorDirection,
+                                videoUrl: visit.videoUrls}]
                         }) - 1
                     } else {
                         plan.telemarketers[telemarketerIndex].visits.push({
@@ -233,7 +241,8 @@ class VisitsService {
                             status: visit.status,
                             time: visit.time,
                             doctor: doctorName,
-                            doctorDirection
+                            doctorDirection,
+                            videoUrl: visit.videoUrls,
                         })
 
                         plan.telemarketers[telemarketerIndex].total++

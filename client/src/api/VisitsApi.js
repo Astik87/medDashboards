@@ -1,5 +1,4 @@
 import {authHost} from './Main'
-import {getDateForFilter} from "@utils/DateUtils";
 
 class VisitsApi {
 

@@ -54,6 +54,10 @@ module.exports = function(sequelize, DataTypes) {
     UF_ROOMID: {
       type: DataTypes.TEXT,
       allowNull: true
+    },
+    UF_VIDEO_URLS: {
+      type: DataTypes.TEXT,
+      allowNull: true
     }
   }, {
     sequelize,

@@ -56,9 +56,7 @@ const PlanCard = (props) => {
 
     return (
         <div className={`plans-list__item ${groupColorClasses[status]}`}>
-            <span className="plans-list__item-title">
-                {title}
-            </span>
+            {/*<span className="plans-list__item-title"></span>*/}
 
             {
                 (deletePlan || open)
@@ -86,7 +84,8 @@ const PlanCard = (props) => {
             }
             <div className="plans-list__item-left">
                 <div className="plans-list__item-name">
-                    {data.name}
+                    {title} <br/>
+                    <span>{data.name}</span>
                 </div>
                 <div className="plans-list__item-status">
                     {status} {statusIcons[status]}

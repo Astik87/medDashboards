@@ -1,10 +1,13 @@
 const {Op} = require('sequelize')
+const fs = require('fs')
+const path = require('path')
 
 const EdgeApi = require('../api/EdgeApi')
 
 const {VisitStatistic} = require('../models')
 
 const start = async () => {
+    await fs.appendFileSync(path.resolve(__dirname, 'logs.txt'), 'edgeVisitVideos.js: ' + (new Date()).toString() + '\n')
     const visits = await VisitStatistic.findAll({
         where: {
             UF_VIDEO_URLS: {

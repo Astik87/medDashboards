@@ -17,6 +17,26 @@ const modalStyle = {
     maxHeight: '90vh',
 }
 
+function VideoUrlRenderer({value}) {
+    if(!value)
+        return ''
+
+    return (
+        <div className="visit-video-link">
+            {
+                value.split(' ').map(link => (
+                    <>
+                        <a href={link} target="_blank">
+                            {link}
+                        </a>
+                        <br/>
+                    </>
+                ))
+            }
+        </div>
+    )
+}
+
 const cols = [
     {field: 'date', headerName: 'Дата', width: 150},
     {field: 'telemarketer', headerName: 'Телемаркетолог', width: 150},
@@ -24,16 +44,15 @@ const cols = [
     {field: 'doctor', headerName: 'Доктор', width: 150},
     {field: 'doctorDirection', headerName: 'Специальность', width: 150},
     {field: 'status', headerName: 'Проведен', width: 150},
-    {field: 'videoUrl', headerName: 'URL', width: 400},
+    {field: 'videoUrl', headerName: 'URL', width: 400, renderCell: VideoUrlRenderer},
 ]
-
 
 const PlanDetailModal = (props) => {
     const {plan, close} = props
 
     const rows = []
 
-    if(plan) {
+    if (plan) {
         plan.telemarketers.forEach((telemarketer, telemarketerIndex) => {
 
             telemarketer.visits.forEach(({time, name, doctor, doctorDirection, status, videoUrl}, visitIndex) => {
@@ -62,7 +81,7 @@ const PlanDetailModal = (props) => {
                         <div>
                             <div className="plan">
                                 <DataGrid
-
+                                    rowHeight={100}
                                     columns={cols}
                                     rows={rows}
                                 />

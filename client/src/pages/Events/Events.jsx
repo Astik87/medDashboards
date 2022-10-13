@@ -237,9 +237,9 @@ class Events extends BaseWithFilter {
 
                         {/*Направления и Города*/}
                         <div className="events-page__tops">
-                            <TopFive title="Специальности" icon={nurse} isLoading={isLoading}
+                            <TopFive title="Города" icon={nurse} isLoading={isLoading}
                                      values={this.getTopFiveArray(data.cities)}/>
-                            <TopFive title="Города" valueType="percent" total={data.total} icon={city}
+                            <TopFive title="Специальности" valueType="percent" total={data.total} icon={city}
                                      isLoading={isLoading} values={this.getTopFiveArray(data.directions)}/>
                         </div>
                     </div>

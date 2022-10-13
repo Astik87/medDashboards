@@ -132,8 +132,9 @@ const CreateUser = (props) => {
                                                 <FormControl
                                                     sx={{maxWidth: 290}}
                                                     key={fieldName}>
-                                                    <InputLabel>{label}</InputLabel>
+                                                    <InputLabel sx={{bgcolor: '#fff', padding: '0 5px'}}>{label}</InputLabel>
                                                     <Select
+                                                        autoWidth={true}
                                                         type={inputType}
                                                         name={fieldName}
                                                         onChange={changeField}

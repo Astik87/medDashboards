@@ -82,3 +82,14 @@
 .plan__doctors-name {
     margin-right: 20px;
 }
+
+.visit-video-link {
+    overflow-y: auto;
+    overflow-x: hidden;
+    height: 100%;
+    padding: 10px 0;
+}
+
+.visit-video-link a:hover {
+    text-decoration: underline;
+}

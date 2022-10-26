@@ -109,6 +109,10 @@ module.exports = function(sequelize, DataTypes) {
     UF_TEST_ATTEMPTS: {
       type: DataTypes.INTEGER,
       allowNull: true
+    },
+    UF_NMO_CODE: {
+      type: DataTypes.TEXT,
+      allowNull: true
     }
   }, {
     sequelize,

@@ -15,6 +15,7 @@ router.get('/groups', UserController.getGroups)
 
 router.post('', adminMiddleware, UserController.create)
 router.post('/login', UserController.login)
+router.post('/export-nmo', UserController.exportNmo)
 
 router.delete('', adminMiddleware, UserController.delete)
 

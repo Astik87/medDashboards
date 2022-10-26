@@ -31,7 +31,7 @@ class EdgeApi {
     }
 
     async getVideos(page) {
-        const response = await this.host.get('/streaming/videos/search', {params: {q: 'serv0', page}})
+        const response = await this.host.get('/streaming/videos', {params: {q: 'serv0', page}})
 
         if(response.data.error)
             throw ApiError.BadRequest(response.data.error)

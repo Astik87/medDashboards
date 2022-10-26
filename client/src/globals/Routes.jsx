@@ -22,6 +22,7 @@ import EventTabs from "@components/Layout/Sidebar/Tabs/EventTabs";
 import EventPromotions from "@pages/EventPromotions";
 import Medtouch from "@pages/Medtouch/Medtouch";
 import Parsers from "@/adminPages/Parsers"
+import MedTouchUsers from "@/adminPages/MedTouchUsers"
 
 const adminRoutes = [
     {
@@ -29,6 +30,12 @@ const adminRoutes = [
         code: 'AdminUsers',
         path: '/admin',
         Component: <AdminUsers/>
+    },
+    {
+        title: 'Пользователи MedTouch',
+        code: 'MedTouchUsers',
+        path: '/admin/med-users',
+        Component: <MedTouchUsers/>
     },
     {
         title: "Unisender",

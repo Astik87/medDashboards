@@ -10,6 +10,7 @@ const router = require('./routes/index')
 const apiMiddleware = require('./middleware/apiMiddleware')
 const apiError = require('./middleware/apiError')
 const WebSocketServer = require('./webSocketServer')
+const startCron = require('./cron')
 
 const PORT = process.env.PORT || 5000
 
@@ -39,6 +40,7 @@ const start = async () => {
         await sequelize.authenticate()
         app.listen(PORT, () => console.info(`Server started on port ${PORT}`))
         WSServer.start()
+        startCron()
     } catch (error) {
         console.error(error);
     }

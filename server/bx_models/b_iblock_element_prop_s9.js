@@ -93,6 +93,10 @@ module.exports = function(sequelize, DataTypes) {
     PROPERTY_143: {
       type: DataTypes.INTEGER,
       allowNull: true
+    },
+    PROPERTY_192: {
+      type: DataTypes.TEXT,
+      allowNull: true
     }
   }, {
     sequelize,

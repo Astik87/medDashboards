@@ -105,9 +105,10 @@ class UserService {
      * @param {{eventId: [number], directionId: number}} filter
      * @param {number} limit
      * @param {number} page
+     * @param {boolean|{field: string, sort: string}} sort
      * @returns {Promise<{count: number, rows: [{id: number, email: string, name: string, direction: string}]}>}
      */
-    async getMedUsers(filter, limit = 25, page = 1) {
+    async getMedUsers(filter, limit = 25, page = 1, sort = false) {
 
         limit = +limit
         page = +page
@@ -132,6 +133,7 @@ class UserService {
             ['DISTINCT(`b_user`.`ID`)', '`id`'],
             ['`b_user`.`NAME`', '`name`'],
             ['`b_user`.`EMAIL`', '`email`'],
+            ['`b_uts_user`.`UF_NMO_CODE`', '`nmoCode`'],
             ['`med_directions`.`UF_NAME`', '`directionName`']
         ]
 
@@ -198,7 +200,16 @@ class UserService {
 
         const count = await DB.query(`SELECT COUNT(\`${tableNames.user}\`.\`ID\`) AS count FROM \`${tableNames.user}\` ` + query)
 
-        query += `ORDER BY \`${tableNames.user}\`.\`ID\` ASC `
+        if(sort) {
+            if(sort.field === 'directionName')
+                query += `ORDER BY \`${tableNames.medDirections}\`.\`UF_NAME\` ${sort.sort} `
+            else if(sort.field === 'nmoCode')
+                query += `ORDER BY \`${tableNames.userFields}\`.\`UF_NMO_CODE\` ${sort.sort} `
+            else
+                query += `ORDER BY \`${tableNames.user}\`.\`${sort.field}\` ${sort.sort} `
+        } else {
+            query += `ORDER BY \`${tableNames.user}\`.\`ID\` ASC `
+        }
         query += `LIMIT ${(page - 1) * limit}, ${limit}`
 
         const users = await DB.query(select + query)
@@ -260,6 +271,49 @@ class UserService {
         return await Groups.findAll({
             attributes: [['ID', 'value'], ['NAME', 'label']]
         })
+    }
+
+    /**
+     * Проставляет коды НМО пользователям из массива usersList
+     * @param {[{email: string, nmo: string}]} usersList
+     * @returns {Promise<{errors: string[]}>}
+     */
+    async exportNmo(usersList) {
+        if(!usersList || !usersList.length)
+            throw ApiError.BadRequest('usersList is required ')
+
+        const dbUsers = await User.findAll({
+            attributes: [['ID', 'id'], ['EMAIL', 'email']],
+            where: {
+                'EMAIL': usersList.map(({email}) => email.toLowerCase())
+            }
+        })
+
+        const serializedDbUsers = {}
+
+        dbUsers.forEach(dbUser => {
+            dbUser = dbUser.toJSON()
+            serializedDbUsers[dbUser.email] = dbUser
+        })
+
+        const errors = []
+        const updateUsers = []
+
+        usersList.forEach(({email, nmo}) => {
+            if(!serializedDbUsers[email])
+                return errors.push(`Email ${email} is not found`)
+
+            const dbUser = serializedDbUsers[email]
+
+            updateUsers.push({
+                VALUE_ID: dbUser.id,
+                UF_NMO_CODE: nmo
+            })
+        })
+
+        await UserFields.bulkCreate(updateUsers, {updateOnDuplicate: ["UF_NMO_CODE"]})
+
+        return {errors}
     }
 
     /**

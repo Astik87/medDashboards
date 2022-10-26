@@ -22,29 +22,32 @@ const columns = [
     {field: 'directionName', headerName: 'Направление', width: 450},
 ]
 
+const initFilter = {
+    year: nowYear,
+    month: false,
+    day: false,
+    eventId: false,
+    directionId: false,
+    userGroup: false
+}
+
 const UnisenderCreateListData = () => {
 
-    const [filter, setFilter] = useState({
-        year: nowYear,
-        month: false,
-        day: false,
-        eventId: false,
-        directionId: false,
-        userGroup: false
-    })
+    const [filter, setFilter] = useState(initFilter)
     const [name, setName] = useState('')
     const [users, setUsers] = useState({count: 0, rows: []})
     const [limit, setLimit] = useState(25)
     const [page, setPage] = useState(1)
-    const [loading, setLoading] = useState(true)
+    const [sort, setSort] = useState(false)
+    const [loading, setLoading] = useState(false)
     const [error, setError] = useState(false)
 
     const {setListName, setUsersFilter} = useContext(UnisenderCreateListContext)
 
-    const getUsers = async (filter, limit, page) => {
+    const getUsers = async (filter, limit, page, sort = false) => {
         setLoading(true)
         const {eventId, directionId, userGroup} = filter
-        const response = await UserApi.getMedUsers({eventId, directionId, userGroup}, limit, page)
+        const response = await UserApi.getMedUsers({eventId, directionId, userGroup}, limit, page, sort)
 
         if (!response.success)
             setError(response.message)
@@ -56,31 +59,12 @@ const UnisenderCreateListData = () => {
         setLoading(false)
     }
 
-    const changeFilter = newFilter => {
-        setFilter(newFilter)
-
-        if (
-            newFilter.eventId !== filter.eventId
-            || newFilter.directionId !== filter.directionId
-            || newFilter.userGroup !== filter.userGroup)
-            getUsers(newFilter, limit, page)
-    }
-
     const restart = () => {
         setError(false)
-        getUsers(filter, limit, 1)
-    }
-
-    useEffect(() => {
-        getUsers(filter, limit, 1)
-    }, [])
-
-    const changePage = (newPage) => {
-        getUsers(filter, limit, newPage + 1)
-    }
-
-    const changeLimit = (newLimit) => {
-        getUsers(filter, newLimit, 1)
+        setFilter(initFilter)
+        setLimit(25)
+        setPage(1)
+        setSort(false)
     }
 
     const validate = () => {
@@ -103,6 +87,10 @@ const UnisenderCreateListData = () => {
     }
 
     const validationRes = validate()
+
+    useEffect(() => {
+        getUsers(filter, limit, page, sort)
+    }, [filter, limit, page, sort])
 
     if (error)
         return (
@@ -128,9 +116,11 @@ const UnisenderCreateListData = () => {
                     filtersList={filtersList}
                     filterProps={{events: {isMulti: true}, userGroup: {isMulti: true}}}
                     filter={filter}
-                    change={changeFilter}/>
+                    change={setFilter}/>
                 <div className="list-grid">
                     <DataGrid
+                        sortingMode="server"
+                        onSortModelChange={([newSort]) => (!loading && setSort(newSort))}
                         columns={columns}
                         rows={users.rows}
                         loading={loading}
@@ -139,8 +129,8 @@ const UnisenderCreateListData = () => {
                         page={page - 1}
                         pageSize={limit}
                         rowCount={users.count}
-                        onPageChange={changePage}
-                        onPageSizeChange={changeLimit}
+                        onPageChange={newPage => (!loading && setPage(newPage+1))}
+                        onPageSizeChange={newLimit => (!loading && setLimit(newLimit))}
                         components={{
                             LoadingOverlay: LinearProgress,
                         }}/>

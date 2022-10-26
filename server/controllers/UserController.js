@@ -42,12 +42,28 @@ class UserController {
 
     static async getMedUsers(req, res, next) {
         try {
-            const {eventId, directionId, userGroup, limit, page} = req.query
+            let {eventId, directionId, userGroup, limit, page, sort} = req.query
+
+            if(sort) sort = JSON.parse(sort)
+            else sort = false
 
             const userService = new UserService()
-            const users = await userService.getMedUsers({eventId, directionId, userGroup}, limit, page)
+            const users = await userService.getMedUsers({eventId, directionId, userGroup}, limit, page, sort)
 
             return res.json(users)
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    static async exportNmo(req, res, next) {
+        try {
+            const {usersList} = req.body
+
+            const userService = new UserService()
+            const result = await userService.exportNmo(usersList)
+
+            return res.json(result)
         } catch (error) {
             next(error)
         }

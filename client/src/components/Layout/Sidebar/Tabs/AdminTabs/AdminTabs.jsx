@@ -14,6 +14,14 @@ const UsersTab = () => {
     )
 }
 
+const MedTouchUsersTab = () => {
+    return (
+        <Link to="/admin/med-users">
+            <PeopleOutlineIcon />
+        </Link>
+    )
+}
+
 const UnisenderTab = () => {
     return (
         <Link to="/admin/unisender">
@@ -32,6 +40,7 @@ const ParsersTab = () => {
 
 const routes = [
     {path: '/admin', icon: <UsersTab />},
+    {path: '/admin/med-users', icon: <MedTouchUsersTab />},
     {path: '/admin/unisender', icon: <UnisenderTab />},
     {path: '/admin/parsers', icon: <ParsersTab />},
 ]

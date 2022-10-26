@@ -1,0 +1,13 @@
+.export-nmo__content {
+    min-width: 290px;
+}
+
+.export-nmo__status-text {
+    text-align: center;
+}
+
+.export-nmo__user-errors {
+    max-height: 130px;
+    overflow-x: hidden;
+    overflow-y: auto;
+}

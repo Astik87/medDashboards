@@ -50,6 +50,7 @@ const MedTouchUsers = () => {
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState(false)
     const [users, setUsers] = useState(false)
+    const [exportNMOOpened, setExportNMOOpened] = useState(false)
 
     const changeFilter = (newFilter) => {
         setFilter(newFilter)
@@ -75,14 +76,14 @@ const MedTouchUsers = () => {
 
     return (
         <div className="page">
-            <ExportNMO />
+            <ExportNMO isOpen={exportNMOOpened} close={() => setExportNMOOpened(false)} />
             <div className="medtouch-users__top">
                 <Filter
                     filtersList={['date', 'events', 'directions', 'userGroup']}
                     filterProps={{events: {isMulti: true}, userGroup: {isMulti: true}}}
                     filter={filter}
                     change={changeFilter}/>
-                <Button variant="contained">Export NMO</Button>
+                <Button variant="contained" onClick={() => setExportNMOOpened(true)}>Export NMO</Button>
             </div>
             <div className="page__content">
                 <div className="medtouch-users-data">

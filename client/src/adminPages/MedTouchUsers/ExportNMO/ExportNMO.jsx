@@ -20,7 +20,7 @@ import {delay} from "@utils/Time";
 const limit = 250
 const timeout = 1500
 
-const ExportNMO = () => {
+const ExportNMO = ({isOpen, close}) => {
 
     const [file, setFile] = useState(false)
     const [loadFile, setLoadFile] = useState(false)
@@ -47,19 +47,19 @@ const ExportNMO = () => {
     const exportUsers = async (usersList) => {
         const response = await UserApi.exportNMO(usersList)
 
-        if(!response.success) {
+        if (!response.success) {
             setError(response.message)
             return false
         }
 
-        if(response.data.errors.length)
+        if (response.data.errors.length)
             setUploadErrors([...uploadErrors, ...response.data.errors])
 
         return true
     }
 
     const startUploadUsers = async () => {
-        if(!users.length)
+        if (!users.length)
             return false
 
         await delay(timeout)
@@ -70,19 +70,19 @@ const ExportNMO = () => {
         for (let user of users) {
             const count = uploadUsers.push(user)
 
-            if(count >= limit) {
+            if (count >= limit) {
                 const uploadResult = await exportUsers(uploadUsers)
                 currProgress += uploadUsers.length
                 uploadUsers = []
-                if(!uploadResult)
+                if (!uploadResult)
                     return false
 
                 setProgress(currProgress)
-                await delay(timeout/2)
+                await delay(timeout / 2)
             }
         }
 
-        if(uploadUsers.length) {
+        if (uploadUsers.length) {
             await exportUsers(uploadUsers)
             currProgress += uploadUsers.length
             setProgress(currProgress)
@@ -111,6 +111,16 @@ const ExportNMO = () => {
         setLoadFile(false)
     }
 
+    const restart = () => {
+        setProgress(0)
+        setStarted(false)
+        setUsers([])
+        setFile(false)
+        setLoadFile(false)
+        setUploadErrors([])
+        setError(false)
+    }
+
     useEffect(() => {
         startUploadUsers()
     }, [users])
@@ -119,18 +129,19 @@ const ExportNMO = () => {
     return (
         <div className="export-nmo">
             <Modal
-                open={true}>
+                onClose={() => !started && close()}
+                open={isOpen}>
                 <Fade
-                    in={true}>
+                    in={isOpen}>
                     <Box sx={modalBoxStyle}>
                         <div className="export-nmo__content">
                             {
                                 error
                                 &&
-                                    <Stack spacing={2}>
-                                        <Error style={{width: '100%'}} text={error} />
-                                        <Button>Повторить попытку</Button>
-                                    </Stack>
+                                <Stack spacing={2}>
+                                    <Error style={{width: '100%'}} text={error}/>
+                                    <Button onClick={restart}>Повторить попытку</Button>
+                                </Stack>
                             }
                             {
                                 !error &&
@@ -166,13 +177,15 @@ const ExportNMO = () => {
                                                     </div>
                                                 }
                                             </div>
-                                            <LinearProgress sx={{
-                                                "& .MuiLinearProgress-bar": {
-                                                    // apply a new animation-duration to the `.bar` class
-                                                    transition: `transform ${timeout}ms linear`
-                                                }
-                                            }} variant="determinate"
-                                                            value={users.length ? Math.round(progress / users.length * 100) : 0}/>
+                                            <LinearProgress
+                                                sx={{
+                                                    "& .MuiLinearProgress-bar": {
+                                                        transition: `transform ${timeout}ms linear`
+                                                    }
+                                                }}
+                                                variant="determinate"
+                                                value={users.length ? Math.round(progress / users.length * 100) : 0}
+                                            />
 
                                             <div className="export-nmo__user-errors">
                                                 <Stack spacing={1}>
@@ -183,6 +196,12 @@ const ExportNMO = () => {
                                                     }
                                                 </Stack>
                                             </div>
+                                            <Button
+                                                onClick={() => close() || restart()}
+                                                variant="contained"
+                                                disabled={progress !== users.length}>
+                                                Завершить
+                                            </Button>
                                         </Stack>
                                 )
                             }

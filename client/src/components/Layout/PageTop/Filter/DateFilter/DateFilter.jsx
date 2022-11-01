@@ -15,8 +15,8 @@ const getMonthOptions = (now, currentYear) => {
 
     let maxMonth = 12
 
-    if(now.getFullYear() === currentYear)
-        maxMonth = now.getMonth()+1
+    // if(now.getFullYear() === currentYear)
+    //     maxMonth = now.getMonth()+1
 
     for(let month = 1; month <= maxMonth; month++)
         monthOptions.push({value: month, label: month})
@@ -29,8 +29,8 @@ const getDayOptions = (now, currentYear, currentMonth) => {
 
     let maxDay = new Date(currentYear, currentMonth, 0).getDate()
 
-    if(currentYear === now.getFullYear() && currentMonth === now.getMonth()+1)
-        maxDay = now.getDate()
+    // if(currentYear === now.getFullYear() && currentMonth === now.getMonth()+1)
+    //     maxDay = now.getDate()
 
     for(let day = 1; day <= maxDay; day++)
         dayOptions.push({value: day, label: day})

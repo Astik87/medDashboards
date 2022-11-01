@@ -55,7 +55,7 @@ class UnisenderApi {
         if(minutes < 10)
             minutes = '0' + minutes.toString()
 
-        return `${year}-${month}-${day} ${hours}:${minutes}`
+        return `${year}-${month}-${day} ${hours}:${minutes}:00`
     }
 
     /**
@@ -68,12 +68,12 @@ class UnisenderApi {
      * @returns {Promise<{result: [{}]}>}
      */
     async getCampaigns(dateFrom, dateTo, limit, page) {
-        const date_from = this.formatDate(dateFrom)
-        const date_to = this.formatDate(dateTo)
+        const from = this.formatDate(dateFrom)
+        const to = this.formatDate(dateTo)
 
         const request = {
-            date_from,
-            date_to
+            from,
+            to
         }
 
         if(limit || page) {

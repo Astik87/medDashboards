@@ -9,15 +9,16 @@ import Select from "react-select";
 import UnisenderApi from "@api/UnisenderApi";
 import {CRMContext} from "@pages/CRM/CRMContext";
 import CRMState from "@/state/CRMState";
+import DateFilter from "@components/Layout/PageTop/Filter/DateFilter";
+import {getDateForFilter} from "@utils/DateUtils";
 
-const dateTo = new Date()
-const dateFrom = new Date()
-dateFrom.setFullYear(dateTo.setFullYear() - 2)
+const now = new Date()
 
 const SelectCampaign = () => {
 
     const [campaigns, setCampaigns] = useState(false)
     const [loading, setLoading] = useState(true)
+    const [dateFilter, setDateFilter] = useState({year: now.getFullYear(), month: false, day: false})
 
     const {error, setError, currentStep, setCurrentStep} = useContext(CRMContext)
 
@@ -25,7 +26,8 @@ const SelectCampaign = () => {
 
     const getCompaigns = async () => {
         setLoading(true)
-        const response = await UnisenderApi.getCampaigns(dateFrom, dateTo)
+        const {dateFrom, dateTo} = getDateForFilter(dateFilter)
+        const response = await UnisenderApi.getCampaigns(new Date(dateFrom), new Date(dateTo))
 
         if(!response.success)
             setError(response.message)
@@ -41,7 +43,7 @@ const SelectCampaign = () => {
 
     useEffect(() => {
         getCompaigns()
-    }, [])
+    }, [dateFilter])
 
     if(error)
         return (
@@ -61,12 +63,13 @@ const SelectCampaign = () => {
                 campaigns
                 &&
                     <div className="campaigns-selector">
+                        <DateFilter filter={dateFilter} change={setDateFilter} />
                         <Select
                             onChange={selectCampaign}
                             value={campaign}
                             placeholder="Рассылка"
-                            options={campaigns.map(({subject, id}) => {
-                                return {label: subject, value: id}
+                            options={campaigns.map(({subject, id, start_time}) => {
+                                return {label: `${start_time}: ${id}. ${subject}`, value: id}
                             })}/>
                     </div>
             }

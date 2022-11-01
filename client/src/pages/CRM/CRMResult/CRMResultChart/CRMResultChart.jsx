@@ -36,7 +36,7 @@ const chartOptions = {
     },
 }
 
-const CRMResultChart = ({datasets}) => {
+const CRMResultChart = ({datasets, title}) => {
 
     const isMobile = useMediaQuery('(max-width: 420px)')
 
@@ -51,7 +51,7 @@ const CRMResultChart = ({datasets}) => {
     }
 
     return (
-        <DashboardBlock className="crm-chart" title="Воронка привлечения врачей" icon={nurse}>
+        <DashboardBlock className="crm-chart" title={title} icon={nurse}>
             <div className="crm-result__chart">
                 <Bar data={data} options={chartOptions} />
             </div>

@@ -48,8 +48,8 @@ const CRMResult = (props) => {
                 </Button>
             </div>
 
-            <CRMResultChart datasets={funnelAttraction}/>
-            <CRMResultChart datasets={bounceFunnel}/>
+            <CRMResultChart title="Воронка привлечения врачей" datasets={funnelAttraction}/>
+            <CRMResultChart title="Воронка отказов" datasets={bounceFunnel}/>
 
             <Modal
                 onClose={() => setUsersListIsShow(false)}

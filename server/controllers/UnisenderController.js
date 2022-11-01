@@ -6,8 +6,8 @@ class UnisenderController {
         try {
             let {dateFrom, dateTo, limit, page} = req.query
 
-            dateFrom = new Date(dateFrom)
-            dateTo = new Date(dateTo)
+            dateFrom = new Date(+dateFrom)
+            dateTo = new Date(+dateTo)
 
             const campaigns = await UnisenderApi.getCampaigns(dateFrom, dateTo, limit, page)
 

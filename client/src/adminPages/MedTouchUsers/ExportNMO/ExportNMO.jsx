@@ -52,9 +52,6 @@ const ExportNMO = ({isOpen, close}) => {
             return false
         }
 
-        if (response.data.errors.length)
-            setUploadErrors([...uploadErrors, ...response.data.errors])
-
         return true
     }
 
@@ -95,11 +92,15 @@ const ExportNMO = ({isOpen, close}) => {
         setLoadFile(true)
 
         const schema = {
-            'Email': {
-                prop: 'email',
-                type: String
+            'ID Мероприятия': {
+                prop: 'eventId',
+                type: Number
             },
-            'НМО': {
+            'ID Пользователя': {
+                prop: 'userId',
+                type: Number
+            },
+            'Код НМО': {
                 prop: 'nmo',
                 type: String
             }

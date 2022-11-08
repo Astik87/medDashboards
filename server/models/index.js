@@ -21,6 +21,7 @@ const waves = require('../bx_models/waves')
 const parce_prodoctorov = require('../bx_models/parce_prodoctorov')
 const dashboard_notifications = require('../bx_models/dashboard_notifications')
 const dashboard_user_accesses = require('../bx_models/dashboard_user_accesses')
+const nmo_entity = require('../bx_models/nmo_entity.js')
 
 const User = b_user(sequelize, DataTypes)
 const UserFields = b_uts_user(sequelize, DataTypes)
@@ -42,6 +43,7 @@ const Waves = waves(sequelize, DataTypes)
 const ProdoctorovParser = parce_prodoctorov(sequelize, DataTypes)
 const DashboardNotifications = dashboard_notifications(sequelize, DataTypes)
 const DashboardUserAccesses = dashboard_user_accesses(sequelize, DataTypes)
+const NmoEntity = nmo_entity(sequelize, DataTypes)
 
 User.hasOne(UserFields, {foreignKey: 'VALUE_ID'});
 UserFields.belongsTo(User, {foreignKey: 'ID'});
@@ -123,5 +125,6 @@ module.exports = {
     Waves,
     ProdoctorovParser,
     DashboardNotifications,
-    DashboardUserAccesses
+    DashboardUserAccesses,
+    NmoEntity
 }

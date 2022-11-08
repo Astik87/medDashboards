@@ -30,6 +30,10 @@ module.exports = function(sequelize, DataTypes) {
     UF_XML_ID: {
       type: DataTypes.TEXT,
       allowNull: true
+    },
+    UF_EVENT: {
+      type: DataTypes.INTEGER,
+      allowNull: true
     }
   }, {
     sequelize,

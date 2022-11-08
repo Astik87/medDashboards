@@ -365,6 +365,18 @@ module.exports = function(sequelize, DataTypes) {
     UF_BACK_PROMO_POS: {
       type: DataTypes.INTEGER,
       allowNull: true
+    },
+    UF_HIDE_ONLINE: {
+      type: DataTypes.INTEGER,
+      allowNull: true
+    },
+    UF_OFFLINE_EVENT: {
+      type: DataTypes.INTEGER,
+      allowNull: true
+    },
+    UF_BACK_NOTEXT: {
+      type: DataTypes.INTEGER,
+      allowNull: true
     }
   }, {
     sequelize,

@@ -12,7 +12,8 @@ const {
     DashboardUser,
     MedDirections,
     EventRegistrations,
-    DashboardUserAccesses
+    DashboardUserAccesses,
+    NmoEntity
 } = require('../models')
 const DateService = require('./DateService')
 const DirectionsService = require('./DirectionsService')
@@ -275,45 +276,20 @@ class UserService {
 
     /**
      * Проставляет коды НМО пользователям из массива usersList
-     * @param {[{email: string, nmo: string}]} usersList
+     * @param {[{eventId: number, userId: number, nmo: string}]} usersList
      * @returns {Promise<{errors: string[]}>}
      */
     async exportNmo(usersList) {
-        if(!usersList || !usersList.length)
-            throw ApiError.BadRequest('usersList is required ')
 
-        const dbUsers = await User.findAll({
-            attributes: [['ID', 'id'], ['EMAIL', 'email']],
-            where: {
-                'EMAIL': usersList.map(({email}) => email.toLowerCase())
-            }
-        })
+        const serializedUsersList = usersList.map(({eventId, userId, nmo}) => ({
+            UF_USER: userId,
+            UF_EVENT: eventId,
+            UF_XML_ID: nmo
+        }))
 
-        const serializedDbUsers = {}
+        const res = await NmoEntity.bulkCreate(serializedUsersList)
 
-        dbUsers.forEach(dbUser => {
-            dbUser = dbUser.toJSON()
-            serializedDbUsers[dbUser.email] = dbUser
-        })
-
-        const errors = []
-        const updateUsers = []
-
-        usersList.forEach(({email, nmo}) => {
-            if(!serializedDbUsers[email])
-                return errors.push(`Email ${email} is not found`)
-
-            const dbUser = serializedDbUsers[email]
-
-            updateUsers.push({
-                VALUE_ID: dbUser.id,
-                UF_NMO_CODE: nmo
-            })
-        })
-
-        await UserFields.bulkCreate(updateUsers, {updateOnDuplicate: ["UF_NMO_CODE"]})
-
-        return {errors}
+        return Boolean(res)
     }
 
     /**

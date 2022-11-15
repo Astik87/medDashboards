@@ -52,6 +52,22 @@ class UserApi {
         }
     }
 
+    async getNmoCodes(filter, limit, page, sort = false) {
+        try {
+            if(!filter.eventId)
+                delete filter.eventId
+
+            if(!filter.directionId)
+                delete filter.directionId
+
+            const response = await authHost.get('/api/user/nmo-codes', {params: {...filter, limit, page, sort}})
+
+            return {success: true, data: response.data}
+        } catch (error) {
+            return {success: false, message: error.message}
+        }
+    }
+
     async getUsersCountByGroups(filter) {
         try {
             const response = await authHost.get('/api/user/usersCountByGroups', {params: filter})
@@ -77,12 +93,12 @@ class UserApi {
      * @param {{email: string, nmo: string}[]} usersList
      * @returns {Promise<{success: boolean, message: string}|{data: {errors: string[]}, success: boolean}>}
      */
-    async exportNMO(usersList) {
+    async importNMO(usersList) {
         if(!usersList || !usersList.length)
             return {success: false, message: 'usersList is required'}
 
         try {
-            const response = await authHost.post('/api/user/export-nmo', {usersList})
+            const response = await authHost.post('/api/user/import-nmo', {usersList})
 
             return {success: true, data: response.data}
         } catch (error) {

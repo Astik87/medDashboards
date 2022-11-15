@@ -105,6 +105,12 @@ Waves.belongsTo(LongReadPlans, {foreignKey: 'UF_LONG_READ_PLAN'})
 DashboardUser.hasMany(DashboardNotifications, {foreignKey: 'UF_USER'})
 DashboardNotifications.belongsTo(DashboardUser, {foreignKey: 'ID'})
 
+User.hasMany(NmoEntity, {foreignKey: 'ID'})
+NmoEntity.belongsTo(User, {foreignKey: 'UF_USER'})
+
+NmoEntity.hasOne(IBlockSections, {foreignKey: 'UF_EVENT'})
+IBlockSections.belongsTo(NmoEntity, {foreignKey: 'ID'})
+
 module.exports = {
     User,
     UserFields,

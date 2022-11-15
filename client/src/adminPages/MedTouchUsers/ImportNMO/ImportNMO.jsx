@@ -20,7 +20,7 @@ import {delay} from "@utils/Time";
 const limit = 250
 const timeout = 1500
 
-const ExportNMO = ({isOpen, close}) => {
+const ImportNMO = ({isOpen, close}) => {
 
     const [file, setFile] = useState(false)
     const [loadFile, setLoadFile] = useState(false)
@@ -44,8 +44,8 @@ const ExportNMO = ({isOpen, close}) => {
         input.click()
     }
 
-    const exportUsers = async (usersList) => {
-        const response = await UserApi.exportNMO(usersList)
+    const importUsers = async (usersList) => {
+        const response = await UserApi.importNMO(usersList)
 
         if (!response.success) {
             setError(response.message)
@@ -68,7 +68,7 @@ const ExportNMO = ({isOpen, close}) => {
             const count = uploadUsers.push(user)
 
             if (count >= limit) {
-                const uploadResult = await exportUsers(uploadUsers)
+                const uploadResult = await importUsers(uploadUsers)
                 currProgress += uploadUsers.length
                 uploadUsers = []
                 if (!uploadResult)
@@ -80,7 +80,7 @@ const ExportNMO = ({isOpen, close}) => {
         }
 
         if (uploadUsers.length) {
-            await exportUsers(uploadUsers)
+            await importUsers(uploadUsers)
             currProgress += uploadUsers.length
             setProgress(currProgress)
         }
@@ -128,14 +128,14 @@ const ExportNMO = ({isOpen, close}) => {
 
     console.log('progress:', progress)
     return (
-        <div className="export-nmo">
+        <div className="import-nmo">
             <Modal
                 onClose={() => !started && close()}
                 open={isOpen}>
                 <Fade
                     in={isOpen}>
                     <Box sx={modalBoxStyle}>
-                        <div className="export-nmo__content">
+                        <div className="import-nmo__content">
                             {
                                 error
                                 &&
@@ -158,11 +158,11 @@ const ExportNMO = ({isOpen, close}) => {
                                                 }
                                             </Button>
                                             <Button variant="contained" onClick={start}
-                                                    disabled={file === false}>Export</Button>
+                                                    disabled={file === false}>Import</Button>
                                         </Stack>
                                         :
                                         <Stack spacing={2}>
-                                            <div className="export-nmo__status-text">
+                                            <div className="import-nmo__status-text">
                                                 {loadFile && 'Загружаем файл'}
                                                 {
                                                     progress !== false &&
@@ -188,7 +188,7 @@ const ExportNMO = ({isOpen, close}) => {
                                                 value={users.length ? Math.round(progress / users.length * 100) : 0}
                                             />
 
-                                            <div className="export-nmo__user-errors">
+                                            <div className="import-nmo__user-errors">
                                                 <Stack spacing={1}>
                                                     {
                                                         uploadErrors.map((userError, index) => (
@@ -214,4 +214,4 @@ const ExportNMO = ({isOpen, close}) => {
     )
 }
 
-export default ExportNMO
+export default ImportNMO

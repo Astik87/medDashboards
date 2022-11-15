@@ -56,12 +56,12 @@ class UserController {
         }
     }
 
-    static async exportNmo(req, res, next) {
+    static async importNmo(req, res, next) {
         try {
             const {usersList} = req.body
 
             const userService = new UserService()
-            const result = await userService.exportNmo(usersList)
+            const result = await userService.importNmo(usersList)
 
             return res.json(result)
         } catch (error) {
@@ -140,6 +140,27 @@ class UserController {
             const result = await userService.delete(userIds)
 
             return res.json(result)
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    static async getNmoCodes(req, res, next) {
+        try {
+            let {eventId, directionId, limit, page, sort} = req.query
+
+            if(sort) sort = JSON.parse(sort)
+            else sort = false
+
+            const userService = new UserService()
+
+            directionId = Number(directionId) || false
+            limit = Number(limit) || 25
+            page = Number(page) || 1
+
+            const nmoCodes = await userService.getNmoCodes({eventId, directionId}, limit, page, sort)
+
+            return res.json(nmoCodes)
         } catch (error) {
             next(error)
         }

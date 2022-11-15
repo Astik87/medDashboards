@@ -6,7 +6,7 @@ import Error from "@components/General/Error"
 
 import './style.css'
 import UserApi from "@api/UserApi"
-import ExportNMO from "@/adminPages/MedTouchUsers/ExportNMO";
+import ImportNMO from "@/adminPages/MedTouchUsers/ImportNMO";
 
 const now = new Date()
 
@@ -23,15 +23,16 @@ const columns = [
     {field: 'id', headerName: 'ID пользователя', width: 100},
     {field: 'email', headerName: 'Email', width: 450},
     {field: 'name', headerName: 'Имя', width: 250},
-    {field: 'nmoCode', headerName: 'Код НМО', width: 250},
+    {field: 'code', headerName: 'Код НМО', width: 250},
     {field: 'directionName', headerName: 'Направление', width: 450},
+    {field: 'eventId', headerName: 'ID мероприятия', width: 450},
 ]
 
 const MedTouchUsers = () => {
 
-    const getUsers = async (filter, limit, page, sort) => {
+    const getNmoCodes = async (filter, limit, page, sort) => {
         setLoading(true)
-        const response = await UserApi.getMedUsers(filter, limit, page, sort)
+        const response = await UserApi.getNmoCodes(filter, limit, page, sort)
 
         if(!response.success)
             setError(response.message)
@@ -50,7 +51,7 @@ const MedTouchUsers = () => {
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState(false)
     const [users, setUsers] = useState(false)
-    const [exportNMOOpened, setExportNMOOpened] = useState(false)
+    const [importNMOOpened, setImportNMOOpened] = useState(false)
 
     const changeFilter = (newFilter) => {
         setFilter(newFilter)
@@ -64,7 +65,7 @@ const MedTouchUsers = () => {
     }
 
     useEffect(() => {
-        getUsers(filter, limit, page, sort)
+        getNmoCodes(filter, limit, page, sort)
     }, [filter, limit, page, sort])
 
     if(error)
@@ -76,14 +77,14 @@ const MedTouchUsers = () => {
 
     return (
         <div className="page">
-            <ExportNMO isOpen={exportNMOOpened} close={() => setExportNMOOpened(false)} />
+            <ImportNMO isOpen={importNMOOpened} close={() => setImportNMOOpened(false)} />
             <div className="medtouch-users__top">
                 <Filter
                     filtersList={['date', 'events', 'directions', 'userGroup']}
                     filterProps={{events: {isMulti: true}, userGroup: {isMulti: true}}}
                     filter={filter}
                     change={changeFilter}/>
-                <Button variant="contained" onClick={() => setExportNMOOpened(true)}>Export NMO</Button>
+                <Button variant="contained" onClick={() => setImportNMOOpened(true)}>Import NMO</Button>
             </div>
             <div className="page__content">
                 <div className="medtouch-users-data">

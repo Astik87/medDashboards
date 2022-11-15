@@ -127,7 +127,8 @@ class UserService {
             userFields: UserFields.getTableName(),
             medDirections: MedDirections.getTableName(),
             eventVisits: EventRegistrations.getTableName(),
-            userGroup: UserGroup.getTableName()
+            userGroup: UserGroup.getTableName(),
+            nmoCodes: NmoEntity.getTableName(),
         }
 
         const attributes = [
@@ -148,6 +149,11 @@ class UserService {
                 tableNames.medDirections,
                 [tableNames.medDirections, 'ID'],
                 [tableNames.userFields, 'UF_DIRECTION']
+            ],
+            [
+                tableNames.nmoCodes,
+                [tableNames.nmoCodes, 'UF_USER'],
+                [tableNames.userFields, 'VALUE_ID']
             ]
         ]
 
@@ -220,6 +226,88 @@ class UserService {
     }
 
     /**
+     * Получить список кодов nmo
+     * @param {{eventId: [number], directionId: number}} filter
+     * @param {number} limit
+     * @param {number} page
+     * @param {boolean|{field: string, sort: string}} sort
+     * @returns {Promise<{count: number, rows: [{id: number, email: string, name: string, direction: string, code: string, event: number}]}>}
+     */
+    async getNmoCodes(filter, limit = 25, page = 1, sort = false) {
+        const where = {}
+        const directionWere = {}
+
+        if(filter.eventId)
+            where.UF_EVENT = filter.eventId
+
+        if(filter.directionId)
+            directionWere.ID = filter.directionId
+
+        const order = []
+        const nmoFields = {id: 'ID', eventId: 'UF_EVENT', code: 'UF_XML_ID'}
+        const userFields = {email: 'EMAIL', name: 'NAME'}
+        const directionFields = {directionName: 'UF_NAME'}
+        if(sort) {
+            let models = false
+            let field = false
+
+            if(userFields[sort.field]) {
+                models = [User]
+                field = userFields[sort.field]
+            }
+            if(directionFields[sort.field]) {
+                models = [User, UserFields, MedDirections]
+                field = directionFields[sort.field]
+            }
+
+            if(models && field)
+                order.push([...models, field, sort.sort])
+            if(nmoFields[sort.field])
+                order.push([nmoFields[sort.field], sort.sort])
+        }
+
+        const nmoCodesList = await NmoEntity.findAndCountAll({
+            attributes: [['ID', 'id'], ['UF_EVENT', 'eventId'], ['UF_XML_ID', 'code']],
+            where,
+            include: {
+                attributes: [['EMAIL', 'email'], ['NAME', 'name']],
+                model: User,
+                required: true,
+                include: {
+                    attributes: ['VALUE_ID'],
+                    model: UserFields,
+                    required: true,
+                    include: {
+                        attributes: [['UF_NAME', 'directionName']],
+                        model: MedDirections,
+                        where: {...directionWere},
+                        required: true
+                    }
+                }
+            },
+            limit,
+            offset: (page-1)*limit,
+            order
+        })
+
+        nmoCodesList.rows = nmoCodesList.rows.map((nmoCode) => {
+            nmoCode = nmoCode.toJSON()
+            if(nmoCode.b_user) {
+                nmoCode.email = nmoCode.b_user.email
+                nmoCode.name = nmoCode.b_user.name
+
+                if(nmoCode.b_user?.b_uts_user?.med_direction?.directionName)
+                    nmoCode.directionName = nmoCode.b_user.b_uts_user.med_direction.directionName
+            }
+
+            delete nmoCode.b_user
+            return nmoCode
+        })
+
+        return nmoCodesList
+    }
+
+    /**
      * Получить FormData пользователей для импорта в Unisender
      * @param {[{email: string}]} users
      * @param {number} listId id списка контактов из unisender
@@ -279,7 +367,7 @@ class UserService {
      * @param {[{eventId: number, userId: number, nmo: string}]} usersList
      * @returns {Promise<{errors: string[]}>}
      */
-    async exportNmo(usersList) {
+    async importNmo(usersList) {
 
         const serializedUsersList = usersList.map(({eventId, userId, nmo}) => ({
             UF_USER: userId,

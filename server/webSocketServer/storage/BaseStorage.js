@@ -16,7 +16,7 @@ class BaseStorage {
      * @returns {any|boolean}
      */
     get(segmentName) {
-        return this.storage[segmentName] ? this.storage[segmentName] : false
+        return this.storage[segmentName] || false
     }
 
     /**

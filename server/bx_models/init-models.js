@@ -340,8 +340,13 @@ var _iqsms_sender_template = require("./iqsms_sender_template");
 var _iqsms_sender_template_site = require("./iqsms_sender_template_site");
 var _long_read = require("./long_read");
 var _long_read_plans = require("./long_read_plans");
+var _long_read_statistics = require("./long_read_statistics");
+var _long_read_test_answer = require("./long_read_test_answer");
+var _long_read_tests = require("./long_read_tests");
+var _long_read_uf_downloaded_files = require("./long_read_uf_downloaded_files");
 var _long_read_uf_estimation = require("./long_read_uf_estimation");
 var _long_read_uf_test = require("./long_read_uf_test");
+var _long_read_viewing_videos = require("./long_read_viewing_videos");
 var _med_directions = require("./med_directions");
 var _module_options = require("./module_options");
 var _nmo_entity = require("./nmo_entity");
@@ -711,8 +716,13 @@ function initModels(sequelize) {
   var iqsms_sender_template_site = _iqsms_sender_template_site(sequelize, DataTypes);
   var long_read = _long_read(sequelize, DataTypes);
   var long_read_plans = _long_read_plans(sequelize, DataTypes);
+  var long_read_statistics = _long_read_statistics(sequelize, DataTypes);
+  var long_read_test_answer = _long_read_test_answer(sequelize, DataTypes);
+  var long_read_tests = _long_read_tests(sequelize, DataTypes);
+  var long_read_uf_downloaded_files = _long_read_uf_downloaded_files(sequelize, DataTypes);
   var long_read_uf_estimation = _long_read_uf_estimation(sequelize, DataTypes);
   var long_read_uf_test = _long_read_uf_test(sequelize, DataTypes);
+  var long_read_viewing_videos = _long_read_viewing_videos(sequelize, DataTypes);
   var med_directions = _med_directions(sequelize, DataTypes);
   var module_options = _module_options(sequelize, DataTypes);
   var nmo_entity = _nmo_entity(sequelize, DataTypes);
@@ -1133,8 +1143,13 @@ function initModels(sequelize) {
     iqsms_sender_template_site,
     long_read,
     long_read_plans,
+    long_read_statistics,
+    long_read_test_answer,
+    long_read_tests,
+    long_read_uf_downloaded_files,
     long_read_uf_estimation,
     long_read_uf_test,
+    long_read_viewing_videos,
     med_directions,
     module_options,
     nmo_entity,

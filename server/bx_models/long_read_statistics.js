@@ -1,6 +1,6 @@
 const Sequelize = require('sequelize');
 module.exports = function(sequelize, DataTypes) {
-  return sequelize.define('long_read', {
+  return sequelize.define('long_read_statistics', {
     ID: {
       autoIncrement: true,
       type: DataTypes.INTEGER.UNSIGNED,
@@ -27,24 +27,12 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.DOUBLE,
       allowNull: true
     },
-    UF_ESTIMATION: {
+    UF_PAGE_NAME: {
       type: DataTypes.TEXT,
       allowNull: true
     },
-    UF_PAGE: {
+    UF_LINKS: {
       type: DataTypes.TEXT,
-      allowNull: true
-    },
-    UF_VIEWED_VIDEO: {
-      type: DataTypes.DOUBLE,
-      allowNull: true
-    },
-    UF_TEST: {
-      type: DataTypes.TEXT,
-      allowNull: true
-    },
-    UF_EVENT: {
-      type: DataTypes.INTEGER,
       allowNull: true
     },
     UF_DOWNLOADED_FILES: {
@@ -53,7 +41,7 @@ module.exports = function(sequelize, DataTypes) {
     }
   }, {
     sequelize,
-    tableName: 'long_read',
+    tableName: 'long_read_statistics',
     timestamps: false,
     indexes: [
       {

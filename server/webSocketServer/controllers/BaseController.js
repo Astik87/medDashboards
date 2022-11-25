@@ -2,6 +2,8 @@ const WSError = require('../utils/WSError')
 
 class BaseController {
 
+    beforeAction = async (data) => data
+
     /**
      * Вызов экшена
      * @param {WebSocket} connection
@@ -17,13 +19,14 @@ class BaseController {
         }
 
         try {
+            req.data = await this.beforeAction(req.data)
             req.data = await this[action](connection, req.data)
             this.send(connection, req)
         } catch (error) {
             if(error instanceof WSError)
-                req.data = {error: error.message, status: error.status}
+                req.data = req.error = {error: error.message, status: error.status}
             else
-                req.data = {error: 'Непредвиденная ошибка'}
+                req.data = req.error = {error: 'Непредвиденная ошибка'}
 
             console.log('---- WS ERROR ---')
             console.log(error)

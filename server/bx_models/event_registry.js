@@ -82,6 +82,10 @@ module.exports = function(sequelize, DataTypes) {
     UF_INTRAMURAL: {
       type: DataTypes.INTEGER,
       allowNull: true
+    },
+    UF_EVENT_MARK: {
+      type: DataTypes.INTEGER,
+      allowNull: true
     }
   }, {
     sequelize,

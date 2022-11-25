@@ -8,8 +8,8 @@ module.exports = new Sequelize(
     {
         dialect: "mysql",
         host: process.env.DB_HOST,
+        logging: Boolean(process.env.IS_DEV),
         dialectOptions: {
-            logging: process.env.IS_DEV,
             useUTC: false,
             dateStrings: true,
             typeCast: function (field, next) {

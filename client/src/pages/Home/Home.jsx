@@ -15,6 +15,7 @@ import BaseWithFilter from "@pages/BaseWithFilter";
 import {TopFive, Loading, DashboardBlock} from "@components/General";
 import {LineChart} from "@components/Charts";
 
+import Button from "@components/General/Button";
 
 class Home extends BaseWithFilter {
     constructor(props) {

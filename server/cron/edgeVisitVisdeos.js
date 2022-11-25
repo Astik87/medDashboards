@@ -39,6 +39,7 @@ module.exports = async () => {
             await visit.update({UF_VIDEO_URLS: urls.join(' ')})
         }
     } catch (error) {
+        console.log(error)
         await fs.appendFileSync(logFilePath, error.toString()+'\n')
     }
 

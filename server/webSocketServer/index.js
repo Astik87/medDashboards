@@ -35,7 +35,11 @@ class WebSocketServer {
     }
 
     onClose = (connection) => {
-        handlers.close.forEach((callback) => callback(connection))
+        handlers.close.forEach(async (callback) => {
+            try {
+                await callback(connection)
+            } catch (error) {}
+        })
     }
 
     onMessage = (connection, message) => {

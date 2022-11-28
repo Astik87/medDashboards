@@ -103,14 +103,17 @@ LongRead.belongsTo(IBlockSections, {foreignKey: 'UF_EVENT'})
 LongReadPlans.hasOne(Waves, {foreignKey: 'ID'})
 Waves.belongsTo(LongReadPlans, {foreignKey: 'UF_LONG_READ_PLAN'})
 
-LongReadStatistics.hasMany(LongReadTests, {foreignKey: 'ID'})
-LongReadTests.belongsTo(LongReadStatistics, {foreignKey: 'UF_LONG_READ'})
+LongReadStatistics.hasMany(LongReadTests, {foreignKey: 'UF_LONG_READ'})
+LongReadTests.belongsTo(LongReadStatistics, {foreignKey: 'ID'})
 
 LongReadTests.hasMany(LongReadTestAnswers, {foreignKey: 'ID'})
 LongReadTestAnswers.belongsTo(LongReadTests, {foreignKey: 'UF_TEST'})
 
-LongReadStatistics.hasMany(LongReadViewingVideos, {foreignKey: 'ID'})
-LongReadViewingVideos.belongsTo(LongReadStatistics, {foreignKey: 'UF_LONG_READ'})
+LongReadStatistics.hasMany(LongReadViewingVideos, {foreignKey: 'UF_LONG_READ'})
+LongReadViewingVideos.belongsTo(LongReadStatistics, {foreignKey: 'ID'})
+
+User.hasMany(LongReadStatistics, {foreignKey: 'ID'})
+LongReadStatistics.belongsTo(User, {foreignKey: 'UF_USER'})
 
 /**
  * IBlockSections

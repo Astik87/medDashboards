@@ -13,6 +13,7 @@ class LongReadService extends BaseService {
      * Авторизация пользователя
      * @param {WebSocket} connection
      * @param {{userId: number, pageName: string}} data
+     * @return {{connections: number, userId: string, data: {}}}
      */
     login = async (connection, data) => {
         const storage = Storage.getStorage(LongReadService.storageName)
@@ -57,6 +58,8 @@ class LongReadService extends BaseService {
         storage.set(String(data.userId), user)
 
         connection.user = {userId: data.userId, connectionIndex}
+
+        return {...user, connections: user.connections.length}
     }
 
     /**
@@ -139,6 +142,7 @@ class LongReadService extends BaseService {
      * Установаить процент просмотра страницы
      * @param {number} userId
      * @param {number} value
+     * @return {boolean}
      */
     setViewingPercentage = (userId, value) => {
         const storage = Storage.getStorage(LongReadService.storageName)
@@ -160,6 +164,7 @@ class LongReadService extends BaseService {
      * @param {number} userId
      * @param {string} link
      * @param {'file' | 'link'} type
+     * @return {boolean}
      */
     addLink = (userId, link, type = 'link') => {
         const storage = Storage.getStorage(LongReadService.storageName)
@@ -185,6 +190,7 @@ class LongReadService extends BaseService {
      * @param {string} testName
      * @param {string} question
      * @param {string[]} answers
+     * @return {boolean}
      */
     addTestAnswers = (userId, testName, question, answers) => {
         const storage = Storage.getStorage(LongReadService.storageName)
@@ -229,6 +235,8 @@ class LongReadService extends BaseService {
         }
 
         storage.set(String(userId), user)
+
+        return true
     }
 
     /**
@@ -236,8 +244,9 @@ class LongReadService extends BaseService {
      * @param {number} userId
      * @param {string} videoName
      * @param {number} time
+     * @return {boolean}
      */
-    addVideoViewingVideo = (userId, videoName, time) => {
+    addVideoViewing = (userId, videoName, time) => {
         const storage = Storage.getStorage(LongReadService.storageName)
         const user = storage.get(String(userId))
 
@@ -249,7 +258,9 @@ class LongReadService extends BaseService {
             if (video.name !== videoName)
                 return video
 
-            video.time = time
+            if(video.time < time)
+                video.time = time
+
             foundVideo = true
             return {...video}
         })
@@ -259,6 +270,8 @@ class LongReadService extends BaseService {
 
         user.data.videos = newViewingVideosList
         storage.set(String(userId), user)
+
+        return true
     }
 
     getStore = () => {

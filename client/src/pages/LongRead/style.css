@@ -64,7 +64,12 @@
 }
 
 .long-read__videos-and-tests {
-    height: 48%;
+    height: 47%;
+}
+
+.long-read__videos-and-tests .dashboard-block-content {
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
 .page-long-read-content__right .top-five-block {

@@ -136,30 +136,30 @@ class LongRead extends BaseWithFilter {
                     <DashboardBlock title="Статистика лонгрида" icon={tape} className="long-read__videos-and-tests">
                         {
                             !data.tests ? '' :
-                                data.tests.map((value, index) => (
+                                data.tests.map(({name, count}, index) => (
                                     <div key={index} className="long-read-block">
                                         <img src={note} alt=""/>
                                         <div className="long-read-block-text">
-                                            <div>Тест №{index + 1}</div>
+                                            <div>{name}</div>
                                             <span>прошли</span>
                                         </div>
                                         <div className="long-read-block-value long-read-block-value--green">
-                                            {value}
+                                            {count}
                                         </div>
                                     </div>
                                 ))
                         }
                         {
                             !data || !data.videos ? '' :
-                                data.videos.map((value, index) => (
+                                data.videos.map(({name, count}, index) => (
                                     <div key={index} className="long-read-block">
                                         <img src={tape} alt=""/>
                                         <div className="long-read-block-text">
-                                            <div>Видео №{index + 1}</div>
+                                            <div>{name}</div>
                                             <span>воспроизвели</span>
                                         </div>
                                         <div className="long-read-block-value long-read-block-value--green">
-                                            {value}
+                                            {count}
                                         </div>
                                     </div>
                                 ))

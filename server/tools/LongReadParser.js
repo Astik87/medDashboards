@@ -28,7 +28,7 @@ class LongReadParser {
         await this.init()
 
         const statisticsCount = await this.getStatisticsCount()
-        const page = 1
+        let page = 1
         console.info('Items count: ', statisticsCount)
         this.progressBar.start(statisticsCount, 0)
         let currentUploadedItemsCount = 0
@@ -50,6 +50,7 @@ class LongReadParser {
                 currentUploadedItemsCount++
                 this.progressBar.update(currentUploadedItemsCount)
             }
+            page++
         }
     }
 
@@ -83,29 +84,36 @@ class LongReadParser {
                 UF_DOWNLOADED_FILES: unserialize(statistic.downloadedFiles) ? JSON.stringify(unserialize(statistic.downloadedFiles)) : ''
             })
 
-            const longReadTest = await LongReadTests.create({
-                UF_LONG_READ: longRead.ID,
-                UF_NAME: 'Тест',
-            })
+            const longReadTests = unserialize(statistic.test)
 
-            await LongReadTestAnswers.create({
-                UF_QUESTION: 'Все вопросы',
-                UF_TEST: longReadTest.ID,
-                UF_ANSWER: JSON.stringify(unserialize(statistic.test))
-            })
+            if(longReadTests.length) {
+                const longReadTest = await LongReadTests.create({
+                    UF_LONG_READ: longRead.ID,
+                    UF_NAME: 'Тест',
+                })
 
-            const longReadEstimation = await LongReadTests.create({
-                UF_LONG_READ: longRead.ID,
-                UF_NAME: 'Оценка контроля'
-            })
+                await LongReadTestAnswers.create({
+                    UF_QUESTION: 'Все вопросы',
+                    UF_TEST: longReadTest.ID,
+                    UF_ANSWER: JSON.stringify(longReadTests)
+                })
+            }
 
-            await LongReadTestAnswers.create({
-                UF_QUESTION: 'Все вопросы',
-                UF_TEST: longReadEstimation.ID,
-                UF_ANSWER: JSON.stringify(unserialize(statistic.estimation))
-            })
+            const longReadEstimation = unserialize(statistic.estimation)
+            if(longReadEstimation.length) {
+                const longReadEstimation = await LongReadTests.create({
+                    UF_LONG_READ: longRead.ID,
+                    UF_NAME: 'Оценка контроля'
+                })
 
-            if (!statistic.viewingVideo) {
+                await LongReadTestAnswers.create({
+                    UF_QUESTION: 'Все вопросы',
+                    UF_TEST: longReadEstimation.ID,
+                    UF_ANSWER: JSON.stringify(longReadEstimation)
+                })
+            }
+
+            if (statistic.viewingVideo) {
                 let videoName = 'Видеообращение: Камаев Андрей Вячеславович'
 
                 if (statistic.pageName === 'Дисплазия молочной железы')

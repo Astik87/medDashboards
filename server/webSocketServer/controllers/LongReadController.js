@@ -21,6 +21,10 @@ class LongReadController extends BaseController {
         }
     }
 
+    pingPong = async () => {
+        return {}
+    }
+
     login = async (connection, data) => {
 
         const longReadService = new LongReadService()
@@ -45,7 +49,7 @@ class LongReadController extends BaseController {
             throw WSError.BadRequest('value is required')
 
         const longReadService = new LongReadService()
-        return longReadService.setViewingPercentage(userId, value)
+        return {success: longReadService.setViewingPercentage(userId, value)}
     }
 
     addLink = async (connection, data) => {
@@ -55,7 +59,7 @@ class LongReadController extends BaseController {
             throw WSError.BadRequest('link is required')
 
         const longReadService = new LongReadService()
-        return longReadService.addLink(userId, link)
+        return {success: longReadService.addLink(userId, link)}
     }
 
     addDownloadedFileLink = async (connection, data) => {
@@ -65,7 +69,7 @@ class LongReadController extends BaseController {
             throw WSError.BadRequest('link is required')
 
         const longReadService = new LongReadService()
-        return longReadService.addLink(userId, link, 'file')
+        return {success: longReadService.addLink(userId, link, 'file')}
     }
 
     addTestAnswers = async (connection, data) => {
@@ -81,7 +85,7 @@ class LongReadController extends BaseController {
             throw WSError.BadRequest('answers is required')
 
         const longReadService = new LongReadService()
-        return longReadService.addTestAnswers(userId, testName, question, answers)
+        return {success: longReadService.addTestAnswers(userId, testName, question, answers)}
     }
 
     addVideoViewingVideo = async (connection, data) => {
@@ -95,7 +99,7 @@ class LongReadController extends BaseController {
             throw WSError.BadRequest('time is required')
 
         const longReadService = new LongReadService()
-        return longReadService.addVideoViewingVideo(userId, videoName, time)
+        return {success: longReadService.addVideoViewing(userId, videoName, time)}
     }
 
     getStore = () => {

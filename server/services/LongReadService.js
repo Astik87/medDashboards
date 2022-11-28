@@ -2,7 +2,9 @@ const {Op} = require('sequelize')
 const sequelize = require('../db')
 
 const {
-    LongRead,
+    LongReadStatistics,
+    LongReadTests,
+    LongReadViewingVideos,
     LongReadPlans,
     User,
     UserFields,
@@ -19,7 +21,7 @@ class LongReadService {
 
     request = {}
 
-    longReadAttributes = ['UF_USER', 'UF_ESTIMATION', 'UF_VIEWED_VIDEO', 'UF_TEST']
+    longReadAttributes = ['ID', 'UF_USER']
     userAttributes = ['PERSONAL_CITY']
     medDirectionAttributes = ['UF_NAME']
     userFieldsAttributes = [['UF_DIRECTION', 'UF_DIRECTION']]
@@ -31,19 +33,27 @@ class LongReadService {
         this.request = {
             attributes: this.longReadAttributes,
             order: this.order,
-            include: {
-                attributes: this.userAttributes,
-                model: User,
-                required: true,
-                include: {
-                    attributes: this.userFieldsAttributes,
-                    model: UserFields,
+            include: [
+                {
+                    attributes: this.userAttributes,
+                    model: User,
+                    required: true,
                     include: {
-                        attributes: this.medDirectionAttributes,
-                        model: MedDirections,
+                        attributes: this.userFieldsAttributes,
+                        model: UserFields,
+                        include: {
+                            attributes: this.medDirectionAttributes,
+                            model: MedDirections,
+                        }
                     }
+                },
+                {
+                    model: LongReadViewingVideos
+                },
+                {
+                    model: LongReadTests
                 }
-            }
+            ]
         }
     }
 
@@ -66,9 +76,9 @@ class LongReadService {
         }
 
         if(longReadType)
-            this.request.where.UF_PAGE = longReadType
+            this.request.where.UF_PAGE_NAME = longReadType
 
-        return await LongRead.findAll(this.request)
+        return await LongReadStatistics.findAll(this.request)
     }
 
     /**
@@ -94,45 +104,9 @@ class LongReadService {
         }
 
         if(longReadType)
-            this.request.where.UF_PAGE = longReadType
+            this.request.where.UF_PAGE_NAME = longReadType
 
-        return await LongRead.findAll(this.request)
-    }
-
-    /**
-     * Получить фейковую статистику, заполненную из админки для партнеров (по фильтрам даты)
-     * @param {string} dateFrom
-     * @param {string} dateTo
-     * @param {number} directionId
-     * @param {number} userId id портнера
-     * @return {Promise<{readings: number, tests: number[], reReadings: number, videos: number[], transitions: number, cities: [{}], directions: [{}]}>}
-     */
-    async getFakeStatisticByDate(dateFrom, dateTo, directionId, userId) {
-        /* TODO Получить фейковую статистику, заполненную из админки для партнеров (по фильтрам даты) */
-    }
-
-    /**
-     * Получить фейковую статистику, заполненную из админки для партнеров (по id мероприятия)
-     * @param {number} eventId
-     * @param {number} directionId
-     * @param {number} userId id партнера
-     * @return {Promise<{readings: number, tests: number[], reReadings: number, videos: number[], transitions: number, cities: [{}], directions: [{}]}>}
-     */
-    async getFakeStatisticEventId(eventId, directionId, userId) {
-        /* TODO Получить фейковую статистику, заполненную из админки для партнеров (по id мероприятия) */
-    }
-
-    /**
-     * Создать фейковую стстистику для портнеров
-     * @param {string} date Дата статистики (2022-12-31 23:59:00+00:00)
-     * @param {number} eventId id мероприятия стстистики
-     * @param {number} userId id партнера
-     * @param {number} directionId id направления
-     * @param {{readings: number, tests: number[], reReadings: number, videos: number[], transitions: number, cities: [{}]}} statistic данные статистики
-     * @return {Promise<boolean>}
-     */
-    async addFakeStatistic(date, eventId, directionId, userId, statistic) {
-        /* TODO Создать фейковую стстистику для портнеров */
+        return await LongReadStatistics.findAll(this.request)
     }
 
     /**
@@ -145,8 +119,8 @@ class LongReadService {
             readings: longReadItems.length,
             reReadings: 0,
             transitions: 0,
-            tests: [0, 0],
-            videos: [0]
+            tests: [],
+            videos: []
         }
 
         const directionsForStatistic = DirectionService.getDirectionsForStatistic()
@@ -164,14 +138,40 @@ class LongReadService {
 
             citiesForStatistic.indexValue(item.b_user.PERSONAL_CITY)
 
-            if(item.UF_ESTIMATION !== 'a:0:{}')
-                result.tests[0]++
+            if(item.long_read_viewing_videos.length) {
+                let foundVideo = false
+                item.long_read_viewing_videos.forEach(longReadVideo => {
+                    result.videos = result.videos = result.videos.map(video => {
+                        if(video.name !== longReadVideo.UF_NAME)
+                            return video
 
-            if(item.UF_TEST !== 'a:0:{}')
-                result.tests[1]++
+                        video.count++
+                        foundVideo = true
 
-            if(item.UF_VIEWED_VIDEO)
-                result.videos[0]++
+                        return video
+                    })
+
+                    if(!foundVideo)
+                        result.videos.push({name: longReadVideo.UF_NAME, count: 1})
+                })
+            }
+
+            if(item.long_read_tests.length) {
+                item.long_read_tests.forEach(longReadTest => {
+                    let foundTest = false
+                    result.tests = result.tests.map(test => {
+                        if(test.name !== longReadTest.UF_NAME)
+                            return test
+
+                        test.count++
+                        foundTest = true
+                        return test
+                    })
+
+                    if(!foundTest)
+                        result.tests.push({name: longReadTest.UF_NAME, count: 1})
+                })
+            }
 
             this.userIds.push(item.UF_USER)
         })
@@ -183,9 +183,9 @@ class LongReadService {
     }
 
     async getLongReadTypes() {
-        return await LongRead.findAll({
+        return await LongReadStatistics.findAll({
             attributes: [
-                [sequelize.fn('DISTINCT', sequelize.col('UF_PAGE')), 'type']
+                [sequelize.fn('DISTINCT', sequelize.col('UF_PAGE_NAME')), 'type']
             ]
         })
     }
@@ -196,7 +196,7 @@ class LongReadService {
      * @returns {boolean}
      */
     isReReading(userId) {
-        return this.userIds.indexOf(userId) !== -1
+        return this.userIds.includes(userId)
     }
 
     /**
@@ -228,7 +228,7 @@ class LongReadService {
             return plan
         })
 
-        const longReadViewer = await LongRead.findAll({
+        const longReadViewer = await LongReadStatistics.findAll({
             attributes: [['UF_CONNECT_TIME', 'connectionTime']],
             where: {
                 UF_CONNECT_TIME: {

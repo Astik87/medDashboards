@@ -1,0 +1,21 @@
+.modal-confirm__title {
+    font-size: 18px;
+    margin-bottom: 20px;
+}
+
+.modal-confirm {
+    padding: 10px;
+}
+
+.modal-confirm__content {
+    margin-bottom: 20px;
+    padding: 0 10px;
+}
+
+button.modal-confirm__btn {
+    margin-right: 10px;
+}
+
+button.modal-confirm__btn:last-child {
+    margin-right: 0;
+}

@@ -16,7 +16,7 @@ const UsersTab = () => {
 
 const MedTouchUsersTab = () => {
     return (
-        <Link to="/admin/med-users">
+        <Link to="/admin/nmo-codes">
             <PeopleOutlineIcon />
         </Link>
     )

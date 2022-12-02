@@ -6,7 +6,8 @@ import Error from "@components/General/Error"
 
 import './style.css'
 import UserApi from "@api/UserApi"
-import ImportNMO from "@/adminPages/MedTouchUsers/ImportNMO";
+import ImportNMO from "@/adminPages/NMOCodes/ImportNMO";
+import ConfirmDeleteNmoCodes from "@/adminPages/NMOCodes/ConfirmDeleteNmoCodes";
 
 const now = new Date()
 
@@ -28,7 +29,7 @@ const columns = [
     {field: 'eventId', headerName: 'ID мероприятия', width: 450},
 ]
 
-const MedTouchUsers = () => {
+const NMOCodes = () => {
 
     const getNmoCodes = async (filter, limit, page, sort) => {
         setLoading(true)
@@ -52,6 +53,8 @@ const MedTouchUsers = () => {
     const [error, setError] = useState(false)
     const [users, setUsers] = useState(false)
     const [importNMOOpened, setImportNMOOpened] = useState(false)
+    const [checkedCodes, setCheckedCodes] = useState([])
+    const [showConfirmDeleteCodes, setShowConfirmDeleteCodes] = useState(false)
 
     const changeFilter = (newFilter) => {
         setFilter(newFilter)
@@ -62,6 +65,24 @@ const MedTouchUsers = () => {
             return
 
         setSort(newSort[0])
+    }
+
+    const confirmDeleteNmoCodes = (isConfirm) => {
+        if(isConfirm)
+            deleteNmoCodes()
+        else
+            setCheckedCodes([])
+
+        setShowConfirmDeleteCodes(false)
+    }
+
+    const deleteNmoCodes = async () => {
+        const response = await UserApi.deleteNmoCodes(checkedCodes)
+        setCheckedCodes([])
+        if(response.success)
+            return getNmoCodes(filter, limit, 1, sort)
+
+        setError(response.message)
     }
 
     useEffect(() => {
@@ -78,17 +99,40 @@ const MedTouchUsers = () => {
     return (
         <div className="page">
             <ImportNMO isOpen={importNMOOpened} close={() => setImportNMOOpened(false)} />
+            <ConfirmDeleteNmoCodes
+                open={showConfirmDeleteCodes}
+                selectedCodeIds={checkedCodes}
+                onClose={() => setShowConfirmDeleteCodes(false)}
+                callback={confirmDeleteNmoCodes} />
             <div className="medtouch-users__top">
                 <Filter
                     filtersList={['date', 'events', 'directions', 'userGroup']}
                     filterProps={{events: {isMulti: true}, userGroup: {isMulti: true}}}
                     filter={filter}
                     change={changeFilter}/>
-                <Button variant="contained" onClick={() => setImportNMOOpened(true)}>Import NMO</Button>
+                <div className="nmo-codes__btns">
+                    <Button
+                        variant="contained"
+                        onClick={() => setImportNMOOpened(true)}
+                    >
+                        Import NMO
+                    </Button>
+                    <Button
+                        variant="contained"
+                        disabled={!checkedCodes.length}
+                        onClick={() => setShowConfirmDeleteCodes(true)}
+                    >
+                        Delete NMO
+                    </Button>
+                </div>
             </div>
             <div className="page__content">
                 <div className="medtouch-users-data">
                     <DataGrid
+                        checkboxSelection
+                        keepNonExistentRowsSelected
+                        selectionModel={checkedCodes}
+                        onSelectionModelChange={setCheckedCodes}
                         sortingMode="server"
                         onSortModelChange={sortUsers}
                         columns={columns}
@@ -110,4 +154,4 @@ const MedTouchUsers = () => {
     )
 }
 
-export default MedTouchUsers
+export default NMOCodes

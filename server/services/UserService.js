@@ -381,6 +381,19 @@ class UserService {
     }
 
     /**
+     * Удалить коды НМО
+     * @param {number[]} codeIds
+     * @returns {Promise<boolean>}
+     */
+    async deleteNmoCodes(codeIds) {
+        if(!codeIds?.length)
+            throw ApiError.BadRequest('codeIds is required')
+
+        await NmoEntity.destroy({where: {ID: codeIds}})
+        return true
+    }
+
+    /**
      * Регисрация пользователя
      * @param {string} name
      * @param {string} login

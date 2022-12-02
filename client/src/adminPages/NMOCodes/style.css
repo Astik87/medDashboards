@@ -1,0 +1,29 @@
+.medtouch-users__top {
+    display: flex;
+    justify-content: space-between;
+    align-items: stretch;
+}
+
+.medtouch-users__top button {
+    margin-bottom: 10px;
+}
+
+.medtouch-users-data {
+    height: 60vh;
+}
+
+.nmo-codes__btns {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.nmo-codes__btns button {
+    text-transform: none;
+    white-space: nowrap;
+    margin-right: 10px;
+}
+
+.nmo-codes__btns button:last-child {
+    margin-right: 0;
+}

@@ -107,6 +107,21 @@ class UserApi {
     }
 
     /**
+     * Удалить коды НМО
+     * @param {number[]} codeIds
+     * @returns {Promise<{success: boolean, message: *}|{data: any, success: boolean}>}
+     */
+    async deleteNmoCodes(codeIds) {
+        try {
+            const response = await authHost.delete('/api/user/delete-nmo-codes', {data: {codeIds}})
+
+            return {success: true, data: response.data}
+        } catch (error) {
+            return {success: false, message: error.message}
+        }
+    }
+
+    /**
      * Create user
      * @param {{name: string, login: string, password: string, accesses: string[], isAdmin: boolean}} data
      * @returns {Promise<{success: boolean, message: *}|{data: any, success: boolean}>}

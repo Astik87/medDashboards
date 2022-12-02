@@ -19,5 +19,6 @@ router.post('/login', UserController.login)
 router.post('/import-nmo', UserController.importNmo)
 
 router.delete('', adminMiddleware, UserController.delete)
+router.delete('/delete-nmo-codes', adminMiddleware, UserController.deleteNmoCodes)
 
 module.exports = router

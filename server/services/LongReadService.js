@@ -71,8 +71,8 @@ class LongReadService {
         }
 
         if(directionId) {
-            this.request.include.include.where = {UF_DIRECTION: directionId}
-            this.request.include.include.required = true
+            this.request.include[0].include.where = {UF_DIRECTION: directionId}
+            this.request.include[0].include.required = true
         }
 
         if(longReadType)
@@ -99,8 +99,8 @@ class LongReadService {
         }
 
         if(directionId) {
-            this.request.include.include.where = {UF_DIRECTION: directionId}
-            this.request.include.include.required = true
+            this.request.include[0].include.where = {UF_DIRECTION: directionId}
+            this.request.include[0].include.required = true
         }
 
         if(longReadType)

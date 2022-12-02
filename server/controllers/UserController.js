@@ -69,6 +69,19 @@ class UserController {
         }
     }
 
+    static async deleteNmoCodes(req, res, next) {
+        try {
+            const {codeIds} = req.body
+
+            const userService = new UserService()
+            const result = userService.deleteNmoCodes(codeIds)
+
+            return res.json(result)
+        } catch (error) {
+            next(error)
+        }
+    }
+
     static async getGroups(req, res, next) {
         try {
             const userService = new UserService()

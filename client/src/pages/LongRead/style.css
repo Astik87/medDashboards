@@ -64,7 +64,8 @@
 }
 
 .long-read__videos-and-tests {
-    height: 47%;
+    /*height: 47%;*/
+    margin-top: 20px;
 }
 
 .long-read__videos-and-tests .dashboard-block-content {

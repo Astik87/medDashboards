@@ -22,7 +22,7 @@ import EventTabs from "@components/Layout/Sidebar/Tabs/EventTabs";
 import EventPromotions from "@pages/EventPromotions";
 import Medtouch from "@pages/Medtouch/Medtouch";
 import Parsers from "@/adminPages/Parsers"
-import MedTouchUsers from "@/adminPages/MedTouchUsers"
+import NMOCodes from "@/adminPages/NMOCodes"
 
 const adminRoutes = [
     {
@@ -34,8 +34,8 @@ const adminRoutes = [
     {
         title: 'Пользователи MedTouch',
         code: 'MedTouchUsers',
-        path: '/admin/med-users',
-        Component: <MedTouchUsers/>
+        path: '/admin/nmo-codes',
+        Component: <NMOCodes/>
     },
     {
         title: "Unisender",

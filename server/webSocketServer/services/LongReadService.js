@@ -151,7 +151,7 @@ class LongReadService extends BaseService {
         if (!user)
             throw WSError.BadRequest(`user with id ${userId} not found`)
 
-        if (value > user.viewingPerc) {
+        if (value > user.data.viewingPerc) {
             user.data.viewingPerc = value
             storage.set(String(userId), user)
         }

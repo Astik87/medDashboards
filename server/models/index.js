@@ -159,6 +159,7 @@ module.exports = {
     UserGroup,
     MedDirections,
     NmoEntity,
+    Groups,
 
     // DashboardUser
     DashboardUser,
